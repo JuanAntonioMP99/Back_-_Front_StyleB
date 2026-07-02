@@ -1,0 +1,25 @@
+.confirmation-container {
+    text-align: center;
+    padding: 4rem 0;
+}
+
+.confirmation-icon {
+    font-size: 4rem;
+    color: var(--color-accent-lime);
+    margin-bottom: 1rem;
+    text-shadow: 0 0 20px rgba(168, 255, 0, 0.3);
+}
+
+.confirmation-title {
+    margin-bottom: 1rem;
+}
+
+.confirmation-message {
+    font-size: 1.2rem;
+    color: var(--color-text-muted);
+    margin-bottom: 3rem;
+}
+
+.continue-shopping-btn {
+    padding: 1rem 2rem;
+}

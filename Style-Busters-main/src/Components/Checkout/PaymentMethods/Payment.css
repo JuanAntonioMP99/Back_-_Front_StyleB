@@ -1,0 +1,73 @@
+/* src/Components/Checkout/PaymentMethods/Payment.css */
+
+.payment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Diseño horizontal para las tarjetas de crédito */
+.payment-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid var(--border-color, #eee);
+  border-radius: 8px;
+  cursor: pointer;
+  gap: 1rem;
+}
+
+.payment-item:hover {
+  background-color: #f9f9f9;
+}
+
+.payment-item.selected {
+  border-color: var(--color-primary, #000);
+  background-color: #f4f4f5;
+}
+
+/* Radio button simulado */
+.radio-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  position: relative;
+}
+
+.payment-item.selected .radio-circle {
+  border-color: var(--color-primary, #000);
+}
+.payment-item.selected .radio-circle::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--color-primary, #000);
+}
+
+.card-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-alias {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.card-number {
+  color: #666;
+  font-family: monospace; /* Fuente mono para números */
+  font-size: 1rem;
+}
+
+/* Estilo para el formulario de Tarjeta */
+.payment-form-container {
+  background: #fafafa;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px dashed #ddd;
+}

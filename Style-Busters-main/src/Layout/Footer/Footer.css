@@ -1,0 +1,17 @@
+.layout-footer {
+  background-color: var(--color-bg-card);
+  padding: 2rem 0;
+  text-align: center;
+  margin-top: auto;
+  border-top: 1px solid #333;
+}
+
+.footer-text {
+  color: var(--color-text-muted);
+}
+
+.footer-subtext {
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  color: #666;
+}

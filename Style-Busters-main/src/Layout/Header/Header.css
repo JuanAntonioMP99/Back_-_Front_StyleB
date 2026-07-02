@@ -1,0 +1,127 @@
+
+.layout-header {
+  background-color: var(--color-bg-card);
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-secondary);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.main-nav {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.cart-link {
+  position: relative;
+}
+
+/* --- BARRA DE BÚSQUEDA (Style Busters Theme) --- */
+
+.search-container {
+  flex: 1;
+  max-width: 400px; /* Ancho controlado */
+  margin: 0 1.5rem; /* Separación del logo y el nav */
+}
+
+/* El formulario actúa como el contenedor visual (la "cápsula") */
+.search-form {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  /* Usa el color de fondo de tus inputs o un gris muy suave por defecto */
+  background-color: var(--bg-color-secondary, #f5f5f5); 
+  border-radius: 50px; /* Completamente redondo */
+  padding: 0.25rem 0.5rem;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+/* Efecto focus: Se ilumina con tu color primario */
+.search-form:focus-within {
+  background-color: var(--bg-color-main, #ffffff);
+  border-color: var(--color-primary, #000000); /* Toma tu color principal */
+  box-shadow: 0 0 0 2px var(--color-primary-light, rgba(0,0,0,0.1));
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0.5rem 1rem;
+  font-family: inherit; /* Hereda tu tipografía actual (Inter, Roboto, etc.) */
+  font-size: 0.9rem;
+  color: var(--text-color-main, #333);
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--text-color-light, #999);
+}
+
+.search-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: var(--text-color-main, #333);
+  transition: transform 0.2s ease, color 0.2s ease;
+  border-radius: 50%;
+}
+
+.search-btn:hover {
+  transform: scale(1.1);
+  color: var(--color-primary, #000); /* Se pinta de tu color de marca al pasar el mouse */
+  background-color: rgba(0,0,0,0.05);
+}
+
+.cart-badge {
+  position: absolute;
+  top: -10px;
+  right: -15px;
+  background-color: var(--color-accent-pink);
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 0.8rem;
+}
+
+.user-section {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.user-greeting {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.logout-btn {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem 0;
+}

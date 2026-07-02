@@ -1,0 +1,122 @@
+/* --- PÁGINA DE RESULTADOS (Layout Limpio) --- */
+
+.search-results-fullwidth {
+  width: 100%;
+  max-width: var(--container-width, 1200px); /* Respeta el ancho de tu container */
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  min-height: 60vh; /* Asegura que no se vea vacío si hay pocos items */
+}
+
+/* --- CABECERA DE RESULTADOS --- */
+.search-results-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  border-bottom: 1px solid var(--border-color, #eee);
+  padding-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .search-results-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+}
+
+.search-results-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-color-main, #FFFF33);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.search-results-description {
+  margin: 0;
+  color: var(--text-color-secondary, #666);
+  font-size: 1rem;
+}
+
+/* --- CONTROLES (Ordenar por) --- */
+.search-results-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: var(--bg-color-secondary, #f9fafb);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+.search-results-controls label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-color-secondary, #555);
+  white-space: nowrap;
+}
+
+.search-results-controls select {
+  border: 1px solid var(--border-color, #ddd);
+  background-color: var(--bg-color-main, #fff);
+  padding: 0.4rem 2rem 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: var(--text-color-main, #333);
+  outline: none;
+}
+
+/* Botón simple para orden ascendente/descendente */
+.sort-btn {
+  background: var(--bg-color-main, #fff);
+  border: 1px solid var(--border-color, #ddd);
+  color: var(--text-color-main, #333);
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.sort-btn:hover {
+  border-color: var(--color-primary, #000);
+  color: var(--color-primary, #000);
+}
+
+/* --- MENSAJES DE ESTADO (Empty/Loading) --- */
+.search-results-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+  text-align: center;
+  background-color: var(--bg-color-secondary, #fafafa);
+  border-radius: 12px;
+  border: 1px dashed var(--border-color, #e5e5e5);
+}
+
+.search-results-message h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-color-main, #333);
+}
+
+.search-results-message p {
+  color: var(--text-color-secondary, #777);
+  max-width: 400px;
+}
+
+.search-results-message a {
+  color: var(--color-primary, blue);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+
+.search-results-message a:hover {
+  border-bottom-color: currentColor;
+}

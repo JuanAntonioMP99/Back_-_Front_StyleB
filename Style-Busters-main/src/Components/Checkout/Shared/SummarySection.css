@@ -1,0 +1,77 @@
+/* src/Components/Checkout/Shared/SummarySection.css */
+
+.summary-section {
+  background-color: var(--bg-color-main, #fff);
+  border: 1px solid var(--border-color, #e5e5e5);
+  border-radius: 12px; /* Bordes redondeados modernos */
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* Estado activo/abierto: Resalta la sección */
+.summary-section.active {
+  border-color: var(--color-primary, #000);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.summary-header {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  cursor: pointer;
+  background: transparent;
+}
+
+/* Título de la sección (ej: "1. Dirección de envío") */
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-color-main, #111);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* El contenido resumen cuando la caja está cerrada */
+.section-preview {
+  color: var(--text-color-secondary, #666);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-top: 5px;
+}
+
+/* Botón "Cambiar" a la derecha */
+.change-btn {
+  background: none;
+  border: none;
+  color: var(--color-primary, #09f); /* Azul o tu color de acento */
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.change-btn:hover {
+  color: var(--color-primary-dark, #007acc);
+}
+
+/* Contenido expandido (Formularios y Listas) */
+.section-body {
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  border-top: 1px solid transparent;
+  animation: fadeIn 0.3s ease;
+}
+
+.summary-section.active .section-body {
+  border-top-color: var(--border-color, #f0f0f0);
+  padding-top: 1.5rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

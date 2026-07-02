@@ -1,0 +1,84 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  outline: none;
+  text-decoration: none;
+  
+  /* Tamaño base (equivalente a size="base") */
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Estado Deshabilitado */
+.btn:disabled,
+.btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(100%);
+  pointer-events: none;
+}
+
+/* --- Variantes --- */
+
+/* Primary (Por defecto) */
+/* Usa el amarillo neón con texto oscuro */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-bg-dark);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 10px rgba(252, 238, 12, 0.2); /* Sutil resplandor inicial */
+}
+
+.btn-primary:hover {
+  background-color: var(--color-accent-lime); /* Cambio a lima en hover */
+  border-color: var(--color-accent-lime);
+  transform: translateY(-2px); /* Pequeña elevación */
+  box-shadow: 0 4px 15px rgba(168, 255, 0, 0.4); /* Resplandor más intenso */
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Secondary */
+/* Fondo transparente con bordes cian neón */
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-secondary);
+  color: var(--color-bg-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 229, 255, 0.4); /* Resplandor cian */
+}
+
+.btn-secondary:active {
+  transform: translateY(0);
+}
+
+/* --- Tamaños --- */
+
+/* Large (size="large") */
+.btn-large {
+  padding: 1rem 2.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Small (size="small") - Opcional, por si lo usas en el futuro */
+.btn-small {
+  padding: 0.4rem 1rem;
+  font-size: 0.875rem;
+}

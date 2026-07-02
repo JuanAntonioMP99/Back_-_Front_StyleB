@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Nuevos diseños de tus animes favoritos",
+    "subtitle": "Descubre nuevas tendencias en moda",
+    "image": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgcgQvGKMhaOYXpqBNZnVWTuYEyl-MozojlwP2FSto7oocbJbiKEPdB2B2OVN74GrNlsTEv_di9X1xOJgBeM612CfiPIS18dSEMJklc8_RLEcJUTBHtaMkTrX_ghg7BbGKBmDXDuKkslalUqUNsMsdglgEcaB38IKgj0uPRVk0_icJ3WFcgr2XL1S7O/w640-h364/AL22_Poster_FC-0A.jpg",
+    "buttonText": "Ver colección",
+    "buttonLink": "/collections/summer",
+    "backgroundColor": "#26336c"
+  },
+  {
+    "title": "Tus bandas favoritas ya estan qui...",
+    "subtitle": "Hasta 50% de descuento en productos seleccionados",
+    "image": "https://media.istockphoto.com/id/1188465781/es/vector/conjunto-de-carteles-vintage-a-color-en-el-tema-del-rock-and-roll.jpg?s=612x612&w=0&k=20&c=TcIh2FOp6VSaqdqLwWLkiOhhh5XyCWOY_ZK-9PPt2aE=",
+    "buttonText": "Ver Ofertas",
+    "buttonLink": "/offers",
+    "backgroundColor": "#8677b5"
+  },
+  {
+    "title": "Envío Gratis",
+    "subtitle": "En compras superiores a $50",
+    "image": "https://image.slidesdocs.com/responsive-images/background/efficient-product-delivery-service-with-cargo-truck-and-location-sign-a-3d-render-concept-of-courier-transportation-powerpoint-background_b0a6c441d5__960_540.jpg",
+    "buttonText": "Comprar Ahora",
+    "buttonLink": "/free-shipping",
+    "backgroundColor": "#79bf87"
+  }
+]

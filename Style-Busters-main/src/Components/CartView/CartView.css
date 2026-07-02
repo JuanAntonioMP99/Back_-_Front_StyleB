@@ -1,0 +1,149 @@
+.cart-empty-container {
+    text-align: center;
+    padding: 4rem;
+}
+
+.cart-empty-title {
+    margin-bottom: 1rem;
+}
+
+.cart-empty-text {
+    color: var(--color-text-muted);
+    margin-bottom: 2rem;
+}
+
+.cart-title {
+    margin-bottom: 2rem;
+}
+
+.cart-layout {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 2rem;
+}
+
+.cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.cart-item {
+    display: flex;
+    gap: 1rem;
+    background-color: var(--color-bg-card);
+    padding: 1rem;
+    border-radius: 8px;
+    align-items: center;
+}
+
+.cart-item-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.cart-item-details {
+    flex: 1;
+}
+
+.cart-item-name {
+    font-size: 1.1rem;
+    margin-bottom: 0.2rem;
+}
+
+.cart-item-price {
+    color: var(--color-secondary);
+    font-size: 0.9rem;
+}
+
+.cart-item-quantity {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.quantity-btn {
+    padding: 0.2rem 0.6rem;
+}
+
+.quantity-value {
+    width: 30px;
+    text-align: center;
+}
+
+.cart-item-total {
+    font-weight: bold;
+    min-width: 80px;
+    text-align: right;
+}
+
+.remove-btn {
+    background: transparent;
+    color: var(--color-accent-pink);
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.clear-cart-container {
+    text-align: right;
+    margin-top: 1rem;
+}
+
+.clear-cart-btn {
+    color: var(--color-text-muted);
+    background: transparent;
+    border: none;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.cart-summary {
+    background-color: var(--color-bg-card);
+    padding: 2rem;
+    border-radius: 12px;
+    height: fit-content;
+    border: 1px solid #333;
+}
+
+.summary-title {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #444;
+    padding-bottom: 1rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.summary-label {
+    color: var(--color-text-muted);
+}
+
+.shipping-free {
+    color: var(--color-accent-lime);
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #444;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.total-amount {
+    color: var(--color-primary);
+}
+
+.checkout-btn {
+    width: 100%;
+    margin-top: 2rem;
+    padding: 1rem;
+}

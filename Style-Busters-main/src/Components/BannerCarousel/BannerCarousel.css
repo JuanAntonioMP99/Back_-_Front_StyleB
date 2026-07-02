@@ -1,0 +1,224 @@
+/* BannerCarousel.css */
+
+:root {
+    /* Ajustamos la altura para que sea más impactante en pantallas grandes */
+    --carousel-height: 600px; 
+    --primary-color: #FFD700; /* Amarillo Style-Busters */
+    --text-color: #ffffff;
+}
+
+/* 1. Contenedor Principal */
+.banner-carousel {
+    position: relative;
+    width: 100%;
+    height: var(--carousel-height); 
+    background-color: #000;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.carousel-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.slides-wraper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* 2. Diapositiva (Imagen de fondo) */
+.banner-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* Asegura que la imagen cubra TODO el div sin deformarse */
+    background-size: cover; 
+    background-position: center center;
+    background-repeat: no-repeat;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Transición suave de opacidad */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 1;
+}
+
+/* Estado Activo */
+.banner-slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 2; /* Nivel base para el slide activo */
+}
+
+/* 3. Overlay (Capa oscura) */
+.banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Gradiente para mejorar legibilidad del texto */
+    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6));
+    z-index: 3; /* Encima de la imagen */
+}
+
+/* 4. Contenido (Texto) */
+.banner-content {
+    position: relative;
+    z-index: 4; /* Encima del overlay */
+    text-align: center;
+    max-width: 800px;
+    padding: 20px;
+    color: var(--text-color);
+}
+
+.banner-title {
+    font-size: 3rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+}
+
+.banner-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    font-weight: 300;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+}
+
+.banner-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+/* 5. Botones de Navegación (Flechas) */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    
+    /* Estilo del botón */
+    width: 50px;
+    height: 50px;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente oscuro */
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    color: white;
+    
+    /* Flex para centrar el icono */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    /* CRÍTICO: Z-index muy alto para estar encima de todo */
+    z-index: 100; 
+}
+
+.carousel-btn:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: black; /* Icono negro sobre fondo amarillo */
+}
+
+/* Posicionamiento específico */
+.carousel-btn-prev {
+    left: 20px;
+}
+
+.carousel-btn-next {
+    right: 20px;
+}
+
+/* Aseguramos que el SVG dentro del botón tenga tamaño correcto */
+.carousel-btn svg {
+    width: 24px;
+    height: 24px;
+    stroke-width: 3; /* Hacemos las flechas un poco más gruesas */
+}
+
+/* 6. Indicadores (Puntos inferiores) */
+.carousel-indicators {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 100; /* También encima de todo */
+}
+
+.indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.4);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.indicator.active {
+    background-color: var(--primary-color);
+    transform: scale(1.2);
+}
+
+/* 7. Barra de progreso */
+.carousel-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    z-index: 100;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--primary-color);
+    transition: width 0.3s linear;
+}
+
+/* 8. Contador numérico */
+.banner-counter {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0,0,0,0.6);
+    padding: 5px 10px;
+    border-radius: 4px;
+    color: white;
+    font-family: monospace;
+    z-index: 100;
+}
+
+/* --- Media Queries para Responsividad --- */
+@media (max-width: 768px) {
+    :root {
+        --carousel-height: 400px; /* Menor altura en móviles */
+    }
+    
+    .banner-title {
+        font-size: 2rem;
+    }
+    
+    .carousel-btn {
+        width: 40px;
+        height: 40px;
+    }
+}
