@@ -7,7 +7,6 @@
     --border-color: #333333;
     --error-color: #ff4d4d;
 }
-
 /* Contenedor principal: Centra todo en la pantalla */
 .login-container {
     min-height: 100vh; /* Ocupa toda la altura de la ventana */
@@ -16,11 +15,8 @@
     align-items: center;
     justify-content: center;
     background-color: var(--bg-dark);
-    /* Fondo sutil con degradado radial para dar profundidad */
-    
     padding: 20px;
 }
-
 /* Tarjeta de Login */
 .login-card {
     background-color: var(--card-bg);
@@ -34,7 +30,6 @@
     position: relative;
     overflow: hidden;
 }
-
 /* Línea decorativa superior (Toque de marca) */
 .login-card::before {
     content: '';
@@ -46,71 +41,103 @@
     background: var(--primary-color);
     box-shadow: 0 0 10px var(--primary-color);
 }
-
 /* Título */
 .login-card h2 {
     font-size: 2rem;
     font-weight: 800;
     color: var(--text-main);
-    margin-bottom: 0.5rem;
+    margin-bottom: 2rem; /* Aumentado para compensar la falta de párrafo subtítulo */
     text-transform: uppercase;
     letter-spacing: 1px;
 }
-
-/* Subtítulo / Descripción */
-.login-card p {
-    color: var(--text-muted);
-    font-size: 0.95rem;
-    margin-bottom: 2.5rem;
+/* Mensaje de éxito tras registrarse */
+.success-message {
+    background-color: rgba(76, 175, 80, 0.1);
+    border: 1px solid #4caf50;
+    color: #4caf50;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    line-height: 1.4;
 }
-
 /* Formulario */
-.login-card form {
+.login-form {
     display: flex;
     flex-direction: column;
-    gap: 1rem; /* Espacio entre inputs */
-    text-align: left; /* Alineamos los inputs a la izquierda */
+    gap: 1.25rem; /* Espacio entre inputs */
+    text-align: left; /* Alinea los inputs y etiquetas a la izquierda */
 }
-
-/* Mensaje de Error */
-.error-msg {
+.form-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+/* Soporte para múltiples variantes de componentes de Error */
+.error-msg,
+.error-message,
+.register-error-message {
     background-color: rgba(255, 77, 77, 0.1);
     border: 1px solid var(--error-color);
-    color: var(--error-color) !important; /* Forzamos color rojo */
+    color: var(--error-color) !important;
     padding: 10px;
     border-radius: 6px;
     font-size: 0.85rem !important;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     text-align: center;
     animation: shake 0.3s ease-in-out;
+    line-height: 1.4;
 }
-
-/* Utilidad para botón ancho completo */
-.w-full {
+/* Botón de envío de ancho completo */
+.login-form button[type="submit"] {
     width: 100%;
     margin-top: 1rem;
-    justify-content: center; /* Centra el texto del botón */
+    justify-content: center; /* Centra el texto o spinner */
     font-weight: 700;
     letter-spacing: 1px;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
 }
-
+/* Pie de tarjeta (Enlace de registro) */
+.login-footer {
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+}
+.login-footer span {
+    color: var(--text-muted);
+}
+.login-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+.login-footer a:hover {
+    color: var(--text-main);
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+    text-decoration: underline;
+}
 /* Animación de sacudida para error */
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-5px); }
     75% { transform: translateX(5px); }
 }
-
 /* --- Responsividad --- */
 @media (max-width: 480px) {
     .login-card {
         padding: 2rem 1.5rem;
-        border: none; /* En móviles quitamos borde para que parezca nativo */
-        background: transparent; /* Opcional: fondo transparente en móvil */
+        border: none; /* En móviles quitamos borde para apariencia nativa */
+        background: transparent;
         box-shadow: none;
     }
     
     .login-card::before {
-        display: none; /* Ocultamos la barra decorativa en móvil */
+        display: none; /* Ocultamos la barra decorativa superior */
     }
 }

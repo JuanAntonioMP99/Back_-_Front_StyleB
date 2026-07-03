@@ -1,40 +1,77 @@
-import Button from "../Common/Button/Button";
-import CartView from "../Components/CartView/CartView";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "../Context/CartContext";
-import "./CartPage.css";
-import { useAuth } from "../Context/AuthContext";
+import CartView from "../components/Cart/CartView";
+import Button from "../components/common/Button";
+import Icon from "../components/common/Icon/Icon";
+import { useCart } from "../context/CartContext";
+import "./Cart.css";
 
+export default function Cart() {
+  const { items, clearCart, count, total,  } = useCart();
 
-export default function CartPage() {
-    const navigate = useNavigate();
-    const {cart} = useCart();
-    const { user } = useAuth();
-    
-    const handleCheckout = () => {
-        if (user) {
-            navigate('/checkout');
-        } else {
-            navigate('/login', { state: { from: { pathname: '/checkout' } } });
-        }
-     };
+  const navigate = useNavigate();
+
+  if (items.length === 0) {
     return (
-        <div>
-            <CartView>
-                
-            </CartView>
-            
-            {cart.length > 0 && (
-            <Button
-                variant="primary"
-                onClick={handleCheckout}
-                className="btn-primary checkout-btn"
-                size="lg"
-            >
-                Proceder al Pago
-            </Button>
-            )}
+      <div className="cart-empty">
+        <Icon name="cart" size={100}></Icon>
+        <h2>Tu carrito está vacío</h2>
+        <p>Agrega algunos productos para empezar a comprar</p>
+        <Button variant="primary" onClick={() => navigate("/")}>
+          <span>Continuar Comprando</span>
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="cart">
+      <div className="cart-header">
+        <div className="cart-header-title">
+          <Icon name="cart" size={32} />
+          <h1>Carrito de Compras</h1>
         </div>
-        
-    )
+        <div className="cart-header-info">
+          <span className="cart-items-count">
+            {count} {count === 1 ? "artículo" : "artículos"}
+          </span>
+          <Button
+            variant="ghost"
+            className="danger clear-cart-btn"
+            onClick={clearCart}
+            title="Vaciar carrito"
+            size="sm"
+          >
+            <Icon name="trash" size={18} />
+            <span>Vaciar carrito</span>
+          </Button>
+        </div>
+      </div>
+
+      <div className="cart-items">
+        <CartView />
+        <div className="cart-summary">
+          <div className="cart-total">
+            <span className="cart-total-subtitle">Total a pagar</span>
+            <h2>${total.toFixed(2)}</h2>
+          </div>
+          <div className="cart-actions">
+            <Button
+              variant="primary"
+              onClick={() => navigate("/checkout")}
+              size="lg"
+              disabled={!items || items.length === 0}
+              title={
+                !items || items.length === 0
+                  ? "Agrega productos al carrito para continuar"
+                  : "Proceder al pago"
+              }
+            >
+              <Icon name="creditCard" size={20} />
+              <span>Proceder al pago</span>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

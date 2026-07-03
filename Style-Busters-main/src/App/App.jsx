@@ -1,43 +1,90 @@
-import './App.css';
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
-import { CartProvider } from '../Context/CartContext';
-import { AuthProvider } from '../Context/AuthContext';
-import HomePage from '../Pages/HomePage';
-import ProductDetailsPage from '../Pages/ProductDetailsPage';
-import CartPage from '../Pages/CartPage';
-import CheckoutPage from '../Pages/CheckoutPage';
-import ConfirmationPage from '../Pages/ConfirmationPage';
-import Layout from '../Layout/Layout';
-import ProtectedRoute from '../Pages/ProtectedRoute';
-import LogOn from '../Pages/LogOn';
-import SearchResults from '../Pages/SearchResults';
-
-
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { CartProvider } from "../../context/CartContext";
+import Layout from "../../layout/Layout";
+import Cart from "../../pages/Cart";
+import CategoryPage from "../../pages/CategoryPage";
+import Checkout from "../../pages/Checkout";
+import Home from "../../pages/Home";
+import Login from "../../pages/Login";
+import OrderConfirmation from "../../pages/OrderConfirmation";
+import Orders from "../../pages/Orders";
+import Product from "../../pages/Product";
+import Profile from "../../pages/Profile";
+import ProtectedRoute from "../../pages/ProtectedRoute";
+import SearchResults from "../../pages/SearchResults";
+import Settings from "../../pages/Setttings";
+import WishList from "../../pages/WishList";
+import { AuthProvider } from "../../context/AuthContext";
+import Register from "../../pages/Register";
 
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
+        <CartProvider>
           <Layout>
             <Routes>
-              <Route index element={<HomePage />} />
-              <Route path='login' element={<LogOn/>}/>
-              <Route path="product/:id" element={<ProductDetailsPage/>} />
-              <Route path='search' element={<SearchResults/>}/>
-              <Route path="cart" element={<CartPage />} />
-              <Route path="checkout" element={ 
-                <ProtectedRoute>
-                  <CheckoutPage />
-                </ProtectedRoute>} />
-              <Route path="order-confirmation" element={<ConfirmationPage />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/search" element={<SearchResults />} />
+              <Route path="/product/:productId" element={<Product />} />
+              <Route path="/category/:categoryId" element={<CategoryPage />} />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute
+                    redirectTo="/login"
+                    allowedRoles={["admin", "customer", "cliente"]}
+                  >
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/checkout"
+                element={
+                  <ProtectedRoute>
+                    <Checkout></Checkout>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/wishlist"
+                element={
+                  <ProtectedRoute>
+                    <WishList></WishList>
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/orders"
+                element={
+                  <ProtectedRoute>
+                    <Orders />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/order-confirmation"
+                element={<OrderConfirmation />}
+              />
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <Settings></Settings>
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="*" element={<div>Ruta no encontrada</div>} />
             </Routes>
           </Layout>
-        </BrowserRouter>
-      </CartProvider>
-    </AuthProvider>
+        </CartProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

@@ -2,72 +2,150 @@
     background-color: var(--color-bg-card);
     border-radius: 12px;
     overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                box-shadow 0.3s ease, 
+                border-color 0.3s ease;
     border: 1px solid #333;
     display: flex;
-    flex-direction: column;
 }
-
+/* Efecto hover global de la tarjeta */
 .product-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 229, 255, 0.1);
     border-color: var(--color-secondary);
 }
-
-.product-image-link {
+/* Envoltura y efecto zoom de la imagen */
+.product-card-image-link {
     display: block;
     overflow: hidden;
 }
-
-.product-image {
+.product-card-image {
     width: 100%;
-    height: 300px;
     object-fit: cover;
-    transition: transform 0.5s;
+    transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: block;
 }
-
-.product-image:hover {
+.product-card:hover .product-card-image {
     transform: scale(1.05);
 }
-
-.product-info {
-    padding: 1.5rem;
-    flex: 1;
+/* Bloque de Información */
+.product-card-content {
     display: flex;
     flex-direction: column;
 }
-
-.product-category {
-    margin-bottom: 0.5rem;
-    color: var(--color-secondary);
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.product-title {
+.product-card-title {
     color: white;
     font-size: 1.2rem;
     font-weight: bold;
-    margin-bottom: 0.5rem;
-    display: block;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.4;
+    transition: color 0.2s ease;
 }
-
-.product-price {
-    font-size: 1.1rem;
+.product-card-title:hover {
+    color: var(--color-primary);
+}
+.product-card .muted {
+    color: var(--color-text-muted, #aaaaaa);
+    line-height: 1.4;
+}
+.product-card-price {
+    font-size: 1.2rem;
     color: var(--color-primary);
     font-weight: bold;
-    margin-bottom: 1rem;
+    margin-top: auto; /* Empuja el precio hacia la parte inferior del contenido */
 }
-
-.product-actions {
-    margin-top: auto;
+/* Bloque de Acciones (Badges y Botón) */
+.product-card-actions {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.75rem;
 }
-
-.action-btn {
+/* ==========================================
+   Variante: Orientación Vertical (Por Defecto)
+   ========================================== */
+.product-card--vertical {
+    flex-direction: column;
+    height: 100%;
+}
+.product-card--vertical .product-card-image-link {
+    width: 100%;
+}
+.product-card--vertical .product-card-image {
+    height: 280px;
+}
+.product-card--vertical .product-card-content {
+    padding: 1.25rem 1.25rem 0.5rem;
     flex: 1;
-    text-align: center;
-    padding: 0.5rem;
+}
+.product-card--vertical .product-card-actions {
+    padding: 0 1.25rem 1.25rem;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+}
+.product-card--vertical .product-card-actions button {
+    padding: 0.6rem 1rem;
+}
+/* ==========================================
+   Variante: Orientación Horizontal
+   ========================================== */
+.product-card--horizontal {
+    flex-direction: row;
+    align-items: stretch;
+    height: 180px;
+}
+.product-card--horizontal .product-card-image-link {
+    width: 240px;
+    height: 100%;
+    flex-shrink: 0;
+}
+.product-card--horizontal .product-card-image {
+    height: 100%;
+}
+.product-card--horizontal .product-card-content {
+    padding: 1.5rem;
+    flex: 1;
+}
+.product-card--horizontal .product-card-actions {
+    padding: 1.5rem;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    flex-shrink: 0;
+    width: 200px;
+}
+.product-card--horizontal .product-card-actions button {
+    width: 100%;
+    justify-content: center;
+}
+/* ==========================================
+   Adaptabilidad / Responsive
+   ========================================== */
+@media (max-width: 600px) {
+    /* Las tarjetas horizontales se transforman a formato vertical en pantallas móviles */
+    .product-card--horizontal {
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .product-card--horizontal .product-card-image-link {
+        width: 100%;
+        height: 220px;
+    }
+    .product-card--horizontal .product-card-content {
+        padding: 1.25rem 1.25rem 0.5rem;
+    }
+    .product-card--horizontal .product-card-actions {
+        width: auto;
+        padding: 0 1.25rem 1.25rem;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        border-left: none;
+    }
+    
+    .product-card--horizontal .product-card-actions button {
+        width: auto;
+    }
 }

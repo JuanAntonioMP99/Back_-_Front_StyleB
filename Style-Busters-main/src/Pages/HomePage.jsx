@@ -1,36 +1,70 @@
-import ProductCard from '../Components/ProductCard/ProductCard';
-import './HomePage.css';
-import BannerCarousel from '../Components/BannerCarousel/BannerCarousel';
-import homeImages from '../Data/homeImages.json';
-import products from '../Data/products';
+import { useEffect, useState } from "react";
+import BannerCarousel from "../components/BannerCarousel";
+import List from "../components/List/List";
+import ErrorMessage from "../components/common/ErrorMessage/ErrorMessage";
+import Loading from "../components/common/Loading/Loading";
+import homeImages from "../data/homeImages.json";
+import { getAllProducts } from "../services/productService";
 
-const HomePage = () => {
-    
-  
+export default function Home() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [pagination, setPagination] = useState(null); 
+
+  useEffect(() => {
+    let cancelled = false; 
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await getAllProducts();
+        if (cancelled) return true;
+        setProducts(data.products);
+        setPagination(data.pagination);
+
+        
+      } catch (error) {
+        if(!cancelled)setError(error.kind || "UNKNOWN"); 
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    loadProducts();
+    return () => {
+      cancelled = true; 
+    }
+  }, []);
 
   return (
-        
-        <div>
-          <BannerCarousel banners={homeImages}></BannerCarousel>
-            <div className="home-header">
-                <h1 className="home-title">
-                    Lo mejor de la cultura anime y rock. 
-                </h1>
-                <p className="home-subtitle">
-                    Descubre nuestra colección exclusiva de playeras con diseños unicos.
-                </p>
-            </div>
-
-            <div className="products-grid">
-                {products.map(product => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-            </div>
-        </div>
-    );
-};
-
-export default HomePage;
+    <div>
+      <BannerCarousel banners={homeImages} />
+      {loading && (
+        <Loading>Cargando productos...</Loading>
+      )}
+      { !loading && error && error === "NETWORK" && (
+        <ErrorMessage>No pudimos conectar. Revisa tu conexión a internet</ErrorMessage>
+      )} 
+      { !loading && error && error === "SERVER_ERROR" && (
+        <ErrorMessage>Algo salió mal, intente más tarde</ErrorMessage>
+      )} 
+      { !loading && error && error !== "NETWORK" && error !== "SERVER_ERROR" && (
+        <ErrorMessage>Ocurrió un error inesperado</ErrorMessage>
+      )} 
+      { !loading && !error && products.length === 0 && (
+        <ErrorMessage>No hay productos en el catalogo</ErrorMessage>
+      )} 
+      { !loading && !error && products.length > 0 && (
+        <List
+          title="Productos recomendados"
+          products={products}
+          layout="grid"
+        />
+      )} 
+    </div>
+  );
+}
 
 
 

@@ -1,95 +1,63 @@
-import { Link } from 'react-router-dom';
-import { useCart } from '../../Context/CartContext';
-import './CartView.css';
+import { useCart } from "../../context/CartContext";
+import Button from "../common/Button";
+import Icon from "../common/Icon/Icon";
 
-const CartView = () => {
-    const { cart, removeFromCart, updateQuantity, total, clearCart } = useCart();
-    
+export default function CartView() {
+  const { items, removeItem, updateQuantity } = useCart();
 
-    if (cart.length === 0) {
-        return (
-            <div className="cart-empty-container">
-                <h2 className="cart-empty-title">Tu carrito está vacío</h2>
-                <p className="cart-empty-text">Parece que aún no has agregado nada.</p>
-                <Link to="/" className="btn-primary">
-                    Ir a comprar
-                </Link>
+  return (
+    <div className="cart-view">
+      <div className="cart-view-header">
+        <h2>
+          {items.length} {items.length === 1 ? "artículo" : "artículos"}
+        </h2>
+      </div>
+
+      {items &&
+        items.map(({product, quantity}) => (
+          <div className="cart-item" key={product._id}>
+            <div className="cart-item-image">
+              <img src={product?.imagesUrl?.[0]} alt={product.name} loading="lazy" />
             </div>
-        );
-    }
-    
-    return (
-        <div>
-            <h1 className="cart-title">Tu Carrito</h1>
 
-            <div className="cart-layout">
-                <div className="cart-items">
-                    {cart.map(item => (
-                        <div key={item.id} className="cart-item">
-                            <img src={item.image[0]} alt={item.name} className="cart-item-image" />
-
-                            <div className="cart-item-details">
-                                <h3 className="cart-item-name">{item.name}</h3>
-                                <div className="cart-item-price">${item.price.toFixed(2)}</div>
-                            </div>
-
-                            <div className="cart-item-quantity">
-                                <button
-                                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                    className="quantity-btn"
-                                >
-                                    -
-                                </button>
-                                <span className="quantity-value">{item.quantity}</span>
-                                <button
-                                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                    className="quantity-btn"
-                                >
-                                    +
-                                </button>
-                            </div>
-
-                            <div className="cart-item-total">
-                                ${(item.price * item.quantity).toFixed(2)}
-                            </div>
-
-                            <button
-                                onClick={() => removeFromCart(item.id)}
-                                className="remove-btn"
-                                title="Eliminar"
-                            >
-                                &times;
-                            </button>
-                        </div>
-                    ))}
-
-                    <div className="clear-cart-container">
-                        <button onClick={clearCart} className="clear-cart-btn">
-                            Vaciar carrito
-                        </button>
-                    </div>
-                </div>
-
-                <div className="cart-summary">
-                    <h2 className="summary-title">Resumen</h2>
-
-                    <div className="summary-row">
-                        <span className="summary-label">Subtotal</span>
-                        <span>${total.toFixed(2)}</span>
-                    </div>
-                    <div className="summary-row">
-                        <span className="summary-label">Envío</span>
-                        <span className="shipping-free">Gratis</span>
-                    </div>
-
-                    <div className="summary-total">
-                        <span>Total</span>
-                        <span className="total-amount">${total.toFixed(2)}</span>
-                    </div>
-                </div>
+            <div className="cart-item-info">
+              <h3>{product.name}</h3>
+              <p className="cart-item-price">{`$${product.price.toFixed(2)}`}</p>
             </div>
-        </div>
-    );
-};
 
-export default CartView;
+            <div className="cart-item-quantity">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => updateQuantity(product._id, quantity - 1)}
+              >
+                <Icon name="minus" size={15}></Icon>
+              </Button>
+              <span>{quantity}</span>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => updateQuantity(product._id, quantity + 1)}
+              >
+                <Icon name="plus" size={15}></Icon>
+              </Button>
+            </div>
+
+            <div className="cart-item-total">
+              ${(product.price * quantity).toFixed(2)}
+            </div>
+
+            <Button
+              variant="ghost"
+              className="danger"
+              size="sm"
+              onClick={() => removeItem(product._id)}
+              title="Eliminar artículo"
+            >
+              <Icon name="trash" size={16} />
+            </Button>
+          </div>
+        ))}
+    </div>
+  );
+}
