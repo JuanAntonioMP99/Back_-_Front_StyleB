@@ -1,44 +1,71 @@
-import { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useContext, useEffect, useState } from "react";
+import {login as loginService} from "../services/authService"; 
+import { clearToken, decodeToken, getToken, isTokenExpired, saveToken } from "../utils/auth";
 
-const AuthContext = createContext();
+const AuthContext = createContext(null); 
 
-export const useAuth = () => useContext(AuthContext);
+export function AuthProvider ({ children }) {
+    const [user, setUser] = useState(null); 
+    const [loading, setLoading] = useState(true); 
 
-export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(() => {
-        const savedUser = localStorage.getItem('user');
-        return savedUser ? JSON.parse(savedUser) : null;
-    });
-
-    useEffect(() => {
-        if (user) {
-            localStorage.setItem('user', JSON.stringify(user));
-        } else {
-            localStorage.removeItem('user');
-        }
-    }, [user]);
-
-    const login = (email, password) => {
+    useEffect(()=> {
+        const token = getToken(); 
         
-        if (password === "123456") {
-            setUser({ 
-                email, 
-                name: email.split('@')[0], 
-                token: "token-falso-123" 
-            });
-            return { success: true };
-        } else {
-            return { success: false, message: "Contraseña o correo incorrecto (Usa: 123456)" };
+        if(!token){
+            setLoading(false); 
+            return; 
         }
-    };
+
+        if (isTokenExpired(token)) {
+            clearToken(); 
+            setLoading(false); 
+            return; 
+        }
+
+        const payload = decodeToken(token); 
+        if(payload) {
+            setUser({id: payload.userId, name: payload.name, role: payload.role }); 
+        }
+        setLoading(false); 
+    }, []); 
+
+    useEffect (() => {
+        const handleStorageChange = (event) => {
+            if (event.key === "authToken" && !event.newValue) {
+                setUser(null);
+            }
+        }
+
+        window.addEventListener("storage", handleStorageChange);
+
+        return () => window.removeEventListener("storage", handleStorageChange);
+    }, []);
+
+    const login = async (Credentials) => {
+        const {token} = await loginService(Credentials); 
+        saveToken(token);
+
+        const payload = decodeToken(token); 
+        
+        if(!payload) throw new Error ("Token inválido del backend"); 
+        setUser({id: payload.userId, name: payload.name, role: payload.role }); 
+    }; 
 
     const logout = () => {
-        setUser(null);
-    };
+        clearToken(); 
+        setUser(null); 
+    }; 
 
-    return (
-        <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
-            {children}
-        </AuthContext.Provider>
-    );
-};
+    const value = {user, isAuthenticated: !!user, loading, login, logout}; 
+
+    return <AuthContext.Provider value= {value}>{children}</AuthContext.Provider>; 
+}
+
+//Esta comprueba que el componente que llame a la funcion esté dentro del contexto
+export function useAuth() {
+    const ctx = useContext(AuthContext); 
+    if (!ctx) {
+        throw new Error ("useAuth debe usarse dentro de <AuthProvider>"); 
+    }
+    return ctx; 
+}
