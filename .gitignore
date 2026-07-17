@@ -4,6 +4,7 @@ node_modules/
 # Build / artefactos
 build/
 dist/
+coverage/
 
 # Entorno / secretos
 .env

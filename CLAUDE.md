@@ -16,7 +16,8 @@ El workspace contiene **dos proyectos independientes** (no hay workspace raíz n
 ```
 src/
 ├── config/
-│   └── db.conf.js
+│   ├── db.conf.js
+│   └── env.js
 ├── controllers/
 │   ├── addressController.js
 │   ├── authController.js
@@ -55,6 +56,20 @@ src/
 ```
 
 (Entrada del servidor: `Base_Datos_StyleB/server.js`, fuera de `src/`.)
+
+Tests (fuera de `src/`, en `Base_Datos_StyleB/`):
+
+```
+vitest.config.js
+tests/
+├── setup.js               # mongodb-memory-server + env de test + limpieza entre tests
+├── helpers/
+│   └── factories.js       # createUser/createAdmin/createCategory/createProduct, tokenFor, authHeader
+├── unit/
+│   └── middlewares/isAdminMiddleware.test.js
+└── integration/
+    └── auth.test.js
+```
 
 ### Frontend — `Style-Busters-main/src/`
 
@@ -412,11 +427,35 @@ export default router;
 - Refresh token: `jwt.sign({ userId }, process.env.JWT_REFRESH_TOKEN, { expiresIn: "7d" })`.
 - Rol admin en registro cuando `adminSecret === process.env.ADMIN_SECRET`.
 
-**Servidor** (`server.js`): `express.json()`, `cors({ origin: "http://localhost:3000", credentials: true })`, `logger`, `errorHandler`, `connectDB()`, rutas bajo `/api`, handler 404 al final, `app.listen(process.env.PORT || 3000)`.
+**Servidor** (`server.js`): `express.json()`, `cors(corsOptions)`, `logger`, `errorHandler`, rutas bajo `/api`, handler 404 al final.
+- `corsOptions.origin` es una **función**: permite la petición si no hay header `Origin` (Postman, curl, tests) o si el origen está en `env.corsAllowedOrigins`; en otro caso llama al callback con `Error`.
+- **`export default app`**: la app se exporta ya configurada.
+- `connectDB()` y `app.listen(env.port, "0.0.0.0")` se ejecutan **solo** dentro del guard `isMain` (`process.argv[1] === fileURLToPath(import.meta.url)`), es decir, únicamente cuando `server.js` se ejecuta directamente. Al importarlo (tests con supertest) no abre puerto ni conecta a MongoDB. **No romper este guard: el suite de integración depende de él.**
 
-**Config DB** (`config/db.conf.js`): `mongoose.connect("mongodb://localhost:27017/StyleBusters")` (cadena hardcodeada); en error `process.exit(1)`.
+**Config de entorno** (`config/env.js`): llama a `dotenv.config()` y exporta por defecto `{ nodeEnv, port, corsAllowedOrigins }`.
+- Se evalúa **en tiempo de import** (lanza al importar si la validación falla).
+- `nodeEnv`: `NODE_ENV || "development"`.
+- `port`: `PORT || 3000`.
+- `corsAllowedOrigins`: parsea `CORS_ALLOWED_ORIGINS` (lista separada por comas) con `trim` + `filter`; sin la variable, default `["http://localhost:3000"]`.
+- Si `nodeEnv === "production"` y la allowlist queda vacía → lanza `Error("Falta configurar CORS_ALLOWED_ORIGINS en producción")`.
+- No expone secretos: `JWT_*` y `MONGODB_URI` se leen vía `process.env` donde se usan (`authController`, `db.conf.js`).
 
-**Variables de entorno usadas:** `PORT`, `JWT_SECRET`, `JWT_REFRESH_TOKEN`, `ADMIN_SECRET` (cargadas con `dotenv.config()`).
+**Config DB** (`config/db.conf.js`): `dotenv.config()` y `mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/StyleBusters")`; en error `process.exit(1)`.
+
+**Variables de entorno usadas:** `NODE_ENV`, `PORT`, `CORS_ALLOWED_ORIGINS` (vía `config/env.js`); `MONGODB_URI` (en `db.conf.js`); `JWT_SECRET`, `JWT_REFRESH_TOKEN`, `ADMIN_SECRET` (vía `process.env` en los controllers).
+
+**Tests** (Vitest 4 + supertest + mongodb-memory-server): archivos `tests/**/*.test.js`. Los tests de integración importan `app` desde `server.js` y `tests/setup.js` levanta un MongoDB en memoria, fija las variables de entorno y vacía las colecciones en cada `afterEach`. No requieren MongoDB instalado ni `.env`.
+
+```bash
+npm test                 # unit + integración
+npm run test:unit        # solo tests/unit
+npm run test:integration # solo tests/integration
+npm run test:coverage    # con cobertura y umbrales (trinquete)
+```
+
+> Los scripts de test invocan `node ./node_modules/vitest/vitest.mjs` en vez del binario `vitest`: el `&` de la ruta del repo (`Back_&_Front_StyleB`) rompe los shims `.cmd` de npm/npx en Windows. Usar `npm test`, **no** `npx vitest`.
+
+Plan de pruebas, matriz de casos y seguimiento: [`docs/test-plans/ecommerce-api-test-plan.md`](docs/test-plans/ecommerce-api-test-plan.md).
 
 ### Frontend
 
