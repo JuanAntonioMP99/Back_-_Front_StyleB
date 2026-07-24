@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {register} from "../../services/authService"; 
-import Button from "../common/Button"; 
-import ErrorMessage  from "../common/ErrorMessage/ErrorMessage"; 
-import Input from "../common/Input"; 
+import {register} from "../../Services/authService"; 
+import Button from "../Common/Button"; 
+import ErrorMessage  from "../Common/ErrorMessage/ErrorMessage"; 
+import Input from "../Common/Input"; 
 import "./RegisterForm.css"; 
 import RegisterErrorMessage from "../RegisterErrorMessage/RegisterErrorMessage";
 
@@ -130,56 +130,75 @@ export default function RegisterForm() {
             <div className="form-group">
               <input
                 id="name"
-                label="Nombre completo *"
+                name="name"
+                aria-label="Nombre completo"
                 type="text"
                 value={form.name}
                 onChange={handleChange("name")}
                 placeholder="Tu nombre"
+                data-testid="register-name-input"
               />
               {fieldErrors.name && (
-                <span className="field-error">{fieldErrors.name}</span>
+                <span className="field-error" data-testid="register-name-error">
+                  {fieldErrors.name}
+                </span>
               )}
             </div>
 
             <div className="form-group">
               <input
                 id="email"
-                label="Email *"
+                name="email"
+                aria-label="Email"
                 type="email"
                 value={form.email}
                 onChange={handleChange("email")}
                 placeholder="tu@email.com"
+                data-testid="register-email-input"
               />
               {fieldErrors.email && (
-                <span className="field-error">{fieldErrors.email}</span>
+                <span className="field-error" data-testid="register-email-error">
+                  {fieldErrors.email}
+                </span>
               )}
             </div>
 
             <div className="form-group">
               <input
                 id="password"
-                label="Contraseña *"
+                name="password"
+                aria-label="Contraseña"
                 type="password"
                 value={form.password}
                 onChange={handleChange("password")}
                 placeholder="Minimo 6 caracteres"
+                data-testid="register-password-input"
               />
               {fieldErrors.password && (
-                <span className="field-error">{fieldErrors.password}</span>
+                <span className="field-error" data-testid="register-password-error">
+                  {fieldErrors.password}
+                </span>
               )}
             </div>
 
             <div className="form-group">
               <input
                 id="confirmPassword"
-                label="Confirmar contraseña *"
+                name="confirmPassword"
+                aria-label="Confirmar contraseña"
                 type="password"
                 value={form.confirmPassword}
                 onChange={handleChange("confirmPassword")}
                 placeholder="Confirma tu contraseña"
+                data-testid="register-confirm-password-input"
               />
               {fieldErrors.confirmPassword && (
-                <span className="field-error">{fieldErrors.confirmPassword}</span>
+                <span
+                  className="field-error"
+                  data-testid="register-confirm-password-error"
+                >
+                  {fieldErrors.confirmPassword}
+                </span>
               )}
             </div>
 
@@ -198,7 +217,12 @@ export default function RegisterForm() {
             </div>
 
             {errorKind && <RegisterErrorMessage kind= {errorKind} />}
-            <Button disabled={loading} type="submit" variant="primary">
+            <Button
+                disabled={loading}
+                type="submit"
+                variant="primary"
+                data-testid="register-submit-button"
+            >
                 {loading ? "Creando cuenta..." : "Crear cuenta"}
             </Button>
           </form>

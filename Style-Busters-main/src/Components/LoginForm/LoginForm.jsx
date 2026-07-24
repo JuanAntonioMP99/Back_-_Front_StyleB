@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import Button from "../common/Button";
-import ErrorMessage from "../common/ErrorMessage/ErrorMessage";
-import Input from "../common/Input";
+import { useAuth } from "../../Context/AuthContext";
+import Button from "../Common/Button";
+import ErrorMessage from "../Common/ErrorMessage/ErrorMessage";
+import Input from "../Common/Input";
 import "./LoginForm.css";
 import RegisterErrorMessage from "../RegisterErrorMessage/RegisterErrorMessage";
 
@@ -67,30 +67,39 @@ export default function LoginForm() {
           <div className="form-group">
             <Input
               id="email"
+              name="email"
               label="Email: "
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="tu@email.com"
               required
+              data-testid="login-email-input"
             />
           </div>
           <div className="form-group">
             <Input
               id="password"
+              name="password"
               label="Contraseña: "
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               placeholder="Ingresa tu contraseña"
               required
+              data-testid="login-password-input"
             />
           </div>
 
           {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
           {errorKind && <RegisterErrorMessage kind = {errorKind}/>}
 
-          <Button disabled={loading} type="submit" variant="primary">
+          <Button
+            disabled={loading}
+            type="submit"
+            variant="primary"
+            data-testid="login-submit-button"
+          >
             {loading ? "Iniciando sesión..." : "Iniciar Sesión"}
           </Button>
         </form>

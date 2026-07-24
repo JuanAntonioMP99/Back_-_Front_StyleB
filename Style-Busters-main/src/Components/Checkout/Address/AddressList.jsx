@@ -1,4 +1,4 @@
-import Button from "../../../Common/Button/Button";
+import Button from "../../Common/Button/Button";
 import AddressItem from "./AddressItem";
 import "./Address.css";
 

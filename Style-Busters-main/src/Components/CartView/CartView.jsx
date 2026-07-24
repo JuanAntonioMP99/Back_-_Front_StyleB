@@ -1,6 +1,6 @@
-import { useCart } from "../../context/CartContext";
-import Button from "../common/Button";
-import Icon from "../common/Icon/Icon";
+import { useCart } from "../../Context/CartContext";
+import Button from "../Common/Button";
+import Icon from "../Common/Icon/Icon";
 
 export default function CartView() {
   const { items, removeItem, updateQuantity } = useCart();
@@ -15,7 +15,11 @@ export default function CartView() {
 
       {items &&
         items.map(({product, quantity}) => (
-          <div className="cart-item" key={product._id}>
+          <div
+            className="cart-item"
+            key={product._id}
+            data-testid={`cart-item-${product._id}`}
+          >
             <div className="cart-item-image">
               <img src={product?.imagesUrl?.[0]} alt={product.name} loading="lazy" />
             </div>
@@ -30,14 +34,20 @@ export default function CartView() {
                 variant="secondary"
                 size="sm"
                 onClick={() => updateQuantity(product._id, quantity - 1)}
+                data-testid={`cart-item-decrease-${product._id}`}
+                aria-label="Disminuir cantidad"
               >
                 <Icon name="minus" size={15}></Icon>
               </Button>
-              <span>{quantity}</span>
+              <span data-testid={`cart-item-quantity-${product._id}`}>
+                {quantity}
+              </span>
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={() => updateQuantity(product._id, quantity + 1)}
+                data-testid={`cart-item-increase-${product._id}`}
+                aria-label="Aumentar cantidad"
               >
                 <Icon name="plus" size={15}></Icon>
               </Button>
@@ -53,6 +63,8 @@ export default function CartView() {
               size="sm"
               onClick={() => removeItem(product._id)}
               title="Eliminar artículo"
+              data-testid={`cart-item-remove-${product._id}`}
+              aria-label="Eliminar artículo"
             >
               <Icon name="trash" size={16} />
             </Button>

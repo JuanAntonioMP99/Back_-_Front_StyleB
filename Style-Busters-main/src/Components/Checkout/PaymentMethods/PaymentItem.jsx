@@ -1,4 +1,4 @@
-import Button from "../../../Common/Button/Button";
+import Button from "../../Common/Button/Button";
 import "./Payment.css";
 
 const PaymentItem = ({ payment, isSelected, onSelect, onEdit, onDelete }) => {

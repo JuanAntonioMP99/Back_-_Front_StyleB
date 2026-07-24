@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import Icon from '../../Common/Icon/Icon';
-import Button from "../../Common/Button/Button";
+import Icon from '../Common/Icon/Icon';
+import Button from "../Common/Button/Button";
 import './BannerCarousel.css';
 
 export default function BannerCarousel({ banners = [] }) {

@@ -1,6 +1,6 @@
-import { beforeAll, afterAll, afterEach } from "vitest";
+import { beforeAll, afterAll, afterEach, inject } from "vitest";
 import mongoose from "mongoose";
-import { MongoMemoryServer } from "mongodb-memory-server";
+import { randomUUID } from "crypto";
 
 // Variables de entorno deterministas para los tests. Se fijan ANTES de que
 // cualquier módulo lea process.env (authController firma con JWT_SECRET al
@@ -11,13 +11,13 @@ process.env.JWT_REFRESH_TOKEN = "test_jwt_refresh_secret";
 process.env.ADMIN_SECRET = "test_admin_secret";
 process.env.CORS_ALLOWED_ORIGINS = "http://localhost:3000";
 
-let mongoServer;
-
 beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  // Los tests NO llaman a connectDB(): conectan a la instancia en memoria.
-  // Los modelos usan la conexión global de mongoose, así que basta con esto.
-  await mongoose.connect(mongoServer.getUri());
+  // El mongod lo levanta una sola vez tests/globalSetup.js; aquí solo se conecta.
+  // Cada archivo usa su propia base dentro de esa instancia: el aislamiento entre
+  // archivos no depende de que corran en serie.
+  // Los tests NO llaman a connectDB(): usan la conexión global de mongoose, que
+  // es la que resuelven los modelos.
+  await mongoose.connect(inject("mongoUri"), { dbName: `test_${randomUUID()}` });
 });
 
 // Aislamiento entre tests: cada test parte de una BD vacía.
@@ -29,6 +29,8 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
+  // Se elimina la base de este archivo para no dejar residuo en la instancia
+  // compartida.
+  await mongoose.connection.dropDatabase();
   await mongoose.disconnect();
-  await mongoServer?.stop();
 });

@@ -1,4 +1,4 @@
-import users from "../data/users.json";
+import users from "../Data/users.json";
 
 export const fetchUsers = async () => {
   return new Promise((resolve) => {

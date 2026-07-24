@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Icon from "../../components/common/Icon/Icon";
-import categoriesData from "../../data/categories.json";
+import Icon from "../../Components/Common/Icon/Icon";
+import categoriesData from "../../Data/categories.json";
 import "./Navigation.css";
 
 const Navigation = ({ isMobile = false, onLinkClick }) => {

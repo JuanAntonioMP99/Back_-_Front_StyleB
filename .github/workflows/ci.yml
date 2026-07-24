@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ---------------------------------------------------------------------------
+  frontend-unit:
+    name: Frontend · unit + build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Style-Busters-main
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: Style-Busters-main/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Unit tests + coverage
+        run: npm run test:coverage
+
+      - name: Build
+        # CI=false: no tratar warnings de ESLint como errores (sí fallan los tests).
+        run: CI=false npm run build
+
+  # ---------------------------------------------------------------------------
+  e2e:
+    name: E2E · Cypress
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Cache Cypress binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('Style-Busters-main/package-lock.json') }}
+
+      - name: Install frontend dependencies
+        working-directory: Style-Busters-main
+        run: npm ci --legacy-peer-deps
+
+      - name: Install backend dependencies
+        working-directory: Base_Datos_StyleB
+        run: npm ci
+
+      - name: Run E2E (backend efímero + CRA + Cypress headless)
+        working-directory: Style-Busters-main
+        # En CI (Linux) se usa Electron headless, que sí arranca correctamente.
+        run: npm run e2e:ci:headless
+
+      - name: Upload Cypress artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-artifacts
+          path: |
+            Style-Busters-main/cypress/videos
+            Style-Busters-main/cypress/screenshots
+          if-no-files-found: ignore

@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import CartView from "../components/Cart/CartView";
-import Button from "../components/common/Button";
-import Icon from "../components/common/Icon/Icon";
-import { useCart } from "../context/CartContext";
-import "./Cart.css";
+import CartView from "../Components/CartView/CartView";
+import Button from "../Components/Common/Button";
+import Icon from "../Components/Common/Icon/Icon";
+import { useCart } from "../Context/CartContext";
+import "./CartPage.css";
 
 export default function Cart() {
   const { items, clearCart, count, total,  } = useCart();
@@ -52,13 +52,14 @@ export default function Cart() {
         <div className="cart-summary">
           <div className="cart-total">
             <span className="cart-total-subtitle">Total a pagar</span>
-            <h2>${total.toFixed(2)}</h2>
+            <h2 data-testid="cart-subtotal">${total.toFixed(2)}</h2>
           </div>
           <div className="cart-actions">
             <Button
               variant="primary"
               onClick={() => navigate("/checkout")}
               size="lg"
+              data-testid="cart-checkout-button"
               disabled={!items || items.length === 0}
               title={
                 !items || items.length === 0

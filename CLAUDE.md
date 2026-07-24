@@ -62,13 +62,33 @@ Tests (fuera de `src/`, en `Base_Datos_StyleB/`):
 ```
 vitest.config.js
 tests/
-├── setup.js               # mongodb-memory-server + env de test + limpieza entre tests
+├── globalSetup.js         # levanta UN mongodb-memory-server para toda la ejecución
+├── setup.js               # conecta cada archivo a su propia BD + env de test + limpieza
 ├── helpers/
 │   └── factories.js       # createUser/createAdmin/createCategory/createProduct, tokenFor, authHeader
 ├── unit/
-│   └── middlewares/isAdminMiddleware.test.js
+│   ├── config/
+│   │   └── env.test.js
+│   ├── middlewares/
+│   │   ├── authMiddleware.test.js
+│   │   ├── errorHandler.test.js
+│   │   ├── isAdminMiddleware.test.js
+│   │   ├── logger.test.js
+│   │   └── validation.test.js
+│   └── models/
+│       ├── Address.test.js
+│       ├── Cart.test.js
+│       ├── Category.test.js
+│       ├── Order.test.js
+│       ├── PaymentMethod.test.js
+│       ├── Product.test.js
+│       ├── User.test.js
+│       └── WishList.test.js
 └── integration/
-    └── auth.test.js
+    ├── auth.test.js           # /api/auth
+    ├── authorization.test.js  # matriz de permisos (401/403) de los 8 routers
+    ├── errorHandling.test.js  # camino de error ante fallo de BD
+    └── security.test.js       # escalada de privilegios, catálogo sin auth, fuga de password
 ```
 
 ### Frontend — `Style-Busters-main/src/`

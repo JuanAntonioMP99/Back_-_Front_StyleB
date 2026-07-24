@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import Icon from "../../components/common/Icon/Icon";
-import { useCart } from "../../context/CartContext";
-import { useTheme } from "../../context/ThemeContext";
+import { useAuth } from "../../Context/AuthContext";
+import Icon from "../../Components/Common/Icon/Icon";
+import { useCart } from "../../Context/CartContext";
+import { useTheme } from "../../Context/ThemeContext";
 import Navigation from "../Navigation/Navigation";
 import "./Header.css";
 
@@ -339,7 +339,7 @@ export default function Header() {
                 aria-label="Ver carrito de compras"
               >
                 <Icon name="shoppingCart" size={24} />
-                <span className="cart-badge">{count}</span>
+                <span className="cart-badge" data-testid="cart-count">{count}</span>
               </Link>
 
               {/* Desktop Theme Toggle */}

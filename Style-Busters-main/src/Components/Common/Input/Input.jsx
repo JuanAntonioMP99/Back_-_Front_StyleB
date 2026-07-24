@@ -9,8 +9,11 @@ export default function Input({
     disabled = false,
     className = "",
     id,
+    name,
+    required = false,
+    ...rest
 }) {
-    const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    const inputId = id || name || `input-${Math.random().toString(36).substr(2, 9)}`;
 
     return (
         <div className={`input-group ${className}`}>
@@ -21,12 +24,15 @@ export default function Input({
             )}
             <input
                 id={inputId}
+                name={name}
                 type={type}
                 value={value}
                 onChange={onChange}
                 placeholder={placeholder}
                 disabled={disabled}
+                required={required}
                 className="input-field"
+                {...rest}
             />
         </div>
     );

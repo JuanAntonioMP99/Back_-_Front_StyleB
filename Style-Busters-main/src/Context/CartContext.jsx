@@ -5,7 +5,7 @@ import {
   createCart, 
   replaceCart, 
   clearCart as serviceClearCart, 
-} from "../services/cartService";
+} from "../Services/cartService";
 import { readLocalJSON, writeLocalJSON } from "../utils/storageHelpers";
 
 
@@ -37,8 +37,7 @@ export function CartProvider({ children }) {
     (async () => {
       const localItems = readLocalJSON(CART_STORAGE_KEY) ?? [];
       try {
-        const serverCart = await getCartByUser(user.id); 
-        console.log(serverCart);
+        const serverCart = await getCartByUser(user.id);
         if (cancelled) return;
 
         const serverItems = serverCart.products.map((entry) => ({
@@ -80,11 +79,8 @@ export function CartProvider({ children }) {
   };
 
   const count = useMemo(
-    () =>{ 
-      console.log(items)
-      return items.reduce((acc,it) => acc +  it.quantity, 0)
-
-    }, [items], 
+    () => items.reduce((acc, it) => acc + it.quantity, 0),
+    [items],
   );
 
   const total = useMemo(
@@ -114,15 +110,18 @@ export function CartProvider({ children }) {
   };
 
   const updateQuantity = async (itemId, quantity ) => {
-    
-    if (quantity < 1) removeItem(itemId);
+
+    if (quantity < 1) {
+      removeItem(itemId);
+      return;
+    }
 
     const nextItems = items.map((item) =>
       item.product._id === itemId ? { ...item, quantity } : item,
-    ); 
+    );
 
-    changeItems(nextItems); 
-  }; 
+    changeItems(nextItems);
+  };
 
   const removeItem = async (itemId) => {
 

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCart } from "../../context/CartContext";
-import Breadcrumb from "../../layout/Breadcrumb/Breadcrumb";
-import { getProductById } from "../../services/productService";
-import Badge from "../common/Badge";
-import Button from "../common/Button";
-import ErrorMessage from "../common/ErrorMessage/ErrorMessage";
-import Loading from "../common/Loading/Loading";
+import { useCart } from "../../Context/CartContext";
+import Breadcrumb from "../../Layout/Breadcrumb/Breadcrumb";
+import { getProductById } from "../../Services/productService";
+import Badge from "../Common/Badge";
+import Button from "../Common/Button";
+import ErrorMessage from "../Common/ErrorMessage/ErrorMessage";
+import Loading from "../Common/Loading/Loading";
 import "./ProductDetails.css";
 
 export default function ProductDetails({ productId }) {
@@ -101,7 +101,7 @@ export default function ProductDetails({ productId }) {
   const stockLabel = stock > 0 ? "En stock" : "Agotado";
 
   return (
-    <div className="product-details-container">
+    <div className="product-details-container" data-testid="product-detail">
       <Breadcrumb
         items={[
           { label: "Inicio", to: "/" },
@@ -142,6 +142,7 @@ export default function ProductDetails({ productId }) {
               size="lg"
               disabled={stock === 0}
               onClick={handleAddToCart}
+              data-testid="add-to-cart-button"
             >
               Agregar al carrito
             </Button>

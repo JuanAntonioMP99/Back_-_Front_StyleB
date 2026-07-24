@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 import { useCart } from '../Context/CartContext';
-import Button from '../Common/Button/Button';
+import Button from '../Components/Common/Button/Button';
 import CartView from '../Components/CartView/CartView';
 import AddressForm from '../Components/Checkout/Address/AddressForm';
 import AddressList from '../Components/Checkout/Address/AddressList';
@@ -11,15 +11,17 @@ import PaymentList from '../Components/Checkout/PaymentMethods/PaymentList';
 import SummarySection from '../Components/Checkout/Shared/SummarySection';
 import {getDefaultPaymentMethod, getPaymentMethods} from "../Services/paymentService"
 import { getDefaultShippingAddress, getShippingAddresses } from '../Services/shippingService';
+import { buildOrderPayload, createOrder } from '../Services/orderService';
 import './CheckoutPage.css';
 
 const CheckoutPage = () => {
-    const { user, login } = useAuth();
-    const { cart, total, clearCart } = useCart();
+    const { user } = useAuth();
+    const { items, total, clearCart } = useCart();
     const navigate = useNavigate();
 
-    const [email, setEmail] = useState('');
     const [orderCompleted, setOrderCompleted] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState(null);
 
       
   const [addresses, setAddresses] = useState([]);
@@ -290,82 +292,55 @@ const CheckoutPage = () => {
   // --- FINALIZACIÓN DE ORDEN ---
 
   /**
-   * Crea el objeto de orden final y simula el envío.
-   * Guarda en localStorage para persistencia simple y redirige.
+   * Crea la orden real en el backend (POST /api/orders) y redirige a la
+   * página de confirmación. Evita envíos duplicados con `submitting`.
    */
-  const handleCreateOrder = () => {
+  const handleCreateOrder = async () => {
     if (
+      submitting ||
+      !user?.id ||
       !selectedAddress ||
-      !selectedPayment ||
-      !cart ||
-      cart.length === 0
+      !selectedPayment?._id ||
+      !items ||
+      items.length === 0
     ) {
       return;
     }
 
-    const order = {
-      id: Date.now().toString(),
-      date: new Date().toISOString(),
-      items: cart.map((item) => ({
-        ...item,
-        subtotal: item.price * item.quantity,
-      })),
-      shippingAddress: selectedAddress,
-      paymentMethod: selectedPayment,
-      status: "confirmed",
-    };
+    setSubmitting(true);
+    setSubmitError(null);
 
-    // Simulación de persistencia
-    const orders = JSON.parse(localStorage.getItem("orders") || "[]");
-    orders.push(order);
-    localStorage.setItem("orders", JSON.stringify(orders));
-    debugger;
-    setOrderCompleted(true); 
-    clearCart(); 
-    navigate("/order-confirmation", { state: { order } });
+    const payload = buildOrderPayload({
+      userId: user.id,
+      items,
+      paymentMethodId: selectedPayment._id,
+      shippingCost: 0,
+    });
+
+    try {
+      const createdOrder = await createOrder(payload);
+      setOrderCompleted(true);
+      clearCart();
+      navigate("/order-confirmation", {
+        state: {
+          order: createdOrder,
+          shippingAddress: selectedAddress,
+          paymentMethod: selectedPayment,
+        },
+      });
+    } catch (error) {
+      setSubmitError(error.kind || "UNKNOWN");
+      setSubmitting(false);
+    }
   };
 
     useEffect(() => {
-        if (cart.length === 0 && !orderCompleted) {
+        if (items.length === 0 && !orderCompleted) {
             navigate('/cart');
         }
-    }, [cart, navigate, orderCompleted]);
-    if (cart.length === 0) {
-        return null; 
-    }
-
-    const handleLogin = (e) => {
-        e.preventDefault();
-        if (email) login(email);
-    };
-
-    if (!user) {
-        return (
-            <div className="login-container">
-                <h2 className="login-title">Inicia sesión para continuar</h2>
-                <div className="login-card">
-                    <form onSubmit={handleLogin} className="login-form">
-                        <input
-                            type="email"
-                            placeholder="Tu correo electrónico"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className="login-input"
-                        />
-                        <button type="submit" className="btn-primary">
-                            Continuar como Invitado
-                        </button>
-                    </form>
-                    <p className="login-note">
-                        (Simulación: ingresa cualquier correo)
-                    </p>
-                    <p className="login-note">
-                        (Simulación: ingresa la contraseña "12345")
-                    </p>
-                </div>
-            </div>
-        );
+    }, [items, navigate, orderCompleted]);
+    if (items.length === 0) {
+        return null;
     }
 
     return (
@@ -446,23 +421,34 @@ const CheckoutPage = () => {
                     selected={true}
                     isExpanded={true}
                 >
-                    <CartView />
-                    <p>
+                    <div data-testid="checkout-order-summary">
+                        <CartView />
+                        <p className="checkout-total" data-testid="checkout-total">
+                            <strong>Total:</strong> ${total.toFixed(2)}
+                        </p>
+                        <p>
                             <strong>Fecha estimada de entrega:</strong>{" "}
                             {new Date(
                                 Date.now() + 7 * 24 * 60 * 60 * 1000
                             ).toLocaleDateString()}
                         </p>
+                        {submitError && (
+                            <p className="checkout-error" data-testid="checkout-error">
+                                No se pudo crear la orden. Inténtalo de nuevo.
+                            </p>
+                        )}
                         <Button
                             className="pay-button"
+                            data-testid="checkout-confirm-button"
                             disabled={
+                                submitting ||
                                 !selectedAddress ||
                                 !selectedPayment ||
-                                !cart ||
-                                cart.length === 0
+                                !items ||
+                                items.length === 0
                             }
                             title={
-                                !cart || cart.length === 0
+                                !items || items.length === 0
                                     ? "No hay productos en el carrito"
                                     : !selectedAddress
                                     ? "Selecciona una dirección de envío"
@@ -472,8 +458,9 @@ const CheckoutPage = () => {
                             }
                             onClick={handleCreateOrder}
                         >
-                            Confirmar y Pagar
+                            {submitting ? "Procesando..." : "Confirmar y Pagar"}
                         </Button>
+                    </div>
                 </SummarySection>
             </div>
         </div>

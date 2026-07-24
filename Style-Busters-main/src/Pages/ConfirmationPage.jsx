@@ -17,7 +17,7 @@ const ConfirmationPage = () => {
     }, [order, navigate]);
 
     return (
-        <div className="confirmation-container">
+        <div className="confirmation-container" data-testid="order-success">
             <div className="confirmation-icon">
                 ✓
             </div>
@@ -25,6 +25,12 @@ const ConfirmationPage = () => {
             <p className="confirmation-message">
                 Tu pedido ha sido procesado con éxito. Te enviaremos un correo con los detalles.
             </p>
+            {order?._id && (
+                <p className="confirmation-order-number">
+                    Número de orden:{" "}
+                    <strong data-testid="order-number">{order._id}</strong>
+                </p>
+            )}
 
             <Link to="/" className="btn-primary continue-shopping-btn">
                 Seguir Comprando

@@ -6,7 +6,7 @@
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
-    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.18.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.10.1",
@@ -14,10 +14,24 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "node ./node_modules/react-scripts/bin/react-scripts.js start",
+    "build": "node ./node_modules/react-scripts/bin/react-scripts.js build",
+    "eject": "react-scripts eject",
+    "test": "node ./node_modules/vitest/vitest.mjs run",
+    "test:watch": "node ./node_modules/vitest/vitest.mjs",
+    "test:run": "node ./node_modules/vitest/vitest.mjs run",
+    "test:coverage": "node ./node_modules/vitest/vitest.mjs run --coverage",
+    "test:cra": "node ./node_modules/react-scripts/bin/react-scripts.js test",
+    "cypress:open": "node ./node_modules/cypress/bin/cypress open --e2e",
+    "cypress:run": "node ./node_modules/cypress/bin/cypress run",
+    "test:e2e": "node ./node_modules/cypress/bin/cypress run --browser chrome --headed",
+    "test:e2e:headless": "node ./node_modules/cypress/bin/cypress run",
+    "test:e2e:headed": "node ./node_modules/cypress/bin/cypress run --browser chrome --headed",
+    "start:e2e": "node ./scripts/start-e2e.js",
+    "e2e:backend": "npm --prefix ../Base_Datos_StyleB run e2e:server",
+    "e2e:open": "node ./node_modules/start-server-and-test/src/bin/start.js \"npm run e2e:backend\" http://localhost:4000 start:e2e http://localhost:3000 cypress:open",
+    "e2e:ci": "node ./node_modules/start-server-and-test/src/bin/start.js \"npm run e2e:backend\" http://localhost:4000 start:e2e http://localhost:3000 test:e2e:headed",
+    "e2e:ci:headless": "node ./node_modules/start-server-and-test/src/bin/start.js \"npm run e2e:backend\" http://localhost:4000 start:e2e http://localhost:3000 test:e2e:headless"
   },
   "eslintConfig": {
     "extends": [
@@ -36,5 +50,15 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@testing-library/user-event": "^14.6.1",
+    "@vitejs/plugin-react": "^6.0.3",
+    "@vitest/coverage-v8": "^4.1.10",
+    "cross-env": "^10.1.0",
+    "cypress": "^15.19.0",
+    "jsdom": "^29.1.1",
+    "start-server-and-test": "^3.0.11",
+    "vitest": "^4.1.10"
   }
 }

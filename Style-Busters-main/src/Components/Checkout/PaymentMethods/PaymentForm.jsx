@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Button from "../../../Common/Button/Button";
-import Input from "../../../Common/Input/Input";
+import Button from "../../Common/Button/Button";
+import Input from "../../Common/Input/Input";
 import "./Payment.css";
 
 const PaymentForm = ({

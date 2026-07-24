@@ -1,5 +1,5 @@
-import { useAuth } from "../../context/AuthContext";
-import Button from "../common/Button";
+import { useAuth } from "../../Context/AuthContext";
+import Button from "../Common/Button";
 import "./ProfileCard.css";
 
 const ROLE_COLORS = {

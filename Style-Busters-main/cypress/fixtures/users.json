@@ -1,0 +1,10 @@
+{
+  "knownUser": {
+    "email": "e2e@styleb.test",
+    "password": "Test1234!"
+  },
+  "invalidUser": {
+    "email": "e2e@styleb.test",
+    "password": "contraseña-incorrecta"
+  }
+}

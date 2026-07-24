@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import BannerCarousel from "../components/BannerCarousel";
-import List from "../components/List/List";
-import ErrorMessage from "../components/common/ErrorMessage/ErrorMessage";
-import Loading from "../components/common/Loading/Loading";
-import homeImages from "../data/homeImages.json";
-import { getAllProducts } from "../services/productService";
+import BannerCarousel from "../Components/BannerCarousel";
+import List from "../Components/List/List";
+import ErrorMessage from "../Components/Common/ErrorMessage/ErrorMessage";
+import Loading from "../Components/Common/Loading/Loading";
+import homeImages from "../Data/homeImages.json";
+import { getAllProducts } from "../Services/productService";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -20,8 +20,10 @@ export default function Home() {
         setError(null);
         const data = await getAllProducts();
         if (cancelled) return true;
-        setProducts(data.products);
-        setPagination(data.pagination);
+        // GET /products devuelve un array; /search devuelve { products, pagination }.
+        const list = Array.isArray(data) ? data : data?.products ?? [];
+        setProducts(list);
+        setPagination(Array.isArray(data) ? null : data?.pagination ?? null);
 
         
       } catch (error) {

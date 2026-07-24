@@ -1,4 +1,4 @@
-import Button from "../../../Common/Button/Button";
+import Button from "../../Common/Button/Button";
 import "./Address.css";
 
 const AddressItem = ({ address, isSelected, onSelect, onEdit, onDelete }) => {

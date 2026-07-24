@@ -1,0 +1,7 @@
+{
+  "note": "Los productos reales los siembra el backend E2E (scripts/e2e-server.js). Estos valores son de referencia para aserciones legibles.",
+  "seeded": [
+    { "name": "Camiseta E2E", "price": 199.99, "stock": 25 },
+    { "name": "Pantalón E2E", "price": 499.5, "stock": 10 }
+  ]
+}

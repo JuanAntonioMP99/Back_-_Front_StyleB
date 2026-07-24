@@ -1,0 +1,28 @@
+# dependencias
+/node_modules
+
+# build / producción
+/build
+/dist
+
+# cobertura de tests
+/coverage
+
+# artefactos de Cypress
+/cypress/videos
+/cypress/screenshots
+/cypress/downloads
+
+# secretos / overrides locales de Cypress (no versionar)
+cypress.env.json
+
+# entorno
+.env
+.env.local
+.env.*.local
+
+# logs y sistema
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
