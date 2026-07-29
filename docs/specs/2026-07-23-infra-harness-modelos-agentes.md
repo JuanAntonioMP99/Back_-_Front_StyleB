@@ -99,6 +99,14 @@ una rama `develop` que no existía (solo `main`).
   y skills del harness bajo `Style-Busters-main/.claude/skills/**` hoy borradas en el working tree
   (deuda preexistente, no tocada por este PR).
 
+### Loop de cierre — iteración 2 (cierre)
+- `tech-reviewer` re-auditó la rama tras las correcciones (`46e1cc3d`): los 5 hallazgos de la
+  iteración 1 quedaron **resueltos**; sin hallazgos nuevos bloqueantes. **Veredicto: APTO.**
+- Nota no bloqueante: la fila `docs` de `dispatch.md` §2 omite `[Codex]` en el cierre, coherente
+  porque `docs` no pasa por G4 (sus gates son G0/G1/G5); no requiere cambio.
+- Loop convergido en **2 iteraciones** (tope 3). G4 (tech-reviewer APTO) cumplido; el merge a
+  `develop` queda a cargo del usuario.
+
 ## Resultados (se completa al cerrar)
 - Fecha de cierre:
 - CAs cumplidos:
