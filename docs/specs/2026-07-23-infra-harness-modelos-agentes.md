@@ -79,7 +79,25 @@ una rama `develop` que no existía (solo `main`).
 - Fijar el modelo del main loop a Fable vía `settings.json` asume acceso de todo el equipo
   a Fable; documentado como override local si falta acceso.
 - Verificación real del plugin Codex (instalación/segunda opinión) queda sujeta al primer
-  clon con acceso al marketplace.
+  clon con acceso al marketplace (confirmar con `/plugin`).
+
+### Evidencia de gates (CA-10)
+- Frontend: `cd Style-Busters-main && npm test` → **48/48**; `npm run build` → *Compiled* OK.
+- Backend: `cd Base_Datos_StyleB && npm test` → **151 pasan (+10 expected-fail** intencionales).
+- E2E Cypress no se ejecuta en el sandbox actual (limitación de Electron; ver `docs/testing.md`).
+
+### Loop de cierre — iteración 1 (prueba del loop)
+- `tech-reviewer` auditó el PR (rama↔`develop`) y emitió **CAMBIOS**. Re-despacho aplicado:
+  - **settings.json** corregido: `enabledPlugins`/`extraKnownMarketplaces` a **objeto/mapa**
+    (schema real confirmado en docs) y `"model": "fable"` (alias) — antes eran arrays (Codex no
+    habría cargado).
+  - `.agents/templates/pr-template.md` sincronizado con `.github/PULL_REQUEST_TEMPLATE.md`
+    (tech-reviewer + Codex, gates del repo).
+  - `.agents/checklists/pr-checklist.md` actualizado (tech-reviewer/Codex + convención `infra/…`).
+  - `.agents/dispatch.md` §2 completado en las filas `refactor`/`security-patch`/`docs`/`infra`.
+- Backlog derivado (fuera de alcance de este PR): `skills-map.md` referencia `skills-lock.json`
+  y skills del harness bajo `Style-Busters-main/.claude/skills/**` hoy borradas en el working tree
+  (deuda preexistente, no tocada por este PR).
 
 ## Resultados (se completa al cerrar)
 - Fecha de cierre:

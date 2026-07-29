@@ -13,7 +13,7 @@ Fuente única de qué modelo usa cada capa del harness. Versionada en el repo pa
 
 | Capa | Modelo | Rol | Cómo se fija |
 |------|--------|-----|--------------|
-| **Main loop / orchestrator** | **Fable** (razonamiento máx.) | **Solo orquesta:** planear, despachar, arbitrar, consolidar, integrar. **Nunca implementa.** | `.claude/settings.json` → `"model": "claude-fable-5"` |
+| **Main loop / orchestrator** | **Fable** (razonamiento máx.) | **Solo orquesta:** planear, despachar, arbitrar, consolidar, integrar. **Nunca implementa.** | `.claude/settings.json` → `"model": "fable"` |
 | **Subagentes de trabajo/revisión** | **Sonnet** | Ejecutan una unidad delimitada (build, spec, QA, review, security, docs…). | `model: sonnet` explícito en cada `.claude/agents/*.md` |
 | **Tareas mecánicas con plantilla** | **Haiku** | Transcribir a una plantilla ya decidida (PR, commits, changelog, índices). | `model: haiku` — hoy solo `pr-publisher` |
 | **Duda de arquitectura/requerimiento** | **Opus** (override) | Solo cuando una decisión no trivial lo justifica. | Override **en el despacho**, nunca fijo en frontmatter |

@@ -63,10 +63,10 @@ Cada fila define el pipeline multiagente. Roles entre `[ ]` son condicionales.
 | `feature` | `feature-flow.md` | orchestrator → spec-writer → [architecture-reviewer] → builder(front/back) → anti-hallucination → qa-test-designer → security-reviewer → code-reviewer → **pr-publisher → tech-reviewer → [Codex]** → orchestrator → docs-keeper → [learning-coach] | G0–G5 | por rol |
 | `bugfix` | `bugfix-flow.md` | orchestrator → qa (caso rojo) → spec-writer → builder → anti-hallucination → qa (regresión) → code-reviewer → **pr-publisher → tech-reviewer → [Codex]** → orchestrator → docs-keeper → [learning-coach] | G0–G5 | por rol |
 | `hotfix` | `bugfix-flow.md` (desde `main`) | igual que bugfix + security-reviewer obligatorio; merge a `main` **y** `develop` | G0–G5 | +security |
-| `refactor` | `feature-flow.md` (sin nuevo alcance) | orchestrator → spec-writer → architecture-reviewer → builder → anti-hallucination → qa (sin cambio de comportamiento) → code-reviewer → orchestrator → docs-keeper | G0–G5 | +architecture |
-| `security-patch` | `bugfix-flow.md` | orchestrator → security-reviewer (lidera) → spec-writer → builder → anti-hallucination → qa → security-reviewer (verifica) → code-reviewer → orchestrator → docs-keeper | G0–G5 | security lidera |
-| `docs` | — | orchestrator → spec-writer/docs-keeper → anti-hallucination (verifica que la doc refleje el código real) → orchestrator | G0, G1, G5 | docs |
-| `infra` | — | orchestrator → spec-writer → architecture-reviewer → release-observability → anti-hallucination → security-reviewer → code-reviewer → orchestrator → docs-keeper | G0–G5 | +release-observability |
+| `refactor` | `feature-flow.md` (sin nuevo alcance) | orchestrator → spec-writer → architecture-reviewer → builder → anti-hallucination → qa (sin cambio de comportamiento) → code-reviewer → **pr-publisher → tech-reviewer → [Codex]** → orchestrator → docs-keeper | G0–G5 | +architecture |
+| `security-patch` | `bugfix-flow.md` | orchestrator → security-reviewer (lidera) → spec-writer → builder → anti-hallucination → qa → security-reviewer (verifica) → code-reviewer → **pr-publisher → tech-reviewer → [Codex]** → orchestrator → docs-keeper | G0–G5 | security lidera |
+| `docs` | — | orchestrator → spec-writer/docs-keeper → anti-hallucination (verifica que la doc refleje el código real) → **pr-publisher → tech-reviewer** → orchestrator | G0, G1, G5 | docs |
+| `infra` | — | orchestrator → spec-writer → architecture-reviewer → release-observability → anti-hallucination → security-reviewer → code-reviewer → **pr-publisher → tech-reviewer → [Codex]** → orchestrator → docs-keeper | G0–G5 | +release-observability |
 
 ---
 
