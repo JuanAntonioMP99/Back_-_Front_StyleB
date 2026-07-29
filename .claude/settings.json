@@ -1,0 +1,9 @@
+{
+  "model": "claude-fable-5",
+  "extraKnownMarketplaces": [
+    { "source": "github", "repo": "openai/codex-plugin-cc" }
+  ],
+  "enabledPlugins": [
+    { "marketplace": "openai-codex", "plugin": "codex" }
+  ]
+}

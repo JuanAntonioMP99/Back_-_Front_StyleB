@@ -30,8 +30,10 @@ Ningún subagente se despacha sin spec aprobado, sin skills asignados y sin gate
 | **G1** | Antes de crear rama | Spec aprobado (CA + STRIDE) y commiteado | orchestrator (aprueba spec de spec-writer) |
 | **G2** | Antes de QA | Reporte anti-alucinación **limpio** (sin rutas/endpoints/libs inventadas) | anti-hallucination-reviewer |
 | **G3** | Antes de PR | Quality gates verdes (type/lint/format/tests/build) + CA con evidencia | qa-test-designer |
-| **G4** | Antes de merge | 3 veredictos **aprobado**: code-reviewer, security-reviewer, anti-hallucination-reviewer | orchestrator |
+| **G4** | Antes de merge | Veredictos **aprobado**: code-reviewer, security-reviewer, anti-hallucination-reviewer **+ tech-reviewer = APTO** sobre el PR abierto | orchestrator |
 | **G5** | Antes de DONE | Spec cerrado (Resultados + Matriz) + pendientes → backlog con ID | docs-keeper |
+
+Detalle completo del cierre en [`checklists/definition-of-done.md`](checklists/definition-of-done.md) (mapa ítem→agente, tope 3 iteraciones, escalado).
 
 **Comportamiento ante fallo de gate:** detener el pipeline, devolver al rol responsable con instrucciones concretas, **no avanzar**. Un gate fallido nunca se "aprueba por excepción".
 
@@ -41,6 +43,15 @@ Reglas de blindaje adicionales (heredadas del SSDLC, no negociables):
 - Hallazgo fuera de alcance ⇒ escala como propuesta (SSDLC 11.7), no se ejecuta.
 - Cambio de arquitectura ⇒ ADR obligatorio (G1 no pasa sin él).
 
+### 1.1 Modelos y override (ver [`../.claude/model-policy.md`](../.claude/model-policy.md))
+- Main loop/orchestrator = **Fable**, solo orquesta. Subagentes = **Sonnet** (`model:` explícito).
+- **Opus solo como override en el despacho**, ante duda de arquitectura/requerimiento, justificado: `override: opus — motivo: <1 línea>`. Nunca fijo en frontmatter.
+- **Haiku** para lo mecánico con plantilla (`pr-publisher`): "transcribe, no decide".
+
+### 1.2 Cierre de FASE 9 (siempre, antes del merge)
+Tras las revisiones y antes de que el orchestrator integre:
+`pr-publisher` (llena el PR desde spec+evidencia, `FALTA:` si algo no existe) → `tech-reviewer` (audita el PR abierto: claims↔evidencia, spec↔diff, riesgo de integración → **APTO/CAMBIOS**) → **[Codex]** 2ª opinión **consultiva (no gate)** → orchestrator evalúa la DoD e integra. Un `CAMBIOS` re-despacha al agente responsable (mapa de la DoD).
+
 ---
 
 ## 2. Ruteo por tipo de petición
@@ -49,8 +60,8 @@ Cada fila define el pipeline multiagente. Roles entre `[ ]` son condicionales.
 
 | Tipo | Workflow | Pipeline de subagentes (en orden) | Gates | Skills clave |
 |------|----------|-----------------------------------|-------|--------------|
-| `feature` | `feature-flow.md` | orchestrator → spec-writer → [architecture-reviewer] → builder(front/back) → anti-hallucination → qa-test-designer → security-reviewer → code-reviewer → orchestrator → docs-keeper → [learning-coach] | G0–G5 | por rol |
-| `bugfix` | `bugfix-flow.md` | orchestrator → qa (caso rojo) → spec-writer → builder → anti-hallucination → qa (regresión) → code-reviewer → orchestrator → docs-keeper → [learning-coach] | G0–G5 | por rol |
+| `feature` | `feature-flow.md` | orchestrator → spec-writer → [architecture-reviewer] → builder(front/back) → anti-hallucination → qa-test-designer → security-reviewer → code-reviewer → **pr-publisher → tech-reviewer → [Codex]** → orchestrator → docs-keeper → [learning-coach] | G0–G5 | por rol |
+| `bugfix` | `bugfix-flow.md` | orchestrator → qa (caso rojo) → spec-writer → builder → anti-hallucination → qa (regresión) → code-reviewer → **pr-publisher → tech-reviewer → [Codex]** → orchestrator → docs-keeper → [learning-coach] | G0–G5 | por rol |
 | `hotfix` | `bugfix-flow.md` (desde `main`) | igual que bugfix + security-reviewer obligatorio; merge a `main` **y** `develop` | G0–G5 | +security |
 | `refactor` | `feature-flow.md` (sin nuevo alcance) | orchestrator → spec-writer → architecture-reviewer → builder → anti-hallucination → qa (sin cambio de comportamiento) → code-reviewer → orchestrator → docs-keeper | G0–G5 | +architecture |
 | `security-patch` | `bugfix-flow.md` | orchestrator → security-reviewer (lidera) → spec-writer → builder → anti-hallucination → qa → security-reviewer (verifica) → code-reviewer → orchestrator → docs-keeper | G0–G5 | security lidera |

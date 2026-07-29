@@ -545,7 +545,26 @@ Guías de conocimiento asociadas al proyecto, clasificadas por dominio. Se ubica
 
 ---
 
-## 7. Restricciones para el agente
+## 7. Harness de modelos y agentes (ejecutable)
+
+El repo versiona un harness multiagente para operar el SSDLC de forma reproducible. Todo vive **en el repo** (config compartida por el equipo).
+
+**Política de modelos** ([`.claude/model-policy.md`](.claude/model-policy.md)):
+- **Main loop / orchestrator = Fable**, y **solo orquesta** (planear, despachar, arbitrar, integrar). Nunca implementa. Sin plan/spec aprobado, no ejecuta. Se fija en [`.claude/settings.json`](.claude/settings.json) (`"model"`).
+- **Subagentes = Sonnet**, con `model:` explícito en cada `.claude/agents/*.md`.
+- **Opus nunca fijo**: solo override puntual en el despacho ante duda de arquitectura/requerimiento, justificado en 1 línea.
+- **Haiku** para lo mecánico con plantilla ("transcribe, no decide"): hoy `pr-publisher`.
+- **Codex** (`codex@openai-codex`, declarado en `settings.json`): segunda opinión post-PR **consultiva, nunca gate único**.
+
+**Agentes ejecutables** ([`.claude/agents/`](.claude/agents/)) — thin wrappers que delegan en su rol de [`.agents/roles/`](.agents/roles/) + SSDLC + skills de [`.agents/skills-map.md`](.agents/skills-map.md): `spec-writer`, `architecture-reviewer`, `frontend-builder`, `backend-builder`, `qa-test-designer`, `code-reviewer`, `security-reviewer`, `docs-keeper`, `anti-hallucination-reviewer`, `release-observability`, `learning-coach`, **`tech-reviewer`** (audita el PR abierto: claims↔evidencia, spec↔diff, riesgo de integración → APTO/CAMBIOS), **`pr-publisher`** (Haiku: llena la plantilla de PR sin inventar).
+
+**Cómo se ejecuta:** toda petición entra por el orchestrator → clasifica y arma el pipeline según [`.agents/dispatch.md`](.agents/dispatch.md) → despacha cada rol con sus entradas + skills → hace cumplir los gates **G0–G5** → consolida e integra (solo el orchestrator mergea, a `develop`).
+
+**Cierre:** el orchestrator evalúa la [Definition of Done](.agents/checklists/definition-of-done.md) ítem por ítem; cada ✗ se re-despacha al agente del mapa; tope de 3 iteraciones y luego escala al usuario. Nada se reporta "terminado" sin la DoD completa. PR con [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md).
+
+**Regla:** si falta un agente para una tarea futura, se hace brainstorming para crearlo (rol en `.agents/roles/` + agente en `.claude/agents/` con `model:`) **antes** de ejecutar.
+
+## 8. Restricciones para el agente
 
 - **Basar todo cambio en el código real del repositorio.** No inventar rutas, campos, validadores ni comportamiento que no exista en el código.
 - **No incluir sugerencias, mejoras, refactors ni "buenas prácticas"** salvo que se pidan explícitamente.
