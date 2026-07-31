@@ -14,6 +14,12 @@ jobs:
     defaults:
       run:
         working-directory: Style-Busters-main
+    # Blindaje defensivo: vitest.config.js ya provee REACT_APP_API_URL vía
+    # test.env para los tests, y el build (CRA/webpack) no ejecuta apiClient.js
+    # en tiempo de build (solo lo bundlea). Se fija igualmente a nivel de job
+    # por si el comportamiento del bundler cambiara a futuro.
+    env:
+      REACT_APP_API_URL: http://localhost:4000/api
     steps:
       - uses: actions/checkout@v4
 

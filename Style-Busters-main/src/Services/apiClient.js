@@ -1,7 +1,20 @@
 import axios from "axios";
 
+// La URL base viene EXCLUSIVAMENTE de REACT_APP_API_URL (convención de Create
+// React App: solo las variables con ese prefijo se incrustan en el bundle de
+// producción). Sin fallback: un valor ausente falla rápido y de forma
+// explícita al cargar el módulo, en vez de apuntar en silencio a localhost o
+// a una URL de producción hardcodeada. Incluye el sufijo /api (los servicios
+// llaman paths relativos como /auth/login, /products, ...).
+const apiBaseUrl = process.env.REACT_APP_API_URL;
+if (!apiBaseUrl) {
+  throw new Error(
+    "REACT_APP_API_URL no está definida. Copia .env.example a .env y fija la URL de la API antes de iniciar la app.",
+  );
+}
+
 const apiClient = axios.create({
-  baseURL: "http://localhost:4000/api",
+  baseURL: apiBaseUrl,
   timeout: 10000,
   headers: { "Content-Type": "application/json" },
 });
