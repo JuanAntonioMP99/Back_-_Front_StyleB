@@ -5,7 +5,13 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 // process.env queda bajo control exclusivo del test.
 vi.mock("dotenv", () => ({ default: { config: vi.fn() } }));
 
-const ENV_KEYS = ["NODE_ENV", "PORT", "CORS_ALLOWED_ORIGINS"];
+const ENV_KEYS = [
+  "NODE_ENV",
+  "PORT",
+  "CORS_ALLOWED_ORIGINS",
+  "MONGODB_URI",
+  "FRONTEND_URL",
+];
 let originalEnv;
 
 // env.js se evalúa en tiempo de import: para probar cada combinación hay que
@@ -67,11 +73,62 @@ describe("config/env", () => {
   it("en producción con origins válidos no lanza y los expone", async () => {
     process.env.NODE_ENV = "production";
     process.env.CORS_ALLOWED_ORIGINS = "https://styleb.app";
+    process.env.MONGODB_URI = "mongodb://prod-host:27017/StyleBusters";
 
     const env = await loadEnv();
 
     expect(env.nodeEnv).toBe("production");
     expect(env.corsAllowedOrigins).toEqual(["https://styleb.app"]);
+  });
+
+  it("lanza en producción si MONGODB_URI no está configurada", async () => {
+    process.env.NODE_ENV = "production";
+    process.env.CORS_ALLOWED_ORIGINS = "https://styleb.app";
+
+    await expect(loadEnv()).rejects.toThrow(
+      "Falta configurar MONGODB_URI en producción",
+    );
+  });
+
+  it("en producción con MONGODB_URI definida no lanza y expone el valor", async () => {
+    process.env.NODE_ENV = "production";
+    process.env.CORS_ALLOWED_ORIGINS = "https://styleb.app";
+    process.env.MONGODB_URI = "mongodb://prod-host:27017/StyleBusters";
+
+    const env = await loadEnv();
+
+    expect(env.mongodbUri).toBe("mongodb://prod-host:27017/StyleBusters");
+  });
+
+  it("en desarrollo/test sin MONGODB_URI usa el default localhost", async () => {
+    const env = await loadEnv();
+
+    expect(env.mongodbUri).toBe("mongodb://localhost:27017/StyleBusters");
+  });
+
+  it("sin FRONTEND_URL usa el default de desarrollo y lo deriva a corsAllowedOrigins", async () => {
+    const env = await loadEnv();
+
+    expect(env.frontendUrl).toBe("http://localhost:3000");
+    expect(env.corsAllowedOrigins).toEqual(["http://localhost:3000"]);
+  });
+
+  it("con FRONTEND_URL y sin CORS_ALLOWED_ORIGINS, corsAllowedOrigins se deriva de frontendUrl", async () => {
+    process.env.FRONTEND_URL = "https://styleb-front.onrender.com";
+
+    const env = await loadEnv();
+
+    expect(env.frontendUrl).toBe("https://styleb-front.onrender.com");
+    expect(env.corsAllowedOrigins).toEqual([env.frontendUrl]);
+  });
+
+  it("con CORS_ALLOWED_ORIGINS definido, este prevalece sobre el derivado de FRONTEND_URL", async () => {
+    process.env.FRONTEND_URL = "https://styleb-front.onrender.com";
+    process.env.CORS_ALLOWED_ORIGINS = "https://otro-origen.com";
+
+    const env = await loadEnv();
+
+    expect(env.corsAllowedOrigins).toEqual(["https://otro-origen.com"]);
   });
 
   it("toma PORT del entorno y usa 3000 por defecto si no está definido", async () => {
