@@ -35,18 +35,6 @@ export default defineConfig({
         "src/**/*.css",
         "src/Data/**",
       ],
-      // Trinquete (ratchet) conservador. Sube al cerrar cada bloque. Es un SUELO
-      // anti-regresión, no el objetivo de calidad.
-      // - 2026-07-30 bloque FE (ProtectedRoute/AuthContext + integración MSW): 38.35% líneas.
-      // - 2026-07-30 ampliación (HomePage/SearchResults/CartPage + cart/order + contrato):
-      //   cobertura medida 47.03% líneas / 39.65% branches / 34.69% funcs / 46.02% stmts.
-      // Los suelos se ponen por debajo de lo medido para absorber varianza.
-      thresholds: {
-        lines: 44,
-        functions: 32,
-        branches: 36,
-        statements: 43,
-      },
     },
   },
 });

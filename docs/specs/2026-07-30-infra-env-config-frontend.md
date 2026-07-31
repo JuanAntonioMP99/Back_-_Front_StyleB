@@ -105,6 +105,14 @@ pendiente conserva su propio spec, sus propios CA y su propia verificación.
   workflow o en `docs/environment-variables.md`.
 - [x] CA-10: Ningún test existente se rompe: `npm test`, `npm run
   test:coverage`, `CI=false npm run build` en verde.
+  **Corrección post-revisión:** la primera medición del builder se hizo con el
+  WIP sin versionar de otro pendiente presente en el árbol, lo que infló la
+  cobertura. El code-reviewer lo verificó en un worktree limpio: con solo lo
+  commiteado en esta rama la cobertura real es 34.75% líneas. El bloque
+  `thresholds` de `vitest.config.js` (que pertenece a ese otro pendiente, no a
+  ENV-02) se devolvió al WIP y no entra en este PR, de modo que
+  `npm run test:coverage` no falla por un trinquete inalcanzable. Los tests
+  siguen en verde sobre el estado realmente commiteado.
 - [x] CA-11: No se introduce ninguna dependencia npm nueva.
 - [x] CA-12: `docs/environment-variables.md` incluye la sección "Frontend
   (`Style-Busters-main/`)": `REACT_APP_API_URL` (convención CRA, incluye
