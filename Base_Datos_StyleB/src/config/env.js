@@ -6,7 +6,21 @@ dotenv.config();
 // del entorno de ejecución (dev/test/prod). No expone secretos: JWT_* y
 // ADMIN_SECRET se leen donde se usan (authController) vía process.env.
 
+const ALLOWED_NODE_ENVS = ["development", "test", "production"];
+
 const nodeEnv = process.env.NODE_ENV || "development";
+
+// Si NODE_ENV llega mal escrita (p.ej. "Production", "prod" o un despliegue
+// que la deja vacía), las guardas de producción de abajo comparan con "==="
+// y se saltarían en silencio: el backend arrancaría con los defaults de
+// desarrollo (Mongo local, CORS con localhost) sin avisar de nada. Se valida
+// contra una lista cerrada para que un typo falle ruidosamente en el arranque
+// en vez de degradar el entorno a desarrollo sin diagnóstico.
+if (!ALLOWED_NODE_ENVS.includes(nodeEnv)) {
+  throw new Error(
+    `NODE_ENV tiene un valor no permitido: "${nodeEnv}". Valores permitidos: ${ALLOWED_NODE_ENVS.join(", ")}.`,
+  );
+}
 
 // URL del frontend: único punto de verdad para el default local (CRA corre en
 // http://localhost:3000). No es obligatoria en producción porque hoy no tiene

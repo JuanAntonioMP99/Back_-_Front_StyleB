@@ -144,4 +144,27 @@ describe("config/env", () => {
 
     expect(env.nodeEnv).toBe("development");
   });
+
+  it.each(["development", "test", "production"])(
+    "acepta NODE_ENV=%s sin lanzar",
+    async (value) => {
+      process.env.NODE_ENV = value;
+      if (value === "production") {
+        process.env.CORS_ALLOWED_ORIGINS = "https://styleb.app";
+        process.env.MONGODB_URI = "mongodb://prod-host:27017/StyleBusters";
+      }
+
+      const env = await loadEnv();
+
+      expect(env.nodeEnv).toBe(value);
+    },
+  );
+
+  it("lanza si NODE_ENV tiene un valor fuera de la lista permitida", async () => {
+    process.env.NODE_ENV = "Production";
+
+    await expect(loadEnv()).rejects.toThrow(
+      'NODE_ENV tiene un valor no permitido: "Production". Valores permitidos: development, test, production.',
+    );
+  });
 });
