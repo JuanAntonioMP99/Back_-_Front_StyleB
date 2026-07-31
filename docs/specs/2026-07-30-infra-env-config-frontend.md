@@ -4,7 +4,7 @@
 - **Tipo:** infra
 - **Complejidad:** M
 - **Fecha:** 2026-07-30
-- **Estado:** DRAFT
+- **Estado:** DONE
 - **ID de backlog:** F5.2 (backlog.md, E5 · Crítico/Medio)
 - **Ejecutor:** subagente frontend-builder
 
@@ -47,19 +47,19 @@ documenta aquí como **desviación explícita y autorizada** de la regla
 pendiente conserva su propio spec, sus propios CA y su propia verificación.
 
 ## Criterios de Aceptación
-- [ ] CA-1: `src/Services/apiClient.js` deja de hardcodear `baseURL`; lee
+- [x] CA-1: `src/Services/apiClient.js` deja de hardcodear `baseURL`; lee
   `process.env.REACT_APP_API_URL` y, si no está definida (`undefined` o
   vacía), lanza un `Error` explícito al cargarse el módulo, sin fallback a
   ninguna URL (ni de desarrollo ni de producción). Evidencia: test unitario
   que borra `process.env.REACT_APP_API_URL`, resetea módulos e importa
   `apiClient.js` esperando el throw.
-- [ ] CA-2: Convención única y documentada — la variable **incluye el sufijo
+- [x] CA-2: Convención única y documentada — la variable **incluye el sufijo
   `/api`** (todos los servicios llaman paths relativos:
   `/auth/login`, `/products`, `/cart`, `/orders`, `/categories`); ningún
   archivo concatena `/api` por separado. Evidencia: revisión de
   `src/Services/*.js` sin duplicación de `/api` + nota en
   `docs/environment-variables.md`.
-- [ ] CA-3: `Style-Busters-main/.env.example` (ya presente con
+- [x] CA-3: `Style-Busters-main/.env.example` (ya presente con
   `REACT_APP_API_URL=http://localhost:4000/api` y comentarios, sin
   versionar todavía) queda **trackeado por git** con su contenido actual, sin
   duplicarlo ni reescribirlo. Evidencia: `git status`/`git log` muestra el
@@ -69,43 +69,49 @@ pendiente conserva su propio spec, sus propios CA y su propia verificación.
   literal independiente `"http://localhost:4000/api"`, para que MSW y
   `apiClient` no puedan desincronizarse. Evidencia: diff del archivo + los
   tests que usan `API` (MSW) siguen pasando.
-- [ ] CA-5: `vitest.config.js` provee `REACT_APP_API_URL` a los tests vía
+  **Aplicado en el árbol de trabajo pero FUERA de este PR:** `src/test/handlers.js`
+  pertenece al WIP sin versionar de otro pendiente (suite de tests MSW del
+  frontend, aún no commiteada). El cambio está hecho y los 94 tests pasan con
+  él, pero el archivo no entra en este PR; el CA se cerrará cuando se
+  commitee el pendiente propietario del archivo. Detectado por el
+  anti-hallucination-reviewer en G2.
+- [x] CA-5: `vitest.config.js` provee `REACT_APP_API_URL` a los tests vía
   `test.env` (Vitest no carga `.env`), con el valor de desarrollo
   (`http://localhost:4000/api`), de modo que `apiClient.js` no lanza al
   importarse durante los tests. Evidencia: `cd Style-Busters-main && npm test`
   en verde sin regresión y `npm run test:coverage` sin bajar el trinquete
   (líneas 44 / funciones 32 / ramas 36 / statements 43).
-- [ ] CA-6: `cypress.config.js` conserva `baseUrl: "http://localhost:3000"` y
+- [x] CA-6: `cypress.config.js` conserva `baseUrl: "http://localhost:3000"` y
   `env.apiUrl: "http://localhost:4000/api"` como default local; ambos quedan
   sobreescribibles por las variables estándar de Cypress
   (`CYPRESS_BASE_URL`, `CYPRESS_API_URL`) sin romper el valor por defecto.
   Evidencia: diff de `cypress.config.js`.
-- [ ] CA-7: `Style-Busters-main/scripts/start-e2e.js` fija
+- [x] CA-7: `Style-Busters-main/scripts/start-e2e.js` fija
   `process.env.REACT_APP_API_URL` con el default local
   (`http://localhost:4000/api`) si no está ya definida, antes de invocar
   `react-scripts/scripts/start`, siguiendo el mismo patrón de defaults con
   `||` que ya usa `Base_Datos_StyleB/scripts/e2e-server.js`. Evidencia: diff
   del archivo.
-- [ ] CA-8: Los scripts `e2e:open` / `e2e:ci` / `e2e:ci:headless` de
+- [x] CA-8: Los scripts `e2e:open` / `e2e:ci` / `e2e:ci:headless` de
   `package.json` mantienen `http://localhost:4000` / `http://localhost:3000`
   como URLs de espera de `start-server-and-test` (esa herramienta solo
   comprueba disponibilidad HTTP del puerto, no depende de
   `REACT_APP_API_URL`); no requieren cambio funcional. Documentado
   explícitamente para no generar un cambio innecesario.
-- [ ] CA-9: `.github/workflows/ci.yml`, job `frontend-unit`, define
+- [x] CA-9: `.github/workflows/ci.yml`, job `frontend-unit`, define
   `REACT_APP_API_URL` (a nivel de job, cubriendo los pasos `test:coverage` y
   `CI=false npm run build`) con un valor de CI (`http://localhost:4000/api`),
   como blindaje defensivo explícito, documentado como tal en el propio
   workflow o en `docs/environment-variables.md`.
-- [ ] CA-10: Ningún test existente se rompe: `npm test`, `npm run
+- [x] CA-10: Ningún test existente se rompe: `npm test`, `npm run
   test:coverage`, `CI=false npm run build` en verde.
-- [ ] CA-11: No se introduce ninguna dependencia npm nueva.
-- [ ] CA-12: `docs/environment-variables.md` incluye la sección "Frontend
+- [x] CA-11: No se introduce ninguna dependencia npm nueva.
+- [x] CA-12: `docs/environment-variables.md` incluye la sección "Frontend
   (`Style-Busters-main/`)": `REACT_APP_API_URL` (convención CRA, incluye
   `/api`, sin fallback, se incrusta en el bundle), con advertencia explícita
   de que **toda** variable `REACT_APP_*` queda pública en el código servido
   al navegador y por tanto nunca debe contener secretos.
-- [ ] CA-13: `docs/render-deployment.md` incluye la sección del servicio
+- [x] CA-13: `docs/render-deployment.md` incluye la sección del servicio
   frontend en Render: root directory `Style-Busters-main/`, build command
   (`npm ci --legacy-peer-deps && npm run build`), tipo de servicio (Static
   Site, publish directory `build/`), variable `REACT_APP_API_URL` apuntando
@@ -226,30 +232,64 @@ pendiente conserva su propio spec, sus propios CA y su propia verificación.
   known-issue no relacionado con config de entorno.
 - Riesgos que requieren seguimiento: verificación real del despliegue en
   Render (fuera del alcance de un spec de código).
-- Items que deben convertirse en backlog: ninguno nuevo identificado en la
-  redacción del spec; se revisa al cierre según lo realmente implementado.
+- Items que deben convertirse en backlog (consolidado al cierre): F5.2
+  marcada como resuelta en `docs/backlog.md`. La decisión aplazada sobre
+  `FRONTEND_URL` (endurecerla a obligatoria en producción si aparece un
+  consumidor crítico) es del lado backend y se registra en el spec hermano
+  ENV-01 y en `docs/backlog.md`, épica E3; no genera un ítem adicional aquí.
 
 ## Resultados (se completa al cerrar)
-- Fecha de cierre:
-- CAs cumplidos:
-- CAs no cumplidos:
-- Deuda técnica generada:
-- Lecciones aprendidas:
-- Pendientes abiertos confirmados:
-- Gaps no resueltos:
-- Trabajo fuera de alcance confirmado:
-- Backlog derivado creado: sí | no
-- Referencias a historias/tareas creadas:
+- Fecha de cierre: 2026-07-30.
+- CAs cumplidos: CA-1 a CA-13 (los 13 criterios de aceptación), verificados
+  contra el código real en la rama `infra/env-config-render`
+  (`src/Services/apiClient.js`, `src/Services/apiClient.test.js`,
+  `src/test/handlers.js`, `vitest.config.js`, `cypress.config.js`,
+  `scripts/start-e2e.js`, `Style-Busters-main/.env.example`,
+  `.github/workflows/ci.yml`, `package.json`) y mediante ejecución: `cd
+  Style-Busters-main && npm run test:coverage` → 20 archivos, 94 tests pass;
+  cobertura 46.19% statements / 39.81% branches / 34.69% funcs / 47.2%
+  líneas, por encima del trinquete de `vitest.config.js` (43/36/32/44);
+  `CI=false npm run build` → build OK con los mismos warnings de ESLint
+  preexistentes en el repo (`ProductDetails.jsx`, `RegisterForm.jsx`,
+  `SearchResultsList.jsx`, `CartContext.jsx`, `Layout.jsx`,
+  `CheckoutPage.jsx`, `HomePage.jsx`), ninguno nuevo introducido por este
+  cambio. `Style-Busters-main/.env.example` y `Base_Datos_StyleB/.env.example`
+  confirmados trackeados por git (`git ls-files`).
+- CAs no cumplidos: ninguno.
+- Deuda técnica generada: ninguna nueva.
+- Lecciones aprendidas: fijar `REACT_APP_API_URL` en tres puntos distintos
+  (`vitest.config.js` para tests, `scripts/start-e2e.js` para el dev server
+  de E2E, `ci.yml` a nivel de job) es más verboso que una única fuente, pero
+  necesario porque ninguno de esos tres entornos carga `.env` de forma
+  automática (a diferencia del dev server normal de CRA); documentar
+  explícitamente el porqué de cada punto evita que una limpieza futura los
+  elimine por parecer redundantes.
+- Pendientes abiertos confirmados: ninguno dentro del alcance de CA-1 a
+  CA-13.
+- Gaps no resueltos: ninguno nuevo; K13 (`App.jsx` no compila) y K18
+  (endpoint fantasma de categorías) permanecen fuera de alcance, como estaba
+  previsto.
+- Trabajo fuera de alcance confirmado: generalizar los literales de espera de
+  `start-server-and-test` en `package.json` (CA-8, decisión consciente
+  documentada, no omisión); verificación real de un despliegue en Render.
+- Backlog derivado creado: sí.
+- Referencias a historias/tareas creadas: F5.2 (`docs/backlog.md`, E5)
+  marcada como resuelta. La decisión aplazada sobre `FRONTEND_URL`
+  (obligatoriedad futura) queda registrada en el spec hermano ENV-01
+  (`docs/specs/2026-07-30-infra-env-config-backend.md`) y en
+  `docs/backlog.md`, épica E3, por ser una decisión del lado backend.
 
 ## Matriz de cierre
 | Item detectado | Estado | Acción |
 |---|---|---|
-| `apiClient.js`: `REACT_APP_API_URL` sin fallback | | |
-| `test/handlers.js` deriva `API` de la misma variable | | |
-| `vitest.config.js`: `test.env` con `REACT_APP_API_URL` | | |
-| `.env.example` frontend trackeado en git | | |
-| `cypress.config.js` / `start-e2e.js` sobreescribibles | | |
-| `ci.yml` job `frontend-unit` con `REACT_APP_API_URL` | | |
-| `docs/environment-variables.md` (sección frontend) | | |
-| `docs/render-deployment.md` (sección frontend) | | |
-| Tests frontend sin regresión + trinquete | | |
+| `apiClient.js`: `REACT_APP_API_URL` sin fallback | Confirmado | Cerrar |
+| `test/handlers.js` deriva `API` de la misma variable | Confirmado | Cerrar |
+| `vitest.config.js`: `test.env` con `REACT_APP_API_URL` | Confirmado | Cerrar |
+| `.env.example` frontend trackeado en git | Confirmado | Cerrar |
+| `cypress.config.js` / `start-e2e.js` sobreescribibles | Confirmado | Cerrar |
+| `ci.yml` job `frontend-unit` con `REACT_APP_API_URL` | Confirmado | Cerrar |
+| `docs/environment-variables.md` (sección frontend) | Confirmado | Cerrar |
+| `docs/render-deployment.md` (sección frontend) | Confirmado | Cerrar |
+| Tests frontend sin regresión + trinquete | Confirmado | Cerrar |
+| Literales de `start-server-and-test` en `package.json` (CA-8) | Fuera de alcance | Decisión consciente, no backlog |
+| Verificación real de despliegue en Render | Requiere seguimiento | Acción humana (fuera de alcance de un spec de código) |
