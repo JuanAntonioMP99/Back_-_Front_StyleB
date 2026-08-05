@@ -71,16 +71,23 @@ pendiente conserva su propio spec, sus propios CA y su propia verificación.
   tests que usan `API` (MSW) siguen pasando.
   **Aplicado en el árbol de trabajo pero FUERA de este PR:** `src/test/handlers.js`
   pertenece al WIP sin versionar de otro pendiente (suite de tests MSW del
-  frontend, aún no commiteada). El cambio está hecho y los 94 tests pasan con
-  él, pero el archivo no entra en este PR; el CA se cerrará cuando se
+  frontend, aún no commiteada). El cambio está hecho y la suite completa pasa
+  en verde con el WIP presente (94 tests; 51 son los realmente commiteados en
+  esta rama), pero el archivo no entra en este PR; el CA se cerrará cuando se
   commitee el pendiente propietario del archivo. Detectado por el
   anti-hallucination-reviewer en G2.
 - [x] CA-5: `vitest.config.js` provee `REACT_APP_API_URL` a los tests vía
   `test.env` (Vitest no carga `.env`), con el valor de desarrollo
   (`http://localhost:4000/api`), de modo que `apiClient.js` no lanza al
   importarse durante los tests. Evidencia: `cd Style-Busters-main && npm test`
-  en verde sin regresión y `npm run test:coverage` sin bajar el trinquete
-  (líneas 44 / funciones 32 / ramas 36 / statements 43).
+  en verde sin regresión.
+  **Corrección post-revisión:** la evidencia original citaba un trinquete
+  (líneas 44 / funciones 32 / ramas 36 / statements 43) que no corresponde al
+  `vitest.config.js` realmente commiteado en esta rama — ese bloque
+  `thresholds` pertenece al WIP sin versionar de otro pendiente y no entra en
+  este PR (ver corrección de CA-10). El `vitest.config.js` commiteado no
+  define `coverage.thresholds`, por lo que no hay trinquete que verificar
+  para este CA; solo aplica que los tests pasen en verde.
 - [x] CA-6: `cypress.config.js` conserva `baseUrl: "http://localhost:3000"` y
   `env.apiUrl: "http://localhost:4000/api"` como default local; ambos quedan
   sobreescribibles por las variables estándar de Cypress
@@ -254,15 +261,32 @@ pendiente conserva su propio spec, sus propios CA y su propia verificación.
   `src/test/handlers.js`, `vitest.config.js`, `cypress.config.js`,
   `scripts/start-e2e.js`, `Style-Busters-main/.env.example`,
   `.github/workflows/ci.yml`, `package.json`) y mediante ejecución: `cd
-  Style-Busters-main && npm run test:coverage` → 20 archivos, 94 tests pass;
-  cobertura 46.19% statements / 39.81% branches / 34.69% funcs / 47.2%
-  líneas, por encima del trinquete de `vitest.config.js` (43/36/32/44);
-  `CI=false npm run build` → build OK con los mismos warnings de ESLint
-  preexistentes en el repo (`ProductDetails.jsx`, `RegisterForm.jsx`,
-  `SearchResultsList.jsx`, `CartContext.jsx`, `Layout.jsx`,
-  `CheckoutPage.jsx`, `HomePage.jsx`), ninguno nuevo introducido por este
-  cambio. `Style-Busters-main/.env.example` y `Base_Datos_StyleB/.env.example`
-  confirmados trackeados por git (`git ls-files`).
+  Style-Busters-main && npm run test:coverage` → 11 archivos, 51 tests pass;
+  cobertura 33.77% statements / 23.87% branches / 25.51% funcs / 34.75%
+  líneas (no hay bloque `thresholds` commiteado en `vitest.config.js`, ver
+  corrección de CA-10 más abajo); `CI=false npm run build` → build OK con
+  los mismos warnings de ESLint preexistentes en el repo (`ProductDetails.jsx`,
+  `RegisterForm.jsx`, `SearchResultsList.jsx`, `CartContext.jsx`,
+  `Layout.jsx`, `CheckoutPage.jsx`, `HomePage.jsx`), ninguno nuevo
+  introducido por este cambio. `Style-Busters-main/.env.example` y
+  `Base_Datos_StyleB/.env.example` confirmados trackeados por git (`git
+  ls-files`).
+  **Corrección post-revisión (docs-keeper, re-despacho tras G4 del spec
+  hermano ENV-01):** esta sección seguía citando la medición contaminada por
+  WIP (20 archivos, 94 tests pass; cobertura 46.19/39.81/34.69/47.2%;
+  trinquete 43/36/32/44) pese a que el CA-10 de abajo ya documentaba la
+  corrección de cobertura de líneas (34.75%) detectada por el code-reviewer;
+  quedó desactualizada porque esa corrección no se propagó a Resultados. Los
+  9 archivos de test adicionales (`LoginForm.integration.test.jsx`,
+  `SearchResultsList.integration.test.jsx`, `AuthContext.test.jsx`,
+  `CartPage.test.jsx`, `HomePage.integration.test.jsx`,
+  `ProtectedRoute.test.jsx`, `apiClient.integration.test.js`,
+  `cartOrder.integration.test.js`, `contract.test.js`) pertenecen al WIP sin
+  versionar de otro pendiente, no a esta rama. Verificado en un worktree
+  limpio de `HEAD`: `git ls-files "Style-Busters-main/src/**/*.test.*"`
+  devuelve 11 archivos; `npm run test:coverage` da 51 tests y la cobertura
+  arriba. No hay `thresholds` en el `vitest.config.js` commiteado (ver CA-10),
+  por lo que no aplica hablar de "trinquete superado" para este PR.
 - CAs no cumplidos: ninguno.
 - Deuda técnica generada: ninguna nueva.
 - Lecciones aprendidas: fijar `REACT_APP_API_URL` en tres puntos distintos

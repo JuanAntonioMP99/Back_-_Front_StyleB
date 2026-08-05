@@ -92,6 +92,19 @@ pendiente conserva su propio spec, sus propios CA y su propia verificación.
   `PORT` la inyecta Render y `app.listen(port, "0.0.0.0")` ya es compatible.
 - [x] CA-9: `cd Base_Datos_StyleB && npm test` y `npm run test:coverage` en
   verde, sin bajar el trinquete de cobertura existente.
+  **Corrección post-revisión:** la evidencia citada originalmente en este CA
+  (25 archivos, 230 tests pass + 21 expected fail; cobertura 79.18%
+  statements / 73.07% branches / 84.61% funcs / 79% líneas) se midió con el
+  WIP sin versionar de otro pendiente presente en el árbol de trabajo (7
+  archivos `tests/integration/{cart,categories,orders,paymentMethods,
+  products,users,wishlist}.test.js`, no trackeados). Verificado por el
+  docs-keeper en un worktree limpio de `HEAD` (solo lo commiteado): 18
+  archivos, 161 tests pass + 10 expected fail (171 total); cobertura 56.44%
+  statements / 33.69% branches / 63.07% funcs / 56.9% líneas, por encima del
+  trinquete realmente commiteado en `vitest.config.js` (56/63/29/56,
+  confirmado con `git show HEAD:Base_Datos_StyleB/vitest.config.js`). El CA
+  sigue cumplido en sustancia (tests en verde, trinquete no bajado);
+  detectado por el tech-reviewer en G4.
 - [x] CA-10: No se introduce ninguna dependencia npm nueva (solo `process.env`
   + módulos ya presentes: `dotenv`, `mongoose`).
 
@@ -205,12 +218,27 @@ pendiente conserva su propio spec, sus propios CA y su propia verificación.
   contra el código real en la rama `infra/env-config-render`
   (`src/config/env.js`, `src/config/db.conf.js`, `server.js`,
   `Base_Datos_StyleB/.env.example`, `tests/unit/config/env.test.js`) y
-  mediante ejecución: `cd Base_Datos_StyleB && npm test` → 25 archivos, 230
-  tests pass + 21 expected fail (251 total); `npm run test:coverage` → 79.18%
-  statements / 73.07% branches / 84.61% funcs / 79% líneas, por encima del
-  trinquete de `vitest.config.js` (74/60/80/74); `node
+  mediante ejecución: `cd Base_Datos_StyleB && npm test` → 18 archivos, 161
+  tests pass + 10 expected fail (171 total); `npm run test:coverage` →
+  56.44% statements / 33.69% branches / 63.07% funcs / 56.9% líneas, por
+  encima del trinquete de `vitest.config.js` (56/63/29/56); `node
   ./scripts/e2e-server.js` arrancó y respondió en `GET /api/products` (CA-6,
   verificado con ejecución real, no quedó como pendiente documental).
+  **Corrección post-revisión:** la medición inicial de esta sección (25
+  archivos, 230 tests pass + 21 expected fail (251 total); cobertura 79.18%
+  statements / 73.07% branches / 84.61% funcs / 79% líneas; trinquete citado
+  como 74/60/80/74) se hizo con el WIP sin versionar de otro pendiente
+  presente en el árbol de trabajo (7 archivos
+  `Base_Datos_StyleB/tests/integration/{cart,categories,orders,
+  paymentMethods,products,users,wishlist}.test.js`, no trackeados, más un
+  `vitest.config.js` con umbrales elevados tampoco commiteado) y no
+  describía lo que esta rama entrega realmente. Detectado por el
+  tech-reviewer en G4; cifras corregidas verificadas por el docs-keeper en un
+  worktree limpio de `HEAD` — `git ls-files Base_Datos_StyleB/tests`
+  confirma que solo 4 archivos de integración están trackeados (`auth`,
+  `authorization`, `errorHandling`, `security`) y `git show
+  HEAD:Base_Datos_StyleB/vitest.config.js` confirma el trinquete
+  56/63/29/56.
 - CAs no cumplidos: ninguno.
 - Deuda técnica generada: ninguna nueva; se documenta explícitamente en
   `docs/environment-variables.md` la decisión aplazada de `FRONTEND_URL` (ver
