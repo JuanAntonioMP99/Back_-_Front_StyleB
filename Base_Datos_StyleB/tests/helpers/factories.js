@@ -3,6 +3,10 @@ import jwt from "jsonwebtoken";
 import User from "../../src/models/User.js";
 import Product from "../../src/models/Product.js";
 import Category from "../../src/models/Category.js";
+import Cart from "../../src/models/Cart.js";
+import Order from "../../src/models/Order.js";
+import PaymentMethod from "../../src/models/PaymentMethod.js";
+import WishList from "../../src/models/WishList.js";
 
 // Factories: crean documentos reales en la BD en memoria. Los overrides
 // permiten a cada test fijar solo el campo que le interesa.
@@ -40,6 +44,48 @@ export async function createProduct(overrides = {}) {
     stock: 10,
     ...overrides,
   });
+}
+
+// Cart: si no se pasa user, crea uno. products es una lista de líneas
+// { product: ObjectId, quantity } tal como exige el schema.
+export async function createCart({ user, products } = {}) {
+  const owner = user ?? (await createUser())._id;
+  return Cart.create({ user: owner, products: products ?? [] });
+}
+
+// PaymentMethod: valores válidos por defecto; numCard se aleatoriza para no
+// colisionar con el findOne({numCard}) del controller cuando un test crea varios.
+export async function createPaymentMethod({ user, ...rest } = {}) {
+  const owner = user ?? (await createUser())._id;
+  return PaymentMethod.create({
+    user: owner,
+    type: "credit_card",
+    name: "Tarjeta de prueba",
+    numCard: `4${Math.random().toString().slice(2, 17)}`,
+    dueDate: "12/30",
+    cvv: "123",
+    ...rest,
+  });
+}
+
+// Order: rellena user, un producto real y un método de pago si no se pasan.
+export async function createOrder({ user, products, paymentMethod, ...rest } = {}) {
+  const owner = user ?? (await createUser())._id;
+  const pm = paymentMethod ?? (await createPaymentMethod({ user: owner }))._id;
+  const lines =
+    products ?? [{ productId: (await createProduct())._id, quantity: 1, price: 100 }];
+  return Order.create({
+    user: owner,
+    products: lines,
+    paymentMethod: pm,
+    totalPrice: 100,
+    ...rest,
+  });
+}
+
+export async function createWishlist({ user, products } = {}) {
+  const owner = user ?? (await createUser())._id;
+  return WishList.create({ user: owner, products: products ?? [] });
 }
 
 // Firma un access token con la misma forma que authController.generateToken:
