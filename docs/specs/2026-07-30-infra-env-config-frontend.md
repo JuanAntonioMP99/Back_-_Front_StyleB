@@ -243,6 +243,10 @@ pendiente conserva su propio spec, sus propios CA y su propia verificación.
 - Decisiones aplazadas: generalizar los literales de espera de
   `start-server-and-test` en `package.json` si los puertos de E2E dejan de
   ser fijos.
+- **CA-4 diferido:** `src/test/handlers.js` deriva `API` de
+  `REACT_APP_API_URL` en el árbol de trabajo, pero el archivo pertenece al WIP
+  sin versionar del pendiente de tests MSW del frontend y no entra en este PR.
+  Queda como pendiente confirmado, a cerrar cuando ese pendiente se commitee.
 - Trabajo fuera de alcance en esta iteración: K13, K18, y cualquier otro
   known-issue no relacionado con config de entorno.
 - Riesgos que requieren seguimiento: verificación real del despliegue en
@@ -255,10 +259,11 @@ pendiente conserva su propio spec, sus propios CA y su propia verificación.
 
 ## Resultados (se completa al cerrar)
 - Fecha de cierre: 2026-07-30.
-- CAs cumplidos: CA-1 a CA-13 (los 13 criterios de aceptación), verificados
+- CAs cumplidos: 12 de 13 — CA-1, CA-2, CA-3 y CA-5 a CA-13. **CA-4 queda
+  fuera de este PR** (ver más abajo y su propia nota). Verificados
   contra el código real en la rama `infra/env-config-render`
   (`src/Services/apiClient.js`, `src/Services/apiClient.test.js`,
-  `src/test/handlers.js`, `vitest.config.js`, `cypress.config.js`,
+  `vitest.config.js`, `cypress.config.js`,
   `scripts/start-e2e.js`, `Style-Busters-main/.env.example`,
   `.github/workflows/ci.yml`, `package.json`) y mediante ejecución: `cd
   Style-Busters-main && npm run test:coverage` → 11 archivos, 51 tests pass;
@@ -287,7 +292,13 @@ pendiente conserva su propio spec, sus propios CA y su propia verificación.
   devuelve 11 archivos; `npm run test:coverage` da 51 tests y la cobertura
   arriba. No hay `thresholds` en el `vitest.config.js` commiteado (ver CA-10),
   por lo que no aplica hablar de "trinquete superado" para este PR.
-- CAs no cumplidos: ninguno.
+- CAs no cumplidos: **CA-4** (`src/test/handlers.js` deriva `API` de
+  `REACT_APP_API_URL`). El cambio está aplicado en el árbol de trabajo, pero
+  el archivo pertenece al WIP sin versionar de otro pendiente (suite de tests
+  MSW del frontend) y **no está commiteado en esta rama** (`git ls-files
+  Style-Busters-main/src/test` devuelve solo `setup.js`). Se cerrará cuando se
+  commitee el pendiente propietario del archivo. Detectado por el
+  anti-hallucination-reviewer en G2 y confirmado por el tech-reviewer en G4.
 - Deuda técnica generada: ninguna nueva.
 - Lecciones aprendidas: fijar `REACT_APP_API_URL` en tres puntos distintos
   (`vitest.config.js` para tests, `scripts/start-e2e.js` para el dev server
@@ -296,8 +307,8 @@ pendiente conserva su propio spec, sus propios CA y su propia verificación.
   automática (a diferencia del dev server normal de CRA); documentar
   explícitamente el porqué de cada punto evita que una limpieza futura los
   elimine por parecer redundantes.
-- Pendientes abiertos confirmados: ninguno dentro del alcance de CA-1 a
-  CA-13.
+- Pendientes abiertos confirmados: **CA-4** (`src/test/handlers.js`), diferido
+  al pendiente que versiona ese archivo; es el único CA que este PR no cierra.
 - Gaps no resueltos: ninguno nuevo; K13 (`App.jsx` no compila) y K18
   (endpoint fantasma de categorías) permanecen fuera de alcance, como estaba
   previsto.
@@ -315,7 +326,7 @@ pendiente conserva su propio spec, sus propios CA y su propia verificación.
 | Item detectado | Estado | Acción |
 |---|---|---|
 | `apiClient.js`: `REACT_APP_API_URL` sin fallback | Confirmado | Cerrar |
-| `test/handlers.js` deriva `API` de la misma variable | Confirmado | Cerrar |
+| `test/handlers.js` deriva `API` de la misma variable | Diferido a otro pendiente (archivo sin versionar) | No cerrar en este PR |
 | `vitest.config.js`: `test.env` con `REACT_APP_API_URL` | Confirmado | Cerrar |
 | `.env.example` frontend trackeado en git | Confirmado | Cerrar |
 | `cypress.config.js` / `start-e2e.js` sobreescribibles | Confirmado | Cerrar |
