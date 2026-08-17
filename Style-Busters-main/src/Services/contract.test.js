@@ -29,13 +29,16 @@ describe("Contrato API ↔ frontend", () => {
     expect(isStr(res.refreshToken)).toBe(true);
   });
 
-  it("GET /products → array de { _id, name, price }", async () => {
+  it("GET /products → array de { _id, name, price, imageURL }", async () => {
     const products = await getAllProducts();
     expect(Array.isArray(products)).toBe(true);
     for (const p of products) {
       expect(isStr(p._id)).toBe(true);
       expect(isStr(p.name)).toBe(true);
       expect(isNum(p.price)).toBe(true);
+      // El campo se llama `imageURL`, no `imagesUrl`: los componentes leían el
+      // nombre equivocado y ninguna ficha mostraba su imagen real.
+      expect(isStr(p.imageURL)).toBe(true);
     }
   });
 
