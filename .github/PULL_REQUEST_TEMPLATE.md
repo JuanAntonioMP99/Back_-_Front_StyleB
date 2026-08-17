@@ -1,3 +1,7 @@
+<!-- Espejo de .agents/templates/pr-template.md. Lo llena `pr-publisher` (Haiku):
+     transcribe desde spec + evidencia, nunca inventa. Dato faltante => casilla sin
+     marcar + "FALTA: …". -->
+
 ## Descripción
 [Qué se hizo y por qué, en 2-3 oraciones]
 

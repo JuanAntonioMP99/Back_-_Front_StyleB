@@ -23,6 +23,8 @@ Dos conjuntos de skills, ambos reales en el repo:
 | anti-hallucination-reviewer | `SSDLC.md` (+ el skill de dominio del área tocada) | — |
 | release-observability | `Node.js Best Practices.md`, `Git Workflow.md`, `Testing Strategies.md` | `performance`, `core-web-vitals`, `web-quality-audit`, `best-practices`, `browser-use` |
 | learning-coach | `SSDLC.md`, `Testing Strategies.md` | `agent-development` |
+| tech-reviewer | `SSDLC.md`, `API Best Practices.md`, `Git Workflow.md` | — |
+| pr-publisher | `Git Workflow.md` | — |
 
 ## Reglas de carga
 
@@ -31,3 +33,4 @@ Dos conjuntos de skills, ambos reales en el repo:
 3. `anti-hallucination-reviewer` carga el skill de dominio del área que valida (backend → `Express + MongoDB.md`; frontend → `React.md`).
 4. Los skills del harness se resuelven contra `skills-lock.json`; si el hash no coincide, se reporta y **no** se ejecuta con un skill no verificado.
 5. Ningún rol inventa skills: solo los listados en `.claude/skills/` y `skills-lock.json`.
+6. El **modelo** de cada rol lo define [`../.claude/model-policy.md`](../.claude/model-policy.md) y su frontmatter en `../.claude/agents/`: todos `sonnet` salvo `pr-publisher` (`haiku`); Opus solo como override puntual del orchestrator.

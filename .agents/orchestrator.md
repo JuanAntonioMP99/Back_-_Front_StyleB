@@ -1,9 +1,10 @@
 # Orchestrator — Agente Principal
 
 **Rol:** orquestador único del sistema de subagentes.
+**Modelo:** **Fable** (razonamiento máximo). Es el **main loop**, no un subagente: no existe archivo en `.claude/agents/` para él; su modelo se fija en [`../.claude/settings.json`](../.claude/settings.json) y su política en [`../.claude/model-policy.md`](../.claude/model-policy.md). **Solo orquesta: nunca implementa** y sin plan/spec aprobado no ejecuta nada.
 **Ámbito:** workspace completo (backend `Base_Datos_StyleB/` + frontend `Style-Busters-main/`).
 **Workflow base:** [`.agents/workflows/ssdlc.md`](workflows/ssdlc.md) → canónico en `.claude/skills/SSDLC.md`.
-**Motor de despacho:** [`dispatch.md`](dispatch.md) (ruteo + gates) · [`skills-map.md`](skills-map.md) (skills por rol).
+**Motor de despacho:** [`dispatch.md`](dispatch.md) (ruteo + gates) · [`skills-map.md`](skills-map.md) (skills por rol) · [`checklists/definition-of-done.md`](checklists/definition-of-done.md) (loop de cierre).
 
 ---
 
@@ -70,6 +71,11 @@ Orchestrator
                  └─ security-reviewer  → revisión de seguridad
                     └─ code-reviewer   → revisión de diff (no el builder)
                        └─ anti-hallucination-reviewer → validación contra repo real
-                          └─ docs-keeper → spec/docs/ADR actualizados
-                             └─ Orchestrator → consolida + PR + merge a develop
+                          └─ pr-publisher (Haiku) → llena la plantilla de PR
+                             └─ tech-reviewer → audita el PR abierto (APTO/CAMBIOS)
+                                └─ [Codex] → 2ª opinión consultiva (no gate)
+                                   └─ docs-keeper → spec/docs/ADR actualizados
+                                      └─ Orchestrator → evalúa DoD + consolida + merge a develop
 ```
+
+> **Loop de cierre:** el orchestrator evalúa la [Definition of Done](checklists/definition-of-done.md) ítem por ítem; cada ✗ se re-despacha al agente del mapa; tope de 3 iteraciones y luego escala al usuario.
