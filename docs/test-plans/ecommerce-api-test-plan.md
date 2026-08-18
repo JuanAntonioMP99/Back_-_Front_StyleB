@@ -116,11 +116,11 @@ npm run test:integration # solo tests/integration
 npm run test:coverage    # con cobertura + verificación de umbrales
 ```
 
-> **Nota de entorno (Windows).** La ruta del repo contiene `&`
-> (`Back_&_Front_StyleB`), que rompe los shims `.cmd` de `npm`/`npx`: `npx vitest` falla con
+> **Nota de entorno (Windows).** La ruta del repo contuvo `&`
+> (`Back_&_Front_StyleB`, hoy renombrado a `Back_Y_Front_StyleB`), que rompía los shims `.cmd` de `npm`/`npx`: `npx vitest` fallaba con
 > `MODULE_NOT_FOUND`. Por eso los scripts invocan el entrypoint JS directamente
 > (`node ./node_modules/vitest/vitest.mjs`), que funciona en cualquier ruta. Usar
-> **siempre `npm test`**, no `npx vitest`. Misma causa afecta a `npm run dev` (nodemon).
+> **siempre `npm test`**, no `npx vitest`. Misma invocación aplica a `npm run dev` (nodemon).
 
 **Requisitos:** Node ≥ 20 (validado en v24.15.0). No requiere MongoDB instalado ni `.env`:
 `setup.js` provee los valores. La primera ejecución descarga el binario de mongod y tarda más.

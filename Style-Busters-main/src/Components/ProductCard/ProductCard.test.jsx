@@ -5,9 +5,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import ProductCard from "./ProductCard";
 
 // Mock del contexto de carrito para aislar la ProductCard.
+// La tarjeta consume `useCartActions` (solo acciones, no se suscribe al
+// contenido del carrito); se expone también `useCart` por si otro consumidor
+// del árbol lo pide.
 const addItem = vi.fn();
 vi.mock("../../Context/CartContext", () => ({
   useCart: () => ({ addItem }),
+  useCartActions: () => ({ addItem }),
 }));
 
 const product = {
@@ -15,7 +19,7 @@ const product = {
   name: "Camiseta Azul",
   price: 199,
   stock: 5,
-  imagesUrl: ["http://img/1.png"],
+  imageURL: "http://img/1.png",
   description: "Una camiseta cómoda",
 };
 

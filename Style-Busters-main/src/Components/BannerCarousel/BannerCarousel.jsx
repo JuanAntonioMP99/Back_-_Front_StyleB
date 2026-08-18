@@ -6,7 +6,26 @@ import './BannerCarousel.css';
 export default function BannerCarousel({ banners = [] }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
-    
+
+    // Qué slides tienen ya su <img> en el DOM. Arranca solo con el primero: es
+    // el LCP de la portada y antes los tres fondos se descargaban a la vez,
+    // compitiendo por ancho de banda con la imagen realmente visible.
+    const [mountedSlides, setMountedSlides] = useState(() => new Set([0]));
+
+    // Tras el primer pintado se precarga el slide siguiente, para que el
+    // cross-fade no muestre un hueco. El resto entra al llegarles el turno.
+    useEffect(() => {
+        if (banners.length <= 1) return;
+        const next = (currentIndex + 1) % banners.length;
+        setMountedSlides((prev) => {
+            if (prev.has(currentIndex) && prev.has(next)) return prev;
+            const updated = new Set(prev);
+            updated.add(currentIndex);
+            updated.add(next);
+            return updated;
+        });
+    }, [currentIndex, banners.length]);
+
     useEffect(() => {
         if (banners.length <= 1) return; 
 
@@ -84,11 +103,25 @@ export default function BannerCarousel({ banners = [] }) {
                                         ? "next"
                                         : ""
                                     }`}
-                                style={{
-                                    backgroundImage: `url(${banner.image})`,
-                                    backgroundColor: banner.backgroundColor,
-                                }}
+                                style={{ backgroundColor: banner.backgroundColor }}
                                 aria-hidden={index !== currentIndex}>
+                                    {/* <img> en vez de background-image en CSS: el
+                                        preload scanner del navegador no descubre
+                                        los fondos declarados por estilo en línea,
+                                        así que el LCP arrancaba tarde. Con <img>
+                                        se descubre en el HTML inicial y admite
+                                        fetchPriority. */}
+                                    {mountedSlides.has(index) && (
+                                        <img
+                                            className="banner-image"
+                                            src={banner.image}
+                                            alt=""
+                                            aria-hidden="true"
+                                            decoding="async"
+                                            loading={index === 0 ? "eager" : "lazy"}
+                                            fetchPriority={index === 0 ? "high" : "low"}
+                                        />
+                                    )}
                                     <div className="banner-overlay"></div>
                                     <div className="banner-content">
                                         <div className="content-wrapper">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Icon from "../../Components/Common/Icon/Icon";
 import categoriesData from "../../Data/categories.json";
@@ -159,4 +159,7 @@ const Navigation = ({ isMobile = false, onLinkClick }) => {
   );
 };
 
-export default Navigation;
+// Se renderiza dentro del Header, que se repinta con cada cambio de contador de
+// carrito, tema o apertura de menú. Sus props son estables, así que memo evita
+// reconstruir el árbol de categorías y subcategorías en cada uno de esos casos.
+export default memo(Navigation);

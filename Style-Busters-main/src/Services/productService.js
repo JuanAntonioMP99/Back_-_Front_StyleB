@@ -1,13 +1,21 @@
 import apiClient from "./apiClient.js";
+import { cachedRequest, invalidateCache } from "./cache.js";
 
+// El catálogo y la ficha de producto se cachean en memoria: Home y
+// SearchResults piden el catálogo completo en cada montaje, así que navegar
+// Home → detalle → Home lo descargaba tres veces. Las mutaciones invalidan.
 export async function getAllProducts() {
-  const response = await apiClient.get("/products");
-  return response.data;
+  return cachedRequest("products", async () => {
+    const response = await apiClient.get("/products");
+    return response.data;
+  });
 }
 
 export async function getProductById(id) {
-  const response = await apiClient.get("/products/" + id);
-  return response.data;
+  return cachedRequest(`product:${id}`, async () => {
+    const response = await apiClient.get("/products/" + id);
+    return response.data;
+  });
 }
 
 export async function searchProducts(filters = {}) {
@@ -30,14 +38,17 @@ export async function searchProducts(filters = {}) {
 
 export async function createProduct(data) {
   const response = await apiClient.post("/products", data);
+  invalidateCache("product");
   return response.data;
 }
 
 export async function updateProduct(id, data) {
   const response = await apiClient.put(`/products/${id}`, data);
+  invalidateCache("product");
   return response.data;
 }
 
 export async function deleteProduct(id) {
   await apiClient.delete(`/products/${id}`);
+  invalidateCache("product");
 }

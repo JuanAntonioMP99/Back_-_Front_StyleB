@@ -15,7 +15,7 @@
 
 ## Backend
 
-<a id="K02"></a>**K02 🟠 URI de BD ignora el entorno.** `db.conf.js` hardcodea `mongodb://localhost:27017/StyleBusters` e **ignora** `MONGODB_URI` del `.env` (`ecommerce-db-fusion`). La BD real difiere de la documentada en `.env`. → E3.
+<a id="K02"></a>~~**K02 🟠 URI de BD ignora el entorno.** `db.conf.js` hardcodea `mongodb://localhost:27017/StyleBusters` e **ignora** `MONGODB_URI` del `.env` (`ecommerce-db-fusion`). La BD real difiere de la documentada en `.env`.~~ **RESUELTO** (2026-07-30): `db.conf.js` ahora importa `env` desde `./env.js` y usa `env.mongodbUri`, que lee `MONGODB_URI` (con fallback a `localhost` solo en dev/test y guarda fail-fast en producción). Ver spec [`infra-env-config-backend`](specs/2026-07-30-infra-env-config-backend.md), ENV-01. → E3.
 
 **K04 🟠 Dominio Direcciones roto y sin rutas.** `addressController.js` importa `"../models/Address"` sin `.js` (rompe en ESM), `updateAddress` usa `userId` no definido, y **no hay `addressRoutes`** montadas. → E3.
 

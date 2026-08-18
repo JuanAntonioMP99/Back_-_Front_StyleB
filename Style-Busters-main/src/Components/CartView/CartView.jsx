@@ -1,6 +1,7 @@
 import { useCart } from "../../Context/CartContext";
 import Button from "../Common/Button";
 import Icon from "../Common/Icon/Icon";
+import { getProductImage } from "../../utils/productImage";
 
 export default function CartView() {
   const { items, removeItem, updateQuantity } = useCart();
@@ -21,7 +22,12 @@ export default function CartView() {
             data-testid={`cart-item-${product._id}`}
           >
             <div className="cart-item-image">
-              <img src={product?.imagesUrl?.[0]} alt={product.name} loading="lazy" />
+              <img
+                src={getProductImage(product)}
+                alt={product.name}
+                loading="lazy"
+                decoding="async"
+              />
             </div>
 
             <div className="cart-item-info">

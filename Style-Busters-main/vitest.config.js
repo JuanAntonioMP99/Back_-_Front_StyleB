@@ -8,6 +8,12 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
+    // Vitest NO carga archivos .env (a diferencia del dev server de CRA): hay
+    // que proveer aquí las variables REACT_APP_* que consume el código en
+    // tiempo de import (p. ej. apiClient.js), con el valor de desarrollo.
+    env: {
+      REACT_APP_API_URL: "http://localhost:4000/api",
+    },
     setupFiles: ["./src/test/setup.js"],
     css: false,
     include: ["src/**/*.{test,spec}.{js,jsx}"],
@@ -29,6 +35,18 @@ export default defineConfig({
         "src/**/*.css",
         "src/Data/**",
       ],
+      // Trinquete (ratchet) conservador. Sube al cerrar cada bloque. Es un SUELO
+      // anti-regresión, no el objetivo de calidad.
+      // - 2026-07-30 bloque FE (ProtectedRoute/AuthContext + integración MSW): 38.35% líneas.
+      // - 2026-07-30 ampliación (HomePage/SearchResults/CartPage + cart/order + contrato):
+      //   cobertura medida 47.03% líneas / 39.65% branches / 34.69% funcs / 46.02% stmts.
+      // Los suelos se ponen por debajo de lo medido para absorber varianza.
+      thresholds: {
+        lines: 44,
+        functions: 32,
+        branches: 36,
+        statements: 43,
+      },
     },
   },
 });

@@ -5,9 +5,13 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
 import { afterEach, vi } from "vitest";
+import { clearCache } from "../Services/cache.js";
 
 afterEach(() => {
   cleanup();
+  // La caché de productos vive en el módulo, no en el componente: sin esto un
+  // test se llevaría el catálogo cacheado por el anterior.
+  clearCache();
 });
 
 // jsdom no implementa matchMedia; algunos componentes/hooks lo consultan.

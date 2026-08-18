@@ -18,6 +18,7 @@
 - F1.1 `.gitignore` + sacar `.env`/`node_modules`/`build`/`logs` de git · Deuda técnica · (K00)
 - F1.2 Rotar `JWT_SECRET`/`JWT_REFRESH_TOKEN` y **añadir `ADMIN_SECRET`** al `.env`; `.env.example` · Deuda técnica · (K00, K01)
 - F1.3 No persistir `cvv`; enmascarar/tokenizar `numCard` · Deuda técnica · (K10)
+- F1.4 Retirar `credentials: true` de `corsOptions` en `server.js` mientras la auth sea JWT Bearer en `localStorage` (config sin consumidor: no hay cookies de sesión) · Deuda técnica · hallazgo Bajo del security-reviewer en ENV-01
 
 ## E2 — Auth real · Crítico
 - F2.1 Cablear `AuthContext` a `authService` + `utils/auth` (login/logout/token) · Alineación FE-BE · (K03)
@@ -31,9 +32,10 @@
 - F3.3 `WishList.products` → `ref: "Product"` · Bug · (K06)
 - F3.4 `addProductToCart`: `populate("products.product")` + rutear o eliminar · Bug · (K07)
 - F3.5 Proteger `POST/PUT/DELETE /products` con `auth + admin` · Alineación FE-BE · (K08)
-- F3.6 `db.conf.js` desde `MONGODB_URI` · Deuda técnica · (K02)
+- ~~F3.6 `db.conf.js` desde `MONGODB_URI` · Deuda técnica · (K02)~~ **RESUELTO** (2026-07-30, spec [`infra-env-config-backend`](specs/2026-07-30-infra-env-config-backend.md), ENV-01)
 - F3.7 Quitar middlewares duplicados en `POST /users` · Refactor
 - F3.8 Corregir códigos HTTP (`createCart`, `updateOrderStatus`) · Bug · (K09)
+- F3.9 Endurecer `FRONTEND_URL` a obligatoria en producción si aparece un consumidor crítico (emails, redirecciones, callbacks OAuth) · Deuda técnica · decisión aplazada del spec ENV-01
 
 ## E4 — Fuente de verdad única · Alto/Medio
 - F4.1 Carrito 100% API con caché local de invitado · Alineación FE-BE · (K14, K15)
@@ -46,7 +48,7 @@
 
 ## E5 — Arranque/coherencia FE · Crítico/Medio
 - F5.1 Arreglar imports/rutas de `App.jsx` · Bug · (K13)
-- F5.2 Config de API por env (`REACT_APP_API_URL`) · Alineación FE-BE
+- ~~F5.2 Config de API por env (`REACT_APP_API_URL`) · Alineación FE-BE~~ **RESUELTO** (2026-07-30, spec [`infra-env-config-frontend`](specs/2026-07-30-infra-env-config-frontend.md), ENV-02)
 - F5.3 Eliminar/crear endpoint `/categories/:id/products` · Bug · (K18)
 - F5.4 Limpiar `debugger;`, casing de imports, textos de contraseña · Bug · (K17)
 
