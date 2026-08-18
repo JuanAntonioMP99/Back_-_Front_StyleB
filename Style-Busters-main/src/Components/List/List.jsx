@@ -8,7 +8,7 @@ export default function List ({products = [], titile = "Nuestros productos", lay
                 <div className="list-grid">
                     {products.map((product) => (
                         <ProductCard
-                        key={product.id}
+                        key={product._id ?? product.id}
                         product={product}
                         orientation = "vertical"
                         className="list-item"
@@ -19,7 +19,7 @@ export default function List ({products = [], titile = "Nuestros productos", lay
                 <div className="list-vertical">
                     {products.map((product) => (
                         <ProductCard
-                        key={product.id}
+                        key={product._id ?? product.id}
                         product={product}
                         orientation="horizontal"
                         className="list-item"

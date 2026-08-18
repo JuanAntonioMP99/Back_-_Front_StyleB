@@ -50,10 +50,16 @@ export default function Home() {
       )} 
       { !loading && error && error === "SERVER_ERROR" && (
         <ErrorMessage>Algo salió mal, intente más tarde</ErrorMessage>
-      )} 
-      { !loading && error && error !== "NETWORK" && error !== "SERVER_ERROR" && (
+      )}
+      { !loading && error && error === "TIMEOUT" && (
+        <ErrorMessage>
+          El servidor tardó demasiado en responder. Vuelve a cargar la página en
+          unos segundos.
+        </ErrorMessage>
+      )}
+      { !loading && error && error !== "NETWORK" && error !== "SERVER_ERROR" && error !== "TIMEOUT" && (
         <ErrorMessage>Ocurrió un error inesperado</ErrorMessage>
-      )} 
+      )}
       { !loading && !error && products.length === 0 && (
         <ErrorMessage>No hay productos en el catalogo</ErrorMessage>
       )} 

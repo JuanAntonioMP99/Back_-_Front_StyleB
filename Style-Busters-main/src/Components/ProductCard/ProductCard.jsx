@@ -1,12 +1,17 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
-import { useCart } from "../../Context/CartContext";
+import { useCartActions } from "../../Context/CartContext";
 import Badge from "../Common/Badge";
 import Button from "../Common/Button";
+import {
+  PRODUCT_IMAGE_PLACEHOLDER,
+  getProductImage,
+} from "../../utils/productImage";
 import "./ProductCard.css";
 
-export default function ProductCard({ product, orientation = "vertical" }) {
-  const { addItem } = useCart();
-  const { name, price, stock, imagesUrl, description } = product || {};
+function ProductCard({ product, orientation = "vertical" }) {
+  const { addItem } = useCartActions();
+  const { name, price, stock, description } = product || {};
 
   if (!product) {
     return (
@@ -32,11 +37,17 @@ export default function ProductCard({ product, orientation = "vertical" }) {
     <div className={cardClass} data-testid={`product-card-${product._id}`}>
       <Link to={productLink} className="product-card-image-link">
         <img
-          src={imagesUrl ? imagesUrl[0] : "/img/products/placeholder.svg"}
+          src={getProductImage(product)}
           alt={name}
           className="product-card-image"
+          loading="lazy"
+          decoding="async"
           onError={(event) => {
-            event.target.src = "/img/products/placeholder.svg";
+            // Sin la guarda, un placeholder que también falle reasigna el mismo
+            // src y el navegador vuelve a dispararlo en bucle.
+            if (event.target.dataset.fallbackApplied) return;
+            event.target.dataset.fallbackApplied = "true";
+            event.target.src = PRODUCT_IMAGE_PLACEHOLDER;
           }}
         />
       </Link>
@@ -81,3 +92,7 @@ export default function ProductCard({ product, orientation = "vertical" }) {
     </div>
   );
 }
+
+// Cada tarjeta consume CartContext solo para `addItem`, así que sin memo
+// añadir un producto repintaba la rejilla entera del catálogo.
+export default memo(ProductCard);

@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
 import Icon from "../../Components/Common/Icon/Icon";
 import { useCart } from "../../Context/CartContext";
 import { useTheme } from "../../Context/ThemeContext";
 import Navigation from "../Navigation/Navigation";
+import SearchForm from "./SearchForm";
 import "./Header.css";
 
 export default function Header() {
@@ -14,14 +15,12 @@ export default function Header() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const { isDarkMode, toggleTheme } = useTheme();
   const { count } = useCart();
 
   // Referencias para manejo de clicks fuera
   const userMenuRef = useRef(null);
   const mobileMenuRef = useRef(null);
-  const searchInputRef = useRef(null);
 
   // Cerrar menús con Escape y clicks fuera
   useEffect(() => {
@@ -51,13 +50,6 @@ export default function Header() {
     };
   }, []);
 
-  // Focus en búsqueda móvil cuando se abre
-  useEffect(() => {
-    if (isMobileSearchOpen && searchInputRef.current) {
-      searchInputRef.current.focus();
-    }
-  }, [isMobileSearchOpen]);
-
   // Prevenir scroll del body cuando el menú móvil está abierto
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -71,21 +63,11 @@ export default function Header() {
     };
   }, [isMobileMenuOpen]);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    const query = searchQuery.trim();
-
-    if (query.length === 0) {
-      navigate("/search");
-      setIsMobileSearchOpen(false);
-      setIsMobileMenuOpen(false);
-      return;
-    }
-
-    navigate(`/search?q=${encodeURIComponent(query)}`);
+  // Cierra los overlays tras una búsqueda; <SearchForm /> se encarga de navegar.
+  const handleSearchSubmitted = useCallback(() => {
     setIsMobileSearchOpen(false);
     setIsMobileMenuOpen(false);
-  };
+  }, []);
 
   const handleLogin = () => {
     setIsUserMenuOpen(false);
@@ -113,9 +95,11 @@ export default function Header() {
     setIsMobileMenuOpen(true);
   };
 
-  const handleMobileMenuClose = () => {
+  // Estable: es prop de <Navigation memo />, que si no se repintaría con cada
+  // cambio de contador del carrito o de tema.
+  const handleMobileMenuClose = useCallback(() => {
     setIsMobileMenuOpen(false);
-  };
+  }, []);
 
   const handleMobileSearchToggle = () => {
     setIsMobileSearchOpen(!isMobileSearchOpen);
@@ -145,31 +129,11 @@ export default function Header() {
       {isMobileSearchOpen && (
         <div className="mobile-search-overlay">
           <div className="mobile-search-container">
-            <form className="mobile-search-form" onSubmit={handleSearch}>
-              <button
-                type="button"
-                className="mobile-search-back"
-                onClick={() => setIsMobileSearchOpen(false)}
-                aria-label="Cerrar búsqueda"
-              >
-                <Icon name="arrowLeft" size={20} />
-              </button>
-              <input
-                ref={searchInputRef}
-                type="text"
-                className="mobile-search-input"
-                placeholder="Buscar productos..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <button
-                type="submit"
-                className="mobile-search-btn"
-                aria-label="Buscar"
-              >
-                <Icon name="search" size={20} />
-              </button>
-            </form>
+            <SearchForm
+              variant="mobile"
+              autoFocus
+              onSubmitted={handleSearchSubmitted}
+            />
           </div>
         </div>
       )}
@@ -193,22 +157,7 @@ export default function Header() {
             </Link>
             {/* Desktop Search */}
             <div className="search-container desktop-only">
-              <form className="search-form" onSubmit={handleSearch}>
-                <input
-                  type="text"
-                  className="search-input"
-                  placeholder="Buscar productos..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <button
-                  type="submit"
-                  className="search-btn"
-                  aria-label="Buscar"
-                >
-                  <Icon name="search" size={18} />
-                </button>
-              </form>
+              <SearchForm onSubmitted={handleSearchSubmitted} />
             </div>
             {/* Right Actions */}
             <div className="header-actions">

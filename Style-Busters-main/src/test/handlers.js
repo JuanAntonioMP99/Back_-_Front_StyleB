@@ -27,8 +27,9 @@ export const handlers = [
 
   http.get(`${API}/products`, () =>
     HttpResponse.json([
-      { _id: "p1", name: "Camisa", price: 100 },
-      { _id: "p2", name: "Pantalón", price: 200 },
+      // `imageURL` (String) es el nombre real del campo en el modelo Product.
+      { _id: "p1", name: "Camisa", price: 100, imageURL: "http://img/p1.jpg" },
+      { _id: "p2", name: "Pantalón", price: 200, imageURL: "http://img/p2.jpg" },
     ]),
   ),
 

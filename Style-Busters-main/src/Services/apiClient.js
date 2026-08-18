@@ -13,9 +13,16 @@ if (!apiBaseUrl) {
   );
 }
 
+// El backend está en el plan gratuito de Render: tras ~15 min sin tráfico el
+// servicio se duerme y la primera petición paga el arranque en frío. Medido
+// contra el despliegue real: 22.5 s en frío frente a 0.44 s en caliente, así
+// que un timeout de 10 s abortaba SIEMPRE la primera carga de la portada.
+// 45 s deja margen sobre lo medido sin dejar la UI colgada indefinidamente.
+const API_TIMEOUT_MS = 45000;
+
 const apiClient = axios.create({
   baseURL: apiBaseUrl,
-  timeout: 10000,
+  timeout: API_TIMEOUT_MS,
   headers: { "Content-Type": "application/json" },
 });
 
