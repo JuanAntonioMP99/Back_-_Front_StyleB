@@ -9,10 +9,12 @@ Regla maestra: **1 pendiente = 1 spec = 1 rama = 1 PR.** El orchestrator orquest
 - Orquestador: [`orchestrator.md`](orchestrator.md)
 - **Dispatch multiagente + blindaje (gates):** [`dispatch.md`](dispatch.md)
 - **Mapa rol ↔ skills del harness:** [`skills-map.md`](skills-map.md)
-- Roles: [`roles/`](roles/) — spec-writer, architecture-reviewer, frontend-builder, backend-builder, qa-test-designer, code-reviewer, security-reviewer, docs-keeper, anti-hallucination-reviewer, release-observability, learning-coach
+- **Política de modelos (Fable/Sonnet/Opus/Haiku/Codex):** [`../.claude/model-policy.md`](../.claude/model-policy.md)
+- **Agentes ejecutables (Claude Code, con `model:`):** [`../.claude/agents/`](../.claude/agents/) — cada uno delega en su rol de [`roles/`](roles/)
+- Roles: [`roles/`](roles/) — spec-writer, architecture-reviewer, frontend-builder, backend-builder, qa-test-designer, code-reviewer, security-reviewer, docs-keeper, anti-hallucination-reviewer, release-observability, learning-coach, **tech-reviewer** (audita el PR abierto), **pr-publisher** (Haiku, llena el PR)
 - Workflows: [`workflows/`](workflows/) — [`ssdlc.md`](workflows/ssdlc.md) · [`feature-flow.md`](workflows/feature-flow.md) · [`bugfix-flow.md`](workflows/bugfix-flow.md)
 - Plantillas: [`templates/`](templates/)
-- Checklists: [`checklists/`](checklists/)
+- Checklists: [`checklists/`](checklists/) — incl. [`definition-of-done.md`](checklists/definition-of-done.md) (loop de cierre del orchestrator)
 
 ## Cómo se ejecuta una petición en modo multiagente
 
@@ -35,7 +37,7 @@ Regla maestra: **1 pendiente = 1 spec = 1 rama = 1 PR.** El orchestrator orquest
 | 6 Implementación segura | frontend/backend-builder, anti-hallucination-reviewer, security-reviewer |
 | 7 Quality gates | qa-test-designer, release-observability (infra) |
 | 8 Prueba funcional | qa-test-designer |
-| 9 Pull Request | code-reviewer, security-reviewer, anti-hallucination-reviewer, release-observability (infra), orchestrator |
+| 9 Pull Request | code-reviewer, security-reviewer, anti-hallucination-reviewer, release-observability (infra), **pr-publisher** (llena el PR), **tech-reviewer** (audita el PR abierto), orchestrator (+ 2ª opinión Codex, consultiva) |
 | 10 Cierre | docs-keeper, learning-coach, orchestrator |
 
 ## Protocolos obligatorios

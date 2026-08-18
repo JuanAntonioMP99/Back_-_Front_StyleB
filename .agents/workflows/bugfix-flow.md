@@ -18,9 +18,12 @@ Flujo de un **bugfix** bajo la capa de subagentes. Más corto que feature-flow, 
 | 6 | Validar referencias contra repo real | anti-hallucination-reviewer | reporte | 6 |
 | 7 | Test rojo→verde + quality gates | qa-test-designer | evidencia | 7–8 |
 | 8 | Revisión de código (≠ builder) | code-reviewer | veredicto | 9 |
-| 9 | PR a `develop` (o `main` si es hotfix) | builder | PR | 9 |
-| 10 | Integrar | orchestrator | merge | 9 |
-| 11 | Cerrar spec + registrar causa raíz | docs-keeper | spec DONE | 10 |
+| 9 | Llenar la plantilla de PR (sin inventar) | pr-publisher (Haiku) | cuerpo del PR | 9 |
+| 10 | PR a `develop` (o `main` si es hotfix) | builder | PR | 9 |
+| 11 | Auditar el PR abierto | tech-reviewer | veredicto APTO/CAMBIOS | 9 |
+| 12 | 2ª opinión consultiva (no gate) | Codex | nota en el PR | 9 |
+| 13 | Evaluar DoD + integrar | orchestrator | merge | 9 |
+| 14 | Cerrar spec + registrar causa raíz | docs-keeper | spec DONE | 10 |
 
 ## Reglas específicas de bugfix
 - **Obligatorio** un test que reproduzca el bug y pase tras el fix (regresión).

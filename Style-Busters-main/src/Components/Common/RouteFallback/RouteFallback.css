@@ -1,0 +1,5 @@
+/* Hueco estable mientras baja el chunk de la ruta: evita que el Footer suba y
+   vuelva a bajar (layout shift) durante la transición entre pantallas. */
+.route-fallback {
+  min-height: 60vh;
+}

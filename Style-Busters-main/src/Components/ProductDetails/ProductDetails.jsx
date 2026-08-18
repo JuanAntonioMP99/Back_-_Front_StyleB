@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useCart } from "../../Context/CartContext";
+import { useCartActions } from "../../Context/CartContext";
 import Breadcrumb from "../../Layout/Breadcrumb/Breadcrumb";
 import { getProductById } from "../../Services/productService";
 import Badge from "../Common/Badge";
 import Button from "../Common/Button";
 import ErrorMessage from "../Common/ErrorMessage/ErrorMessage";
 import Loading from "../Common/Loading/Loading";
+import {
+  PRODUCT_IMAGE_PLACEHOLDER,
+  getProductImage,
+} from "../../utils/productImage";
 import "./ProductDetails.css";
 
 export default function ProductDetails({ productId }) {
-  const {addItem} = useCart();
+  const {addItem} = useCartActions();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -96,7 +100,7 @@ export default function ProductDetails({ productId }) {
 
   if (!product) return null;
 
-  const { name, description, price, stock, imagesUrl, category } = product;
+  const { name, description, price, stock, category } = product;
   const stockBadge = stock > 0 ? "success" : "error";
   const stockLabel = stock > 0 ? "En stock" : "Agotado";
 
@@ -112,10 +116,12 @@ export default function ProductDetails({ productId }) {
       <div className="product-details-main">
         <div className="product-details-image">
           <img
-            src={imagesUrl?.[0] || "/img/products/placeholder.svg"}
+            src={getProductImage(product)}
             alt={name}
             onError={(event) => {
-              event.target.src = "/img/products/placeholder.svg";
+              if (event.target.dataset.fallbackApplied) return;
+              event.target.dataset.fallbackApplied = "true";
+              event.target.src = PRODUCT_IMAGE_PLACEHOLDER;
             }}
           />
         </div>

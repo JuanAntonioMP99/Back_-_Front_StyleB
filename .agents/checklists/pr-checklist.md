@@ -4,7 +4,7 @@ El orchestrator no mergea a `develop` hasta que todo esto esté marcado. El buil
 
 ## Alcance
 - [ ] Un solo pendiente en el PR (1 pendiente = 1 spec = 1 rama = 1 PR).
-- [ ] Rama nombrada según convención (`feature/…`, `bugfix/…`, `security/…`, …).
+- [ ] Rama nombrada según convención (`feature/…`, `bugfix/…`, `hotfix/…`, `refactor/…`, `security/…`, `infra/…`, `docs/…`).
 - [ ] No toca `main`/`master`/`develop` directamente.
 
 ## Trazabilidad
@@ -20,6 +20,8 @@ El orchestrator no mergea a `develop` hasta que todo esto esté marcado. El buil
 - [ ] code-reviewer: aprobado (≠ builder).
 - [ ] security-reviewer: aprobado o N/A justificado.
 - [ ] anti-hallucination-reviewer: limpio.
+- [ ] tech-reviewer: **APTO** sobre el PR abierto (claims↔evidencia, spec↔diff, riesgo de integración).
+- [ ] Segunda opinión (Codex): registrada — consultiva, no bloquea el merge.
 
 ## Documentación
 - [ ] Spec actualizado (Resultados + Matriz de cierre al cerrar).

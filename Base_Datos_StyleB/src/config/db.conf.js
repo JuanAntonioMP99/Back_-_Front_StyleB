@@ -1,13 +1,9 @@
 import mongoose from "mongoose";
-import dotenv from "dotenv";
-
-dotenv.config();
+import env from "./env.js";
 
 const connectDB = async () => {
   try {
-    const connection = await mongoose.connect(
-      process.env.MONGODB_URI || "mongodb://localhost:27017/StyleBusters",
-    );
+    const connection = await mongoose.connect(env.mongodbUri);
     console.log(`MongoDB connected ${connection.connection.host}`);
   } catch (error) {
     console.error("Error connecting MongoDB");

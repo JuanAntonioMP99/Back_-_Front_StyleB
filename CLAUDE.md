@@ -452,17 +452,20 @@ export default router;
 - **`export default app`**: la app se exporta ya configurada.
 - `connectDB()` y `app.listen(env.port, "0.0.0.0")` se ejecutan **solo** dentro del guard `isMain` (`process.argv[1] === fileURLToPath(import.meta.url)`), es decir, únicamente cuando `server.js` se ejecuta directamente. Al importarlo (tests con supertest) no abre puerto ni conecta a MongoDB. **No romper este guard: el suite de integración depende de él.**
 
-**Config de entorno** (`config/env.js`): llama a `dotenv.config()` y exporta por defecto `{ nodeEnv, port, corsAllowedOrigins }`.
+**Config de entorno** (`config/env.js`): llama a `dotenv.config()` y exporta por defecto `{ nodeEnv, port, mongodbUri, frontendUrl, corsAllowedOrigins }`.
 - Se evalúa **en tiempo de import** (lanza al importar si la validación falla).
 - `nodeEnv`: `NODE_ENV || "development"`.
 - `port`: `PORT || 3000`.
-- `corsAllowedOrigins`: parsea `CORS_ALLOWED_ORIGINS` (lista separada por comas) con `trim` + `filter`; sin la variable, default `["http://localhost:3000"]`.
+- `frontendUrl`: `FRONTEND_URL || "http://localhost:3000"`. Único punto de verdad para la URL local del frontend; no aborta el arranque en producción si falta (no tiene ningún consumidor crítico en runtime hoy).
+- `mongodbUri`: `MONGODB_URI || "mongodb://localhost:27017/StyleBusters"`.
+- `corsAllowedOrigins`: parsea `CORS_ALLOWED_ORIGINS` (lista separada por comas) con `trim` + `filter`; sin la variable, default `[frontendUrl]`.
 - Si `nodeEnv === "production"` y la allowlist queda vacía → lanza `Error("Falta configurar CORS_ALLOWED_ORIGINS en producción")`.
-- No expone secretos: `JWT_*` y `MONGODB_URI` se leen vía `process.env` donde se usan (`authController`, `db.conf.js`).
+- Si `nodeEnv === "production"` y `MONGODB_URI` no está definida → lanza `Error("Falta configurar MONGODB_URI en producción")`.
+- No expone secretos: `JWT_*` y `ADMIN_SECRET` se leen vía `process.env` donde se usan (`authController`).
 
-**Config DB** (`config/db.conf.js`): `dotenv.config()` y `mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/StyleBusters")`; en error `process.exit(1)`.
+**Config DB** (`config/db.conf.js`): importa `env` desde `./env.js` y usa `mongoose.connect(env.mongodbUri)` (no llama a `dotenv.config()` propio: ya lo ejecuta `env.js` al importarse); en error `process.exit(1)`.
 
-**Variables de entorno usadas:** `NODE_ENV`, `PORT`, `CORS_ALLOWED_ORIGINS` (vía `config/env.js`); `MONGODB_URI` (en `db.conf.js`); `JWT_SECRET`, `JWT_REFRESH_TOKEN`, `ADMIN_SECRET` (vía `process.env` en los controllers).
+**Variables de entorno usadas:** `NODE_ENV`, `PORT`, `MONGODB_URI`, `FRONTEND_URL`, `CORS_ALLOWED_ORIGINS` (vía `config/env.js`); `JWT_SECRET`, `JWT_REFRESH_TOKEN`, `ADMIN_SECRET` (vía `process.env` en los controllers).
 
 **Tests** (Vitest 4 + supertest + mongodb-memory-server): archivos `tests/**/*.test.js`. Los tests de integración importan `app` desde `server.js` y `tests/setup.js` levanta un MongoDB en memoria, fija las variables de entorno y vacía las colecciones en cada `afterEach`. No requieren MongoDB instalado ni `.env`.
 
@@ -473,13 +476,13 @@ npm run test:integration # solo tests/integration
 npm run test:coverage    # con cobertura y umbrales (trinquete)
 ```
 
-> Los scripts de test invocan `node ./node_modules/vitest/vitest.mjs` en vez del binario `vitest`: el `&` de la ruta del repo (`Back_&_Front_StyleB`) rompe los shims `.cmd` de npm/npx en Windows. Usar `npm test`, **no** `npx vitest`.
+> Los scripts de test invocan `node ./node_modules/vitest/vitest.mjs` en vez del binario `vitest`: históricamente el `&` de la ruta del repo (entonces `Back_&_Front_StyleB`, hoy `Back_Y_Front_StyleB`) rompía los shims `.cmd` de npm/npx en Windows. Esta invocación funciona en cualquier ruta y se mantiene. Usar `npm test`, **no** `npx vitest`.
 
 Plan de pruebas, matriz de casos y seguimiento: [`docs/test-plans/ecommerce-api-test-plan.md`](docs/test-plans/ecommerce-api-test-plan.md).
 
 ### Frontend
 
-**Cliente HTTP** (`Services/apiClient.js`): instancia de `axios` con `baseURL: "http://localhost:4000/api"`, `timeout: 10000`, `headers: { "Content-Type": "application/json" }`.
+**Cliente HTTP** (`Services/apiClient.js`): instancia de `axios` con `baseURL` leído de `process.env.REACT_APP_API_URL` (convención Create React App; el valor incluye el sufijo `/api`, ya que los servicios llaman paths relativos); sin esa variable definida, lanza un `Error` explícito al cargarse el módulo, sin fallback a ninguna URL. `timeout: 10000`, `headers: { "Content-Type": "application/json" }`.
 - Interceptor de request: inyecta `Authorization: Bearer <token>` leyendo `localStorage.getItem("authToken")`.
 - Interceptor de response: función `classifyError` que mapea el error a `{ kind, status, ... }` (`NOT_FOUND`, `UNAUTHORIZED`, `FORBIDDEN`, `VALIDATION`, `SERVER_ERROR`, `CLIENT_ERROR`, `TIMEOUT`, `NETWORK`, `UNKNOWN`) y hace `Promise.reject(classified)`.
 
@@ -545,7 +548,26 @@ Guías de conocimiento asociadas al proyecto, clasificadas por dominio. Se ubica
 
 ---
 
-## 7. Restricciones para el agente
+## 7. Harness de modelos y agentes (ejecutable)
+
+El repo versiona un harness multiagente para operar el SSDLC de forma reproducible. Todo vive **en el repo** (config compartida por el equipo).
+
+**Política de modelos** ([`.claude/model-policy.md`](.claude/model-policy.md)):
+- **Main loop / orchestrator = Fable**, y **solo orquesta** (planear, despachar, arbitrar, integrar). Nunca implementa. Sin plan/spec aprobado, no ejecuta. Se fija en [`.claude/settings.json`](.claude/settings.json) (`"model"`).
+- **Subagentes = Sonnet**, con `model:` explícito en cada `.claude/agents/*.md`.
+- **Opus nunca fijo**: solo override puntual en el despacho ante duda de arquitectura/requerimiento, justificado en 1 línea.
+- **Haiku** para lo mecánico con plantilla ("transcribe, no decide"): hoy `pr-publisher`.
+- **Codex** (`codex@openai-codex`, declarado en `settings.json`): segunda opinión post-PR **consultiva, nunca gate único**.
+
+**Agentes ejecutables** ([`.claude/agents/`](.claude/agents/)) — thin wrappers que delegan en su rol de [`.agents/roles/`](.agents/roles/) + SSDLC + skills de [`.agents/skills-map.md`](.agents/skills-map.md): `spec-writer`, `architecture-reviewer`, `frontend-builder`, `backend-builder`, `qa-test-designer`, `code-reviewer`, `security-reviewer`, `docs-keeper`, `anti-hallucination-reviewer`, `release-observability`, `learning-coach`, **`tech-reviewer`** (audita el PR abierto: claims↔evidencia, spec↔diff, riesgo de integración → APTO/CAMBIOS), **`pr-publisher`** (Haiku: llena la plantilla de PR sin inventar).
+
+**Cómo se ejecuta:** toda petición entra por el orchestrator → clasifica y arma el pipeline según [`.agents/dispatch.md`](.agents/dispatch.md) → despacha cada rol con sus entradas + skills → hace cumplir los gates **G0–G5** → consolida e integra (solo el orchestrator mergea, a `develop`).
+
+**Cierre:** el orchestrator evalúa la [Definition of Done](.agents/checklists/definition-of-done.md) ítem por ítem; cada ✗ se re-despacha al agente del mapa; tope de 3 iteraciones y luego escala al usuario. Nada se reporta "terminado" sin la DoD completa. PR con [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md).
+
+**Regla:** si falta un agente para una tarea futura, se hace brainstorming para crearlo (rol en `.agents/roles/` + agente en `.claude/agents/` con `model:`) **antes** de ejecutar.
+
+## 8. Restricciones para el agente
 
 - **Basar todo cambio en el código real del repositorio.** No inventar rutas, campos, validadores ni comportamiento que no exista en el código.
 - **No incluir sugerencias, mejoras, refactors ni "buenas prácticas"** salvo que se pidan explícitamente.

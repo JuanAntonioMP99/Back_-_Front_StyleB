@@ -93,9 +93,10 @@ El backend E2E (`e2e-server.js`) fija su propio entorno de test (JWT secrets,
 `ADMIN_SECRET`, `CORS_ALLOWED_ORIGINS=http://localhost:3000`) y **nunca** usa la
 BD Atlas de producción.
 
-> Nota Windows: la ruta del repo contiene `&` (`Back_&_Front_StyleB`), lo que
-> rompe los shims `.cmd` de npm/npx/cypress/vitest. Por eso **todos** los scripts
-> invocan los binarios vía `node ./node_modules/...`. No usar `npx`.
+> Nota Windows: la ruta del repo contuvo `&` (`Back_&_Front_StyleB`, hoy
+> renombrado a `Back_Y_Front_StyleB`), lo que rompía los shims `.cmd` de
+> npm/npx/cypress/vitest. Por eso **todos** los scripts invocan los binarios vía
+> `node ./node_modules/...` (funciona en cualquier ruta y se mantiene). No usar `npx`.
 
 ---
 
