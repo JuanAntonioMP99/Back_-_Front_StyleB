@@ -45,9 +45,23 @@ sí en CI (Linux, Electron headless).
 cd Style-Busters-main
 
 npm run e2e:ci:headless   # backend efímero + CRA + Cypress headless (lo que corre en CI)
-npm run e2e:open          # backend efímero + CRA + Cypress interactivo (local)
+npm run e2e:open          # backend efímero + CRA + Cypress interactivo (local) ← GUI recomendada
 npm run cypress:open      # solo Cypress (requiere backend y CRA ya levantados)
 ```
+
+> **⚠️ No levantes la app con `npm start` para el E2E.** Para la GUI usa
+> **`npm run e2e:open`**. Ese script arranca el backend efímero (`localhost:4000`) y
+> sirve la app con `start:e2e`, que **fuerza `REACT_APP_API_URL=http://localhost:4000/api`**
+> antes de arrancar CRA. En cambio `npm start` lee `.env` (que apunta a **producción**,
+> Render), así que la app hablaría con el backend real —dormido/con CORS restringido a
+> otro origen— mientras Cypress pega a `localhost:4000`: ese "cerebro dividido" hace
+> fallar registro y checkout. `npm run cypress:open` a secas solo es válido si ya
+> levantaste **ambos** con las URLs locales.
+>
+> **Aislamiento por prueba:** el backend efímero siembra la BD una sola vez, pero el
+> checkout crea carritos/órdenes que persisten. Para que una prueba no contamine a la
+> siguiente, `e2e-server.js` expone `POST /__test__/reset` (limpia carritos y órdenes,
+> conserva el seed) y `checkout.cy.js` lo invoca vía `cy.resetDb()` en cada `beforeEach`.
 
 ## Todo el stack (dos terminales)
 

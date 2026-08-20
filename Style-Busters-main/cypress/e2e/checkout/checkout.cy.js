@@ -10,6 +10,10 @@
 
 describe("Checkout", () => {
   beforeEach(() => {
+    // Aislamiento por prueba: limpia carritos/órdenes del backend efímero para
+    // que el estado de una prueba no se filtre a la siguiente. Va ANTES de
+    // loginByApi (que solo lee) y getFirstProduct (que lee el seed intacto).
+    cy.resetDb();
     cy.loginByApi();
     cy.getFirstProduct().then((product) => {
       cy.wrap(product).as("product");
