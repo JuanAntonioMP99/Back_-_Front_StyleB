@@ -15,7 +15,7 @@
 - **E7 · Calidad (tests/CI)**
 
 ## E1 — Seguridad e higiene · Crítico
-- F1.1 `.gitignore` + sacar `.env`/`node_modules`/`build`/`logs` de git · Deuda técnica · (K00)
+- ~~F1.1 `.gitignore` + sacar `.env`/`node_modules`/`build`/`logs` de git · Deuda técnica · (K00)~~ **RESUELTO** (2026-08-21), ver [known-issues.md#K00](known-issues.md#K00)
 - F1.2 Rotar `JWT_SECRET`/`JWT_REFRESH_TOKEN` y **añadir `ADMIN_SECRET`** al `.env`; `.env.example` · Deuda técnica · (K00, K01)
 - F1.3 No persistir `cvv`; enmascarar/tokenizar `numCard` · Deuda técnica · (K10)
 - F1.4 Retirar `credentials: true` de `corsOptions` en `server.js` mientras la auth sea JWT Bearer en `localStorage` (config sin consumidor: no hay cookies de sesión) · Deuda técnica · hallazgo Bajo del security-reviewer en ENV-01
