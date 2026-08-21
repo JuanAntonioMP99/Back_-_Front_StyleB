@@ -68,6 +68,14 @@ describe("GET /api/addresses/:addressId", () => {
 
     expect(res.status).toBe(404);
   });
+
+  it("IT-ADDR-14 — 401 sin token", async () => {
+    const address = await createAddress();
+
+    const res = await request(app).get(`/api/addresses/${address._id}`);
+
+    expect(res.status).toBe(401);
+  });
 });
 
 describe("POST /api/addresses", () => {
@@ -119,6 +127,12 @@ describe("POST /api/addresses", () => {
     expect(res.status).toBe(201);
     expect((await Address.findById(first._id)).isDefault).toBe(false);
   });
+
+  it("IT-ADDR-15 — 401 sin token", async () => {
+    const res = await request(app).post("/api/addresses").send(validAddress());
+
+    expect(res.status).toBe(401);
+  });
 });
 
 describe("PUT /api/addresses/:addressId", () => {
@@ -146,6 +160,32 @@ describe("PUT /api/addresses/:addressId", () => {
       .send(validAddress());
 
     expect(res.status).toBe(404);
+  });
+
+  it("IT-ADDR-16 — 401 sin token", async () => {
+    const address = await createAddress();
+
+    const res = await request(app)
+      .put(`/api/addresses/${address._id}`)
+      .send(validAddress());
+
+    expect(res.status).toBe(401);
+  });
+
+  it("IT-ADDR-18 — isDefault:true desmarca las demás direcciones del mismo usuario", async () => {
+    const user = await createUser();
+    const first = await createAddress({ user: user._id, isDefault: true });
+    const second = await createAddress({ user: user._id, isDefault: false });
+
+    const res = await request(app)
+      .put(`/api/addresses/${second._id}`)
+      .set(authHeader(user))
+      .send(validAddress({ isDefault: true }));
+
+    expect(res.status).toBe(200);
+    expect(res.body.isDefault).toBe(true);
+    expect((await Address.findById(first._id)).isDefault).toBe(false);
+    expect((await Address.findById(second._id)).isDefault).toBe(true);
   });
 });
 
@@ -183,5 +223,13 @@ describe("DELETE /api/addresses/:addressId", () => {
       .set(authHeader(user));
 
     expect(res.status).toBe(404);
+  });
+
+  it("IT-ADDR-17 — 401 sin token", async () => {
+    const address = await createAddress();
+
+    const res = await request(app).delete(`/api/addresses/${address._id}`);
+
+    expect(res.status).toBe(401);
   });
 });
