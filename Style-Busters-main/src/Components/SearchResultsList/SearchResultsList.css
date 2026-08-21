@@ -2,7 +2,7 @@
 
 .search-results-fullwidth {
   width: 100%;
-  max-width: var(--container-width, 1200px); /* Respeta el ancho de tu container */
+  max-width: var(--container-width);
   margin: 0 auto;
   padding: 2rem 1rem;
   min-height: 60vh; /* Asegura que no se vea vacío si hay pocos items */
@@ -14,7 +14,7 @@
   flex-direction: column;
   gap: 1.5rem;
   margin-bottom: 2.5rem;
-  border-bottom: 1px solid var(--border-color, #eee);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 1.5rem;
 }
 
@@ -29,14 +29,14 @@
 .search-results-title {
   font-size: 1.75rem;
   font-weight: 700;
-  color: var(--text-color-main, #FFFF33);
+  color: var(--color-text-main);
   margin: 0 0 0.5rem 0;
   line-height: 1.2;
 }
 
 .search-results-description {
   margin: 0;
-  color: var(--text-color-secondary, #666);
+  color: var(--color-text-muted);
   font-size: 1rem;
 }
 
@@ -45,7 +45,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background-color: var(--bg-color-secondary, #f9fafb);
+  background-color: var(--color-bg-card);
   padding: 0.5rem 1rem;
   border-radius: 8px;
 }
@@ -53,26 +53,26 @@
 .search-results-controls label {
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--text-color-secondary, #555);
+  color: var(--color-text-muted);
   white-space: nowrap;
 }
 
 .search-results-controls select {
-  border: 1px solid var(--border-color, #ddd);
-  background-color: var(--bg-color-main, #fff);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: var(--color-bg-dark);
   padding: 0.4rem 2rem 0.4rem 0.8rem;
   border-radius: 4px;
   font-size: 0.9rem;
   cursor: pointer;
-  color: var(--text-color-main, #333);
+  color: var(--color-text-main);
   outline: none;
 }
 
 /* Botón simple para orden ascendente/descendente */
 .sort-btn {
-  background: var(--bg-color-main, #fff);
-  border: 1px solid var(--border-color, #ddd);
-  color: var(--text-color-main, #333);
+  background: var(--color-bg-dark);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--color-text-main);
   padding: 0.4rem 0.8rem;
   border-radius: 4px;
   font-size: 0.85rem;
@@ -82,8 +82,8 @@
 }
 
 .sort-btn:hover {
-  border-color: var(--color-primary, #000);
-  color: var(--color-primary, #000);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 /* --- MENSAJES DE ESTADO (Empty/Loading) --- */
@@ -94,24 +94,24 @@
   justify-content: center;
   padding: 4rem 1rem;
   text-align: center;
-  background-color: var(--bg-color-secondary, #fafafa);
+  background-color: var(--color-bg-card);
   border-radius: 12px;
-  border: 1px dashed var(--border-color, #e5e5e5);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
 }
 
 .search-results-message h3 {
   font-size: 1.4rem;
   margin-bottom: 0.5rem;
-  color: var(--text-color-main, #333);
+  color: var(--color-text-main);
 }
 
 .search-results-message p {
-  color: var(--text-color-secondary, #777);
+  color: var(--color-text-muted);
   max-width: 400px;
 }
 
 .search-results-message a {
-  color: var(--color-primary, blue);
+  color: var(--color-primary);
   font-weight: 600;
   text-decoration: none;
   border-bottom: 1px solid transparent;
