@@ -80,7 +80,8 @@ Todas las afirmaciones del texto propuesto se confirmaron exactas; no se encontr
 - **Referencias a historias/tareas creadas:**
   - Spec: [`docs/specs/2026-08-21-docs-known-issues-k00-resolved.md`](2026-08-21-docs-known-issues-k00-resolved.md) (este documento)
   - Hallazgo cerrado: [`docs/known-issues.md#K00`](../known-issues.md)
-  - Backlog relacionado (no actualizado en este spec): [`docs/backlog.md`](../backlog.md), ítem `F1.1` (E1)
+  - Backlog relacionado, actualizado por este spec: [`docs/backlog.md`](../backlog.md), ítem `F1.1` (E1) — marcado `RESUELTO` en el commit `ee40bb63`, posterior a la primera versión de este documento.
+  - PR: [#24](https://github.com/JuanAntonioMP99/Back_-_Front_StyleB/pull/24) (mergeado a `develop`, commit `e00023b0`).
 
 ## Matriz de cierre
 | Item detectado | Detectado por | Estado | Acción |

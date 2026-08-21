@@ -27,8 +27,8 @@
 - F2.4 `phone`: añadir al modelo o retirar del contrato · Bug · (K11)
 
 ## E3 — Estabilización backend · Alto
-- F3.1 Direcciones: `import ...Address.js`, corregir `userId`, crear y montar `addressRoutes` · Bug · (K04)
-- F3.2 Corregir `deletePaymentMethod` · Bug · (K05)
+- ~~F3.1 Direcciones: `import ...Address.js`, corregir `userId`, crear y montar `addressRoutes` · Bug · (K04)~~ **RESUELTO** (2026-08-21), ver [known-issues.md#K04](known-issues.md#K04)
+- ~~F3.2 Corregir `deletePaymentMethod` · Bug · (K05)~~ **RESUELTO** (2026-08-21), ver [known-issues.md#K05](known-issues.md#K05)
 - F3.3 `WishList.products` → `ref: "Product"` · Bug · (K06)
 - F3.4 `addProductToCart`: `populate("products.product")` + rutear o eliminar · Bug · (K07)
 - ~~F3.5 Proteger `POST/PUT/DELETE /products` con `auth + admin` · Alineación FE-BE · (K08)~~ **RESUELTO** (2026-08-21), ver [known-issues.md#K08](known-issues.md#K08)

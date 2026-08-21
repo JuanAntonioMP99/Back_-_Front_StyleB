@@ -4,7 +4,7 @@
 - **Tipo:** bugfix
 - **Complejidad:** XS
 - **Fecha:** 2026-08-21
-- **Estado:** APROBADO (orchestrator, gate G1)
+- **Estado:** DONE
 - **ID de backlog:** F3.2 (K05)
 - **Ejecutor:** backend-builder
 
@@ -52,13 +52,13 @@ const deletePaymentMethod = async (req, res, next) => {
 
 ## Criterios de Aceptación
 
-- [ ] **CA-1 — Parámetro de ruta leído correctamente.** `deletePaymentMethod` (`paymentMethodController.js`) destructura `const { id } = req.params;`, igual que `getPaymentMethodById` y `updatePaymentMethod` del mismo archivo y acorde al nombre `:id` declarado en `paymentMethodRoutes.js` línea 89. Verificable: no queda ninguna referencia a `paymentMethodId` en la función.
-- [ ] **CA-2 — Sin `ReferenceError`.** No queda ninguna referencia a `addressId` en `paymentMethodController.js`. La consulta de comprobación de propiedad usa `PaymentMethod.findOne({ _id: id, user: userId })`, y el borrado usa `PaymentMethod.findByIdAndDelete(id)` — ambos con la variable `id` obtenida en CA-1, no con la variable inexistente ni con la mal nombrada.
-- [ ] **CA-3 — Borrado exitoso del propio recurso.** `DELETE /api/payment-methods/:id` con un token válido del usuario dueño del método de pago responde `200` con `{ message: "Payment method deleted successfully" }`, y el documento deja de existir en la base de datos tras la llamada.
-- [ ] **CA-4 — Recurso inexistente → 404, no 500.** `DELETE /api/payment-methods/:id` con un `ObjectId` válido pero que no corresponde a ningún método de pago responde `404` con `{ message: "Payment method not found" }`.
-- [ ] **CA-5 — Comprobación de propiedad preservada (anti-IDOR).** `DELETE /api/payment-methods/:id` con un token válido de un usuario que **no** es el dueño del método de pago responde `404` (mismo comportamiento que CA-4, sin distinguir "no existe" de "no es tuyo") y el documento **no** se borra de la base de datos.
-- [ ] **CA-6 — Regresión de test activada y ampliada.** En `Base_Datos_StyleB/tests/integration/paymentMethods.test.js`, el test `IT-PAY-10` (líneas 179-193) deja de estar marcado `it.fails` y pasa como `it` normal, asertando `res.status === 200` (ya no basta `[200, 404]`, dado que el escenario prueba borrado del propio dueño). Se añade un caso nuevo en el mismo `describe("DELETE /api/payment-methods/:id")` que cubre CA-5 (borrado intentado por un usuario distinto al dueño → `404` + el documento persiste en la BD).
-- [ ] **CA-7 — Sin regresión en el resto de la suite.** `npm test` en `Base_Datos_StyleB/` sigue en verde tras el cambio, incluyendo `tests/integration/authorization.test.js` (la matriz `AUTH_ONLY` ya incluye `["DELETE", `/api/payment-methods/${id()}`]` — el cambio no debe alterar el nivel de autorización de la ruta, solo el comportamiento interno del controller) y sin tocar ningún `it.fails` de otros escenarios (p. ej. `IT-PAY-11`, `IT-PAY-12`, que quedan fuera de alcance).
+- [x] **CA-1 — Parámetro de ruta leído correctamente.** `deletePaymentMethod` (`paymentMethodController.js`) destructura `const { id } = req.params;`, igual que `getPaymentMethodById` y `updatePaymentMethod` del mismo archivo y acorde al nombre `:id` declarado en `paymentMethodRoutes.js` línea 89. Verificable: no queda ninguna referencia a `paymentMethodId` en la función.
+- [x] **CA-2 — Sin `ReferenceError`.** No queda ninguna referencia a `addressId` en `paymentMethodController.js`. La consulta de comprobación de propiedad usa `PaymentMethod.findOne({ _id: id, user: userId })`, y el borrado usa `PaymentMethod.findByIdAndDelete(id)` — ambos con la variable `id` obtenida en CA-1, no con la variable inexistente ni con la mal nombrada.
+- [x] **CA-3 — Borrado exitoso del propio recurso.** `DELETE /api/payment-methods/:id` con un token válido del usuario dueño del método de pago responde `200` con `{ message: "Payment method deleted successfully" }`, y el documento deja de existir en la base de datos tras la llamada.
+- [x] **CA-4 — Recurso inexistente → 404, no 500.** `DELETE /api/payment-methods/:id` con un `ObjectId` válido pero que no corresponde a ningún método de pago responde `404` con `{ message: "Payment method not found" }`.
+- [x] **CA-5 — Comprobación de propiedad preservada (anti-IDOR).** `DELETE /api/payment-methods/:id` con un token válido de un usuario que **no** es el dueño del método de pago responde `404` (mismo comportamiento que CA-4, sin distinguir "no existe" de "no es tuyo") y el documento **no** se borra de la base de datos.
+- [x] **CA-6 — Regresión de test activada y ampliada.** En `Base_Datos_StyleB/tests/integration/paymentMethods.test.js`, el test `IT-PAY-10` (líneas 179-193) deja de estar marcado `it.fails` y pasa como `it` normal, asertando `res.status === 200` (ya no basta `[200, 404]`, dado que el escenario prueba borrado del propio dueño). Se añade un caso nuevo en el mismo `describe("DELETE /api/payment-methods/:id")` que cubre CA-5 (borrado intentado por un usuario distinto al dueño → `404` + el documento persiste en la BD).
+- [x] **CA-7 — Sin regresión en el resto de la suite.** `npm test` en `Base_Datos_StyleB/` sigue en verde tras el cambio, incluyendo `tests/integration/authorization.test.js` (la matriz `AUTH_ONLY` ya incluye `["DELETE", `/api/payment-methods/${id()}`]` — el cambio no debe alterar el nivel de autorización de la ruta, solo el comportamiento interno del controller) y sin tocar ningún `it.fails` de otros escenarios (p. ej. `IT-PAY-11`, `IT-PAY-12`, que quedan fuera de alcance).
 
 ## Consideraciones de Seguridad
 
@@ -110,20 +110,39 @@ const deletePaymentMethod = async (req, res, next) => {
 - **Items que deben convertirse en backlog:** ninguno nuevo — `F3.2`/`K05` ya está registrado en `backlog.md`/`known-issues.md` y se cierra con este spec.
 
 ## Resultados (se completa al cerrar)
-- **Fecha de cierre:**
-- **CAs cumplidos:**
-- **CAs no cumplidos:**
-- **Deuda técnica generada:**
+- **Fecha de cierre:** 2026-08-21.
+- **CAs cumplidos:** CA-1 a CA-7 (7/7), reverificados contra `develop` tras el merge del PR #23 (no solo por el plan de prueba ya redactado):
+  - CA-1/CA-2: `Base_Datos_StyleB/src/controllers/paymentMethodController.js`, `deletePaymentMethod` (líneas 122-144) lee `const { id } = req.params;` (línea 124) y usa `PaymentMethod.findOne({ _id: id, user: userId })` (líneas 127-130) / `PaymentMethod.findByIdAndDelete(id)` (línea 136) — sin ninguna referencia a `paymentMethodId` ni `addressId` en el archivo (confirmado por grep en este cierre).
+  - CA-3/CA-4/CA-5: `tests/integration/paymentMethods.test.js`, `describe("DELETE /api/payment-methods/:id")` (líneas 179-218) tiene `IT-PAY-10` (borrado del dueño → `200` + persistencia verificada con `findById` → `null`), `IT-PAY-14` (recurso inexistente → `404`) e `IT-PAY-13` (borrado intentado por un usuario distinto al dueño → `404` + el documento **no** se borra, verificado con `findById` → `not.toBeNull()`).
+  - CA-6: `IT-PAY-10` ya no está marcado `it.fails` y asertona `res.status === 200` (línea 191, aserción estricta, no `[200, 404]`); `IT-PAY-13` es el caso nuevo que cubre CA-5.
+  - CA-7: `tests/integration/authorization.test.js` conserva `["DELETE", \`/api/payment-methods/${id()}\`]` en el array `AUTH_ONLY` (líneas 44-46, no en `ADMIN_ONLY`); `IT-PAY-11`/`IT-PAY-12` (`K10`, propiedad no comprobada en `updatePaymentMethod`) siguen `it.fails` sin modificación.
+  - Evidencia de ejecución real en este cierre (worktree de `Base_Datos_StyleB/` limpio): `npm run test:integration` → 205 passed, 13 expected fail (218 total); `npm run test:unit` → 106 passed, 3 expected fail (109 total). Coincide con lo reportado por el plan de prueba (`docs/test-plans/2026-08-21-bugfix-delete-payment-method-k05.md`, `npm test` completo → 292 passed, 16 expected fail — cifra ligeramente distinta porque el plan corrió `npm test` combinado en el momento del PR, y desde entonces se sumó el PR #22 de `K04`; ambos conjuntos de cifras confirman 0 fallos inesperados).
+- **CAs no cumplidos:** ninguno.
+- **Deuda técnica generada:** ninguna nueva. Se reconfirman los 3 puntos ya documentados en "Riesgos y Deuda Técnica", sin cambios tras el cierre:
+  - TOCTOU teórico entre `findOne` y `findByIdAndDelete` — patrón preexistente en todo el proyecto, no corregido aquí por decisión de diseño explícita.
+  - `K21` (cableado de `errorHandler` antes de las rutas en `server.js`) sigue abierto — este fix solo elimina la excepción concreta de `deletePaymentMethod` que explotaba ese bug; releído `server.js` en este cierre, `app.use(errorHandler)` sigue antes de `app.use("/api", routes)`.
+  - `IT-PAY-11` (`K10`, `cvv`/`numCard` expuestos) e `IT-PAY-12` (propiedad no comprobada en `updatePaymentMethod`) siguen `it.fails`, confirmados sin tocar en este cierre.
 - **Lecciones aprendidas:**
+  - El plan de prueba inicial requirió una iteración de corrección (commits `8475d9d8` y `60eac250`, posteriores a la implementación `975629aa`): la primera versión no cubría explícitamente la persistencia del borrado (CA-3) ni el caso de recurso inexistente con test dedicado permanente (CA-4) — el tech-reviewer/qa-test-designer detectó el gap entre "verificado con evidencia temporal" y "test permanente en el repo", y se corrigió antes de aprobar el cierre. Confirma el valor de exigir que cada CA tenga un test versionado, no solo una corrida puntual documentada en el plan.
+  - El bug combinaba dos errores de nombre de variable (`paymentMethodId` inexistente en `req.params`, `addressId` nunca declarado) que sugieren copia-pega desde un handler de otro dominio (`addressController.js`, ver `K04`) sin terminar de renombrar variables — patrón a vigilar en futuros controllers derivados por copia.
 - **Pendientes abiertos confirmados:**
-- **Gaps no resueltos:**
-- **Trabajo fuera de alcance confirmado:**
-- **Backlog derivado creado:**
+  - `docs/known-issues.md` (`K05`) y `docs/backlog.md` (`F3.2`) quedaron marcados como **RESUELTO** (mismo formato que `F1.1`/`K00`) en el commit `447a73a0`, dentro de esta misma rama de cierre — mismo caso que `K04` (ver spec `2026-08-21-bugfix-address-routes-k04.md`, "Pendientes abiertos confirmados").
+  - `K21` sigue abierto (ver "Deuda técnica generada"), ya registrado en `known-issues.md`/`backlog.md`, sin relación directa con este cierre.
+- **Gaps no resueltos:** ninguno dentro del alcance de este spec — CA-1 a CA-7 cumplidos en su totalidad.
+- **Trabajo fuera de alcance confirmado:** `K21` (cableado de `errorHandler`), `K10` (datos sensibles de tarjeta en claro), `IT-PAY-11` e `IT-PAY-12` — confirmado por `git diff develop...0b675c93` (PR #23), limitado a `paymentMethodController.js`, `tests/integration/paymentMethods.test.js` y los documentos de spec/plan de prueba; ningún otro archivo tocado.
+- **Backlog derivado creado:** ninguno nuevo. `F3.2`/`K05` ya estaba registrado en `backlog.md`/`known-issues.md` y se cierra con este spec; el pendiente de actualizar el tachado `RESUELTO` en ambos documentos tampoco requiere un ID nuevo (mismo caso que `F1.1`/`K00` y que `K04`/`F3.1`).
 - **Referencias a historias/tareas creadas:**
+  - PR: [#23](https://github.com/JuanAntonioMP99/Back_-_Front_StyleB/pull/23) (mergeado a `develop`, commit `0b675c93`).
+  - Plan de prueba: [`docs/test-plans/2026-08-21-bugfix-delete-payment-method-k05.md`](../test-plans/2026-08-21-bugfix-delete-payment-method-k05.md).
+  - Backlog origen: `docs/backlog.md`, `F3.2` (E3); hallazgo: `docs/known-issues.md`, `K05`.
+  - Backlog relacionado, no tocado: `K21`, `K10`, `docs/backlog.md`.
 
 ## Matriz de cierre
 | Item detectado | Detectado por | Estado | Acción |
 |---|---|---|---|
-| `deletePaymentMethod` lee `req.params.paymentMethodId` (inexistente; la ruta declara `:id`) | spec-writer (lectura de `paymentMethodController.js` + `paymentMethodRoutes.js`) | Pendiente | Corregir (CA-1) |
-| `deletePaymentMethod` referencia `addressId`, variable nunca declarada (`ReferenceError`) | spec-writer (lectura de código) + test `IT-PAY-10` ya existente en el repo | Pendiente | Corregir (CA-2) |
-| Chequeo de propiedad (anti-IDOR) del método de pago nunca se ejecuta por el crash previo | spec-writer (análisis STRIDE) | Pendiente | Corregir y cubrir con test (CA-5, CA-6) |
+| `deletePaymentMethod` lee `req.params.paymentMethodId` (inexistente; la ruta declara `:id`) | spec-writer (lectura de `paymentMethodController.js` + `paymentMethodRoutes.js`) | Confirmado corregido (PR #23) | Cerrar |
+| `deletePaymentMethod` referencia `addressId`, variable nunca declarada (`ReferenceError`) | spec-writer (lectura de código) + test `IT-PAY-10` ya existente en el repo | Confirmado corregido (PR #23) | Cerrar |
+| Chequeo de propiedad (anti-IDOR) del método de pago nunca se ejecuta por el crash previo | spec-writer (análisis STRIDE) | Confirmado corregido y cubierto con test (`IT-PAY-13`) | Cerrar |
+| Plan de prueba inicial sin test permanente para CA-3/CA-4 | tech-reviewer / qa-test-designer, en revisión previa al cierre | Corregido en 1 iteración (`8475d9d8`, `60eac250`) | Cerrar |
+| `K21` — `errorHandler` cableado antes de las rutas en `server.js` | Ya registrado, sin relación directa | No aplica a este spec |
+| `docs/known-issues.md`/`docs/backlog.md` sin tachado `RESUELTO` para `K05`/`F3.2` | Detectado en este cierre por docs-keeper | Cerrado en el commit `447a73a0` de esta misma rama, mismo patrón que `F1.1`/`K00` |
