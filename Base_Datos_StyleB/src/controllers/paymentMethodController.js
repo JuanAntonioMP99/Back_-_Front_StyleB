@@ -121,11 +121,11 @@ const updatePaymentMethod = async (req, res, next) => {
 
 const deletePaymentMethod = async (req, res, next) => {
     try {
-        const { paymentMethodId } = req.params;
+        const { id } = req.params;
         const userId = req.user.userId;
 
         const shipPaymentMethod = await PaymentMethod.findOne({
-            _id: addressId,
+            _id: id,
             user: userId,
         });
 
@@ -133,7 +133,7 @@ const deletePaymentMethod = async (req, res, next) => {
             return res.status(404).json({ message: "Payment method not found" });
         }
 
-        await PaymentMethod.findByIdAndDelete(paymentMethodId);
+        await PaymentMethod.findByIdAndDelete(id);
 
         res.status(200).json({
             message: "Payment method deleted successfully",

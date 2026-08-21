@@ -9,6 +9,8 @@ import {
   deleteProduct,
 } from "../controllers/productController.js";
 import validate from "../middlewares/validation.js";
+import authMiddleware from "../middlewares/authMiddleware.js";
+import isAdmin from "../middlewares/isAdminMiddleware.js";
 
 const router = express.Router();
 
@@ -34,6 +36,10 @@ const createProductValidation = [
     .isArray({ max: 10 })
     .withMessage("Images must be an array of at most 10 URLs"),
   body("images.*").isURL().withMessage("Each image must be a valid URL"),
+  body("imageURL")
+    .optional()
+    .isURL()
+    .withMessage("imageURL must be a valid URL"),
 ];
 
 const updateProductValidation = [
@@ -58,13 +64,38 @@ const updateProductValidation = [
     .isArray({ max: 10 })
     .withMessage("Images must be an array of at most 10 URLs"),
   body("images.*").isURL().withMessage("Each image must be a valid URL"),
+  body("imageURL")
+    .optional()
+    .isURL()
+    .withMessage("imageURL must be a valid URL"),
 ];
 
 router.get("/products/search", searchProducts);
 router.get("/products", getProducts);
 router.get("/products/:id", productIdValidation, validate, getProductById);
-router.post("/products", createProductValidation, validate, createProduct);
-router.put("/products/:id", updateProductValidation, validate, updateProduct);
-router.delete("/products/:id", productIdValidation, validate, deleteProduct);
+router.post(
+  "/products",
+  authMiddleware,
+  isAdmin,
+  createProductValidation,
+  validate,
+  createProduct,
+);
+router.put(
+  "/products/:id",
+  authMiddleware,
+  isAdmin,
+  updateProductValidation,
+  validate,
+  updateProduct,
+);
+router.delete(
+  "/products/:id",
+  authMiddleware,
+  isAdmin,
+  productIdValidation,
+  validate,
+  deleteProduct,
+);
 
 export default router;

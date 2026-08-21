@@ -7,21 +7,6 @@
   color: var(--color-text-main);
 }
 
-.main-content {
-  flex: 1;
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: clamp(16px, 3vw, 32px);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .main-content {
-    padding: clamp(12px, 2vw, 20px);
-  }
-}
-
 @media print {
   .layout {
     background: white;

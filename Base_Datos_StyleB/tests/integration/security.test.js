@@ -60,49 +60,42 @@ describe("Escritura del catálogo de productos", () => {
   };
 
   it("cualquiera puede crear un producto sin token (comportamiento actual)", async () => {
-    // Documenta el estado REAL de hoy: la escritura de catálogo está abierta.
-    // Cuando se corrija K08 este test debe pasar a esperar 401 y el 🔒 de abajo
-    // pasa a verde. Deja constancia del agujero de forma visible.
-    const res = await request(app).post("/api/products").send(newProduct);
-
-    expect(res.status).toBe(201);
-  });
-
-  // K08: POST/PUT/DELETE /products no exigen authMiddleware ni isAdmin.
-  it.fails("🔒 K08 — POST /api/products sin token debería responder 401", async () => {
+    // K08 corregido: la escritura de catálogo ya exige authMiddleware + isAdmin.
+    // Sin token, la petición se rechaza antes de llegar al controller.
     const res = await request(app).post("/api/products").send(newProduct);
 
     expect(res.status).toBe(401);
   });
 
-  it.fails("🔒 K08 — PUT /api/products/:id sin token debería responder 401", async () => {
+  // K08: POST/PUT/DELETE /products exigen authMiddleware e isAdmin.
+  it("🔒 K08 — POST /api/products sin token debería responder 401", async () => {
+    const res = await request(app).post("/api/products").send(newProduct);
+
+    expect(res.status).toBe(401);
+  });
+
+  it("🔒 K08 — PUT /api/products/:id sin token debería responder 401", async () => {
     const res = await request(app).put(`/api/products/${id()}`).send({ price: 0 });
 
     expect(res.status).toBe(401);
   });
 
-  it.fails(
-    "🔒 K08 — DELETE /api/products/:id sin token debería responder 401",
-    async () => {
-      const res = await request(app).delete(`/api/products/${id()}`);
+  it("🔒 K08 — DELETE /api/products/:id sin token debería responder 401", async () => {
+    const res = await request(app).delete(`/api/products/${id()}`);
 
-      expect(res.status).toBe(401);
-    },
-  );
+    expect(res.status).toBe(401);
+  });
 
-  it.fails(
-    "🔒 K08 — un customer autenticado no debería poder crear productos",
-    async () => {
-      const customer = await createUser();
+  it("🔒 K08 — un customer autenticado no debería poder crear productos", async () => {
+    const customer = await createUser();
 
-      const res = await request(app)
-        .post("/api/products")
-        .set(authHeader(customer))
-        .send(newProduct);
+    const res = await request(app)
+      .post("/api/products")
+      .set(authHeader(customer))
+      .send(newProduct);
 
-      expect(res.status).toBe(403);
-    },
-  );
+    expect(res.status).toBe(403);
+  });
 });
 
 describe("Fuga de contraseñas en las respuestas", () => {

@@ -1,7 +1,7 @@
 import ProductCard from "../ProductCard/ProductCard";
 import './List.css';
 
-export default function List ({products = [], titile = "Nuestros productos", layout = "grid"}) {
+export default function List ({products = [], layout = "grid"}) {
     return (
         <div className="list-container">
             {layout === "grid" ? (
@@ -11,7 +11,6 @@ export default function List ({products = [], titile = "Nuestros productos", lay
                         key={product._id ?? product.id}
                         product={product}
                         orientation = "vertical"
-                        className="list-item"
                         />
                     ))}
                 </div>
@@ -22,7 +21,6 @@ export default function List ({products = [], titile = "Nuestros productos", lay
                         key={product._id ?? product.id}
                         product={product}
                         orientation="horizontal"
-                        className="list-item"
                         />
                     ))}
                 </div>

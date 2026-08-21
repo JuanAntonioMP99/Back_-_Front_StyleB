@@ -7,7 +7,7 @@
 
 <a id="K01"></a>**K01 🔴 Escalada de privilegios en registro.** `authController.register` calcula `role = adminSecret === process.env.ADMIN_SECRET ? "admin" : "customer"`. El `.env` **no define `ADMIN_SECRET`**, así que es `undefined`; un registro **sin** campo `adminSecret` cumple `undefined === undefined` → **todos los usuarios se crean como `admin`**. → E1/E2.
 
-**K00 🔴 Secretos versionados.** No existe `.gitignore`; `Base_Datos_StyleB/.env` está trackeado (`JWT_SECRET=secret_token`, etc.). Además `node_modules/` (~42k archivos) y `build/` están en git. → E1.
+~~**K00 🔴 Secretos versionados.** No existe `.gitignore`; `Base_Datos_StyleB/.env` está trackeado (`JWT_SECRET=secret_token`, etc.). Además `node_modules/` (~42k archivos) y `build/` están en git. → E1.~~ **RESUELTO** (verificado 2026-08-21): existe `.gitignore` en la raíz que ignora `.env`, `.env.*` (excepto `.env.example`), `node_modules/`, `build/`, `dist/`, `coverage/` y `logs/`. Confirmado con `git ls-files`: ni `Base_Datos_StyleB/.env` ni `Style-Busters-main/.env` están trackeados (solo sus `.env.example`); tampoco hay `node_modules/` ni `build/` en el índice. Se revisó además todo el historial (`git log --all -p`) buscando la credencial real de MongoDB Atlas del `.env` local: no aparece en ningún commit. Los 2 commits que sí tocaron `Base_Datos_StyleB/.env` (`b57c1c3c`, `3c5802da`, previos al `.gitignore`) contienen valores de `JWT_SECRET`/`JWT_REFRESH_TOKEN`/`ADMIN_SECRET` ya reemplazados y sin uso activo — no se rotaron ni se reescribió el historial por no haber secreto vigente expuesto. → E1.
 
 **K10 🟠 Datos sensibles de tarjeta.** `PaymentMethod` guarda `numCard` y `cvv` como String en claro. No debe persistirse CVV; el PAN debe enmascararse/tokenizarse. → E1/E4.
 
@@ -17,15 +17,15 @@
 
 <a id="K02"></a>~~**K02 🟠 URI de BD ignora el entorno.** `db.conf.js` hardcodea `mongodb://localhost:27017/StyleBusters` e **ignora** `MONGODB_URI` del `.env` (`ecommerce-db-fusion`). La BD real difiere de la documentada en `.env`.~~ **RESUELTO** (2026-07-30): `db.conf.js` ahora importa `env` desde `./env.js` y usa `env.mongodbUri`, que lee `MONGODB_URI` (con fallback a `localhost` solo en dev/test y guarda fail-fast en producción). Ver spec [`infra-env-config-backend`](specs/2026-07-30-infra-env-config-backend.md), ENV-01. → E3.
 
-**K04 🟠 Dominio Direcciones roto y sin rutas.** `addressController.js` importa `"../models/Address"` sin `.js` (rompe en ESM), `updateAddress` usa `userId` no definido, y **no hay `addressRoutes`** montadas. → E3.
+~~**K04 🟠 Dominio Direcciones roto y sin rutas.** `addressController.js` importa `"../models/Address"` sin `.js` (rompe en ESM), `updateAddress` usa `userId` no definido, y **no hay `addressRoutes`** montadas. → E3.~~ **RESUELTO** (2026-08-21): se corrigió el import a `"../models/Address.js"`; el bug de `userId` en `updateAddress` ya se había corregido antes (commit `cad54965`); se creó y montó `addressRoutes.js` bajo `/api/addresses` (5 rutas self-service). Cobertura en `tests/integration/address.test.js` (18 casos). Ver spec [`2026-08-21-bugfix-address-routes-k04`](specs/2026-08-21-bugfix-address-routes-k04.md), PR #22.
 
-**K05 🟠 `deletePaymentMethod` roto.** Referencia `addressId` (variable inexistente); la ruta falla siempre. → E3.
+~~**K05 🟠 `deletePaymentMethod` roto.** Referencia `addressId` (variable inexistente); la ruta falla siempre. → E3.~~ **RESUELTO** (2026-08-21): se corrigió `deletePaymentMethod` para leer `req.params.id` (antes `paymentMethodId`, inexistente) y usarlo en `findOne`/`findByIdAndDelete` (antes `addressId`, no declarado). Cobertura en `tests/integration/paymentMethods.test.js` (`IT-PAY-10`, `IT-PAY-13`, `IT-PAY-14`). Ver spec [`2026-08-21-bugfix-delete-payment-method-k05`](specs/2026-08-21-bugfix-delete-payment-method-k05.md), PR #23.
 
 **K06 🟠 `WishList.products` con `ref` incorrecto.** Apunta a `"User"`, debería ser `"Product"`. → E3.
 
 **K07 🟡 `addProductToCart` roto y sin ruta.** `populate("products.productId")` cuando el campo es `products.product`; además no está expuesto en ninguna ruta. → E3.
 
-**K08 🟠 Escritura de catálogo sin auth.** `POST/PUT/DELETE /products` no exigen autenticación ni rol. → E3.
+~~**K08 🟠 Escritura de catálogo sin auth.** `POST/PUT/DELETE /products` no exigen autenticación ni rol. → E3.~~ **RESUELTO** (2026-08-21): se agregó `authMiddleware` + `isAdminMiddleware` a las 3 rutas de escritura de `productRoutes.js` (mismo patrón que `categoryRoutes.js`), y se validó `imageURL` con `isURL()` en `createProductValidation`/`updateProductValidation` (`BE-VALIDATE-IMAGEURL-2026-08-21`). Cobertura en `tests/integration/products.test.js`, `tests/integration/security.test.js` y `tests/integration/authorization.test.js`. Ver spec [`2026-08-21-security-patch-products-auth-validation`](specs/2026-08-21-security-patch-products-auth-validation.md), PR #19.
 
 **K09 ⚪ Códigos HTTP incorrectos.** `createCart` responde 404 en fallo de validación; `updateOrderStatus` responde 204 con body cuando no encuentra. → E3.
 

@@ -7,6 +7,7 @@ import Cart from "../../src/models/Cart.js";
 import Order from "../../src/models/Order.js";
 import PaymentMethod from "../../src/models/PaymentMethod.js";
 import WishList from "../../src/models/WishList.js";
+import Address from "../../src/models/Address.js";
 
 // Factories: crean documentos reales en la BD en memoria. Los overrides
 // permiten a cada test fijar solo el campo que le interesa.
@@ -86,6 +87,21 @@ export async function createOrder({ user, products, paymentMethod, ...rest } = {
 export async function createWishlist({ user, products } = {}) {
   const owner = user ?? (await createUser())._id;
   return WishList.create({ user: owner, products: products ?? [] });
+}
+
+// Address: valores válidos por defecto para los campos requeridos del schema.
+export async function createAddress({ user, ...rest } = {}) {
+  const owner = user ?? (await createUser())._id;
+  return Address.create({
+    user: owner,
+    address: "Calle 1",
+    city: "Aguascalientes",
+    state: "Aguascalientes",
+    postalCode: "20000",
+    country: "México",
+    phone: "4491234567",
+    ...rest,
+  });
 }
 
 // Firma un access token con la misma forma que authController.generateToken:
