@@ -34,8 +34,8 @@ describe("HomePage (integración con MSW)", () => {
   it("carga y renderiza los productos del catálogo", async () => {
     renderHome();
 
-    // Nota: List ignora su prop de título (typo `titile` en List.jsx y nunca se
-    // renderiza), así que se afirma sobre los productos realmente pintados.
+    // Nota: List no tiene ningún parámetro de título (ni `titile` ni `title`),
+    // así que se afirma sobre los productos realmente pintados.
     expect(await screen.findByText("Camisa")).toBeInTheDocument();
     expect(screen.getByText("Pantalón")).toBeInTheDocument();
   });
