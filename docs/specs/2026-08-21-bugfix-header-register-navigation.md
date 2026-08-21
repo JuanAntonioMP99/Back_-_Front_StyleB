@@ -86,7 +86,7 @@ Exploración de código real (`Style-Busters-main/src/Layout/Header/Header.jsx`,
 - **Backlog derivado creado:** no — el fix es completo dentro de este PR, sin pendientes derivados.
 - **Referencias a historias/tareas creadas:**
   - Spec: [`docs/specs/2026-08-21-bugfix-header-register-navigation.md`](2026-08-21-bugfix-header-register-navigation.md) (este documento)
-  - PR: pendiente de asignar número (ver sección de cierre del PR)
+  - PR #14 — https://github.com/JuanAntonioMP99/Back_-_Front_StyleB/pull/14
 
 ## Matriz de cierre
 | Item detectado | Detectado por | Estado | Acción |
