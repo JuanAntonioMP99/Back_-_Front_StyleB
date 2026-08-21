@@ -2,7 +2,12 @@ import { describe, it, expect } from "vitest";
 import request from "supertest";
 import mongoose from "mongoose";
 import app from "../../server.js";
-import { createProduct, createCategory } from "../helpers/factories.js";
+import {
+  createProduct,
+  createCategory,
+  createAdmin,
+  authHeader,
+} from "../helpers/factories.js";
 
 // Integración de /api/products y /api/products/search.
 // Asserts sobre el comportamiento REAL del controller (status + forma del body).
@@ -61,15 +66,19 @@ describe("GET /api/products/:id", () => {
 
 describe("POST /api/products", () => {
   it("IT-PROD-05 — payload válido → 201 con la categoría poblada", async () => {
+    const admin = await createAdmin();
     const category = await createCategory({ name: "Pantalones" });
 
-    const res = await request(app).post("/api/products").send({
-      name: "Jeans",
-      description: "Denim clásico",
-      price: 49.9,
-      stock: 5,
-      category: category._id.toString(),
-    });
+    const res = await request(app)
+      .post("/api/products")
+      .set(authHeader(admin))
+      .send({
+        name: "Jeans",
+        description: "Denim clásico",
+        price: 49.9,
+        stock: 5,
+        category: category._id.toString(),
+      });
 
     expect(res.status).toBe(201);
     expect(res.body).toMatchObject({ name: "Jeans", price: 49.9 });
@@ -77,9 +86,14 @@ describe("POST /api/products", () => {
   });
 
   it("IT-PROD-06 — sin name ni price → 422", async () => {
-    const res = await request(app).post("/api/products").send({
-      description: "Falta lo obligatorio",
-    });
+    const admin = await createAdmin();
+
+    const res = await request(app)
+      .post("/api/products")
+      .set(authHeader(admin))
+      .send({
+        description: "Falta lo obligatorio",
+      });
 
     expect(res.status).toBe(422);
     expect(Array.isArray(res.body.errors)).toBe(true);
@@ -89,10 +103,15 @@ describe("POST /api/products", () => {
   });
 
   it("IT-PROD-07 — price negativo → 422", async () => {
-    const res = await request(app).post("/api/products").send({
-      name: "Precio inválido",
-      price: -10,
-    });
+    const admin = await createAdmin();
+
+    const res = await request(app)
+      .post("/api/products")
+      .set(authHeader(admin))
+      .send({
+        name: "Precio inválido",
+        price: -10,
+      });
 
     expect(res.status).toBe(422);
     const fields = res.body.errors.map((e) => e.path);
@@ -100,34 +119,49 @@ describe("POST /api/products", () => {
   });
 
   it("IT-PROD-10 — CA-4: images con URLs válidas → 201 y persiste el array", async () => {
-    const res = await request(app).post("/api/products").send({
-      name: "Camisa con galería",
-      description: "Producto con varias fotos",
-      price: 25,
-      images: ["https://a.test/1.jpg", "https://a.test/2.jpg"],
-    });
+    const admin = await createAdmin();
+
+    const res = await request(app)
+      .post("/api/products")
+      .set(authHeader(admin))
+      .send({
+        name: "Camisa con galería",
+        description: "Producto con varias fotos",
+        price: 25,
+        images: ["https://a.test/1.jpg", "https://a.test/2.jpg"],
+      });
 
     expect(res.status).toBe(201);
     expect(res.body.images).toEqual(["https://a.test/1.jpg", "https://a.test/2.jpg"]);
   });
 
   it("IT-PROD-11 — CA-4: sin images en el body → 201 con images: []", async () => {
-    const res = await request(app).post("/api/products").send({
-      name: "Camisa sin galería",
-      description: "Producto sin fotos adicionales",
-      price: 25,
-    });
+    const admin = await createAdmin();
+
+    const res = await request(app)
+      .post("/api/products")
+      .set(authHeader(admin))
+      .send({
+        name: "Camisa sin galería",
+        description: "Producto sin fotos adicionales",
+        price: 25,
+      });
 
     expect(res.status).toBe(201);
     expect(res.body.images).toEqual([]);
   });
 
   it("IT-PROD-12 — CA-3: images no-array → 422", async () => {
-    const res = await request(app).post("/api/products").send({
-      name: "Images inválido",
-      price: 25,
-      images: "no-es-array",
-    });
+    const admin = await createAdmin();
+
+    const res = await request(app)
+      .post("/api/products")
+      .set(authHeader(admin))
+      .send({
+        name: "Images inválido",
+        price: 25,
+        images: "no-es-array",
+      });
 
     expect(res.status).toBe(422);
     const fields = res.body.errors.map((e) => e.path);
@@ -135,11 +169,16 @@ describe("POST /api/products", () => {
   });
 
   it("IT-PROD-13 — CA-3: elemento de images con URL inválida → 422", async () => {
-    const res = await request(app).post("/api/products").send({
-      name: "URL inválida en galería",
-      price: 25,
-      images: ["no-es-una-url"],
-    });
+    const admin = await createAdmin();
+
+    const res = await request(app)
+      .post("/api/products")
+      .set(authHeader(admin))
+      .send({
+        name: "URL inválida en galería",
+        price: 25,
+        images: ["no-es-una-url"],
+      });
 
     expect(res.status).toBe(422);
     const fields = res.body.errors.map((e) => e.path);
@@ -147,26 +186,49 @@ describe("POST /api/products", () => {
   });
 
   it("IT-PROD-14 — CA-3: images excede el límite de 10 elementos → 422", async () => {
+    const admin = await createAdmin();
     const elevenUrls = Array.from({ length: 11 }, (_, i) => `https://a.test/${i}.jpg`);
 
-    const res = await request(app).post("/api/products").send({
-      name: "Demasiadas imágenes",
-      price: 25,
-      images: elevenUrls,
-    });
+    const res = await request(app)
+      .post("/api/products")
+      .set(authHeader(admin))
+      .send({
+        name: "Demasiadas imágenes",
+        price: 25,
+        images: elevenUrls,
+      });
 
     expect(res.status).toBe(422);
     const fields = res.body.errors.map((e) => e.path);
     expect(fields).toContain("images");
   });
+
+  it("CA-6: imageURL no-URL → 422 con path imageURL", async () => {
+    const admin = await createAdmin();
+
+    const res = await request(app)
+      .post("/api/products")
+      .set(authHeader(admin))
+      .send({
+        name: "imageURL inválido",
+        price: 25,
+        imageURL: "no-es-una-url",
+      });
+
+    expect(res.status).toBe(422);
+    const fields = res.body.errors.map((e) => e.path);
+    expect(fields).toContain("imageURL");
+  });
 });
 
 describe("PUT /api/products/:id", () => {
   it("IT-PROD-08 — actualiza campos y devuelve 200", async () => {
+    const admin = await createAdmin();
     const product = await createProduct({ name: "Viejo", price: 100 });
 
     const res = await request(app)
       .put(`/api/products/${product._id}`)
+      .set(authHeader(admin))
       .send({ name: "Nuevo", price: 200 });
 
     expect(res.status).toBe(200);
@@ -174,17 +236,24 @@ describe("PUT /api/products/:id", () => {
   });
 
   it("id inexistente → 404", async () => {
-    const res = await request(app).put(`/api/products/${id()}`).send({ price: 1 });
+    const admin = await createAdmin();
+
+    const res = await request(app)
+      .put(`/api/products/${id()}`)
+      .set(authHeader(admin))
+      .send({ price: 1 });
 
     expect(res.status).toBe(404);
     expect(res.body).toEqual({ message: "Product not found" });
   });
 
   it("stock negativo → 422", async () => {
+    const admin = await createAdmin();
     const product = await createProduct();
 
     const res = await request(app)
       .put(`/api/products/${product._id}`)
+      .set(authHeader(admin))
       .send({ stock: -3 });
 
     expect(res.status).toBe(422);
@@ -193,10 +262,12 @@ describe("PUT /api/products/:id", () => {
   });
 
   it("IT-PROD-15 — CA-5: images en el body → 200 y actualiza el array", async () => {
+    const admin = await createAdmin();
     const product = await createProduct({ images: ["https://a.test/old.jpg"] });
 
     const res = await request(app)
       .put(`/api/products/${product._id}`)
+      .set(authHeader(admin))
       .send({ images: ["https://a.test/new1.jpg", "https://a.test/new2.jpg"] });
 
     expect(res.status).toBe(200);
@@ -204,25 +275,44 @@ describe("PUT /api/products/:id", () => {
   });
 
   it("IT-PROD-16 — CA-5: sin images en el body conserva el images original", async () => {
+    const admin = await createAdmin();
     const product = await createProduct({
       images: ["https://a.test/keep1.jpg", "https://a.test/keep2.jpg"],
     });
 
     const res = await request(app)
       .put(`/api/products/${product._id}`)
+      .set(authHeader(admin))
       .send({ name: "Solo cambia el nombre" });
 
     expect(res.status).toBe(200);
     expect(res.body.name).toBe("Solo cambia el nombre");
     expect(res.body.images).toEqual(["https://a.test/keep1.jpg", "https://a.test/keep2.jpg"]);
   });
+
+  it("CA-7: imageURL no-URL → 422 con path imageURL", async () => {
+    const admin = await createAdmin();
+    const product = await createProduct();
+
+    const res = await request(app)
+      .put(`/api/products/${product._id}`)
+      .set(authHeader(admin))
+      .send({ imageURL: "no-es-una-url" });
+
+    expect(res.status).toBe(422);
+    const fields = res.body.errors.map((e) => e.path);
+    expect(fields).toContain("imageURL");
+  });
 });
 
 describe("DELETE /api/products/:id", () => {
   it("IT-PROD-09 — existente → 204 sin body", async () => {
+    const admin = await createAdmin();
     const product = await createProduct();
 
-    const res = await request(app).delete(`/api/products/${product._id}`);
+    const res = await request(app)
+      .delete(`/api/products/${product._id}`)
+      .set(authHeader(admin));
 
     expect(res.status).toBe(204);
     expect(res.body).toEqual({});
@@ -234,7 +324,11 @@ describe("DELETE /api/products/:id", () => {
   });
 
   it("id inexistente → 404", async () => {
-    const res = await request(app).delete(`/api/products/${id()}`);
+    const admin = await createAdmin();
+
+    const res = await request(app)
+      .delete(`/api/products/${id()}`)
+      .set(authHeader(admin));
 
     expect(res.status).toBe(404);
     expect(res.body).toEqual({ message: "Product not found" });
