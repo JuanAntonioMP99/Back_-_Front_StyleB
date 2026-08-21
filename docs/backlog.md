@@ -57,6 +57,7 @@
 - `FE-DEAD-CSS-HOMEPAGE-2026-08-21` `Style-Busters-main/src/Pages/HomePage.css` es código huérfano — define `.home-header`/`.home-title`/`.home-subtitle`/`.products-grid` pero `HomePage.jsx` nunca lo importa ni usa esas clases · Deuda técnica · derivado de spec [`2026-08-21-feature-home-product-grid-hover`](specs/2026-08-21-feature-home-product-grid-hover.md) (PR #12)
 - `FE-DEAD-PROP-LISTITEM-2026-08-21` `Components/List/List.jsx` pasa `className="list-item"` a cada `<ProductCard>`, prop que `ProductCard.jsx` nunca destructura ni consume · Deuda técnica · derivado de spec [`2026-08-21-feature-home-product-grid-hover`](specs/2026-08-21-feature-home-product-grid-hover.md) (PR #12)
 - `FE-TYPO-TITILE-2026-08-21` `List.jsx` recibe una prop `titile` (typo de `title`) que nunca se usa en el render · Bug · derivado de spec [`2026-08-21-feature-home-product-grid-hover`](specs/2026-08-21-feature-home-product-grid-hover.md) (PR #12)
+- `FE-DEAD-CSS-LAYOUT-MAINCONTENT-2026-08-21` `Layout/Layout.css` define `.main-content` (`max-width: 1400px; margin: 0 auto; padding: clamp(16px, 3vw, 32px);`) pero ningún JSX del repo lo aplica; código muerto · Deuda técnica · derivado de spec [`2026-08-21-feature-home-banner-carousel-card`](specs/2026-08-21-feature-home-banner-carousel-card.md) (PR #15)
 
 ## E6 — Documentación · Alto/Medio
 - F6.1 README raíz + READMEs por proyecto · Documentación
