@@ -75,7 +75,6 @@ export default function Header() {
   };
 
   const handleRegister = () => {
-    console.log("Redirigir a registro");
     setIsUserMenuOpen(false);
     setIsMobileMenuOpen(false);
   };
@@ -226,13 +225,14 @@ export default function Header() {
                           <Icon name="logIn" size={16} />
                           Iniciar Sesión
                         </Link>
-                        <button
+                        <Link
+                          to="/register"
                           className="auth-btn secondary"
                           onClick={handleRegister}
                         >
                           <Icon name="userPlus" size={16} />
                           Crear Cuenta
-                        </button>
+                        </Link>
                       </div>
                     ) : (
                       <div className="user-section">
@@ -352,13 +352,14 @@ export default function Header() {
                         <Icon name="logIn" size={20} />
                         Iniciar Sesión
                       </Link>
-                      <button
+                      <Link
+                        to="/register"
                         className="mobile-auth-btn secondary"
                         onClick={handleRegister}
                       >
                         <Icon name="userPlus" size={20} />
                         Crear Cuenta
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 ) : (
