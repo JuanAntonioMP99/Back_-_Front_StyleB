@@ -179,8 +179,8 @@ describe("PUT /api/payment-methods/:id", () => {
 describe("DELETE /api/payment-methods/:id", () => {
   // IT-PAY-10 (K05): deletePaymentMethod referencia `addressId` (inexistente) y
   // lee req.params.paymentMethodId (la ruta usa :id) → ReferenceError → 500 siempre.
-  // Correcto: 200 al borrar o 404 si no existe. Hoy falla a propósito.
-  it.fails("🔒 IT-PAY-10 — DELETE debería responder 200/404, no 500 (K05)", async () => {
+  // Corregido: el dueño puede borrar su propio método de pago → 200.
+  it("🔒 IT-PAY-10 — DELETE del propio dueño responde 200 (K05)", async () => {
     const user = await createUser();
     const metodo = await createPaymentMethod({ user: user._id, numCard: "4000000000000077" });
 
@@ -188,6 +188,19 @@ describe("DELETE /api/payment-methods/:id", () => {
       .delete(`/api/payment-methods/${metodo._id}`)
       .set(authHeader(user));
 
-    expect([200, 404]).toContain(res.status);
+    expect(res.status).toBe(200);
+  });
+
+  it("🔒 IT-PAY-13 — un customer NO debería poder borrar el método de otro usuario (CA-5)", async () => {
+    const victima = await createUser();
+    const metodo = await createPaymentMethod({ user: victima._id, numCard: "4000000000000085" });
+    const atacante = await createUser();
+
+    const res = await request(app)
+      .delete(`/api/payment-methods/${metodo._id}`)
+      .set(authHeader(atacante));
+
+    expect(res.status).toBe(404);
+    expect(await PaymentMethod.findById(metodo._id)).not.toBeNull();
   });
 });
