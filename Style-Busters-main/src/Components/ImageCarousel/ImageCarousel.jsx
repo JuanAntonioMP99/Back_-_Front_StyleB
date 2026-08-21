@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { PRODUCT_IMAGE_PLACEHOLDER } from '../../utils/productImage';
 import './ImageCarousel.css';
 
 const ImageCarousel = ({ images, altText }) => {
@@ -21,10 +22,16 @@ const ImageCarousel = ({ images, altText }) => {
     return (
         <div className="carousel-image-container">
             <div className="carousel-slide">
-                <img 
-                    src={images[currentIndex]} 
-                    alt={`${altText} - Vista ${currentIndex + 1}`} 
+                <img
+                    key={currentIndex}
+                    src={images[currentIndex]}
+                    alt={`${altText} - Vista ${currentIndex + 1}`}
                     className="carousel-image"
+                    onError={(event) => {
+                        if (event.target.dataset.fallbackApplied) return;
+                        event.target.dataset.fallbackApplied = "true";
+                        event.target.src = PRODUCT_IMAGE_PLACEHOLDER;
+                    }}
                 />
             </div>
             

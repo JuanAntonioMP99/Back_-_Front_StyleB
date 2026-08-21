@@ -93,4 +93,43 @@ describe("ProductDetails", () => {
       await screen.findByText(/algo salió mal de nuestro lado/i),
     ).toBeInTheDocument();
   });
+
+  it("no muestra controles de navegación sin imágenes adicionales", async () => {
+    getProductById.mockResolvedValue(product);
+    renderDetails();
+
+    await screen.findByTestId("product-detail");
+    expect(
+      screen.queryByRole("button", { name: "❯" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "❮" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("no muestra controles de navegación con images vacío", async () => {
+    getProductById.mockResolvedValue({ ...product, images: [] });
+    renderDetails();
+
+    await screen.findByTestId("product-detail");
+    expect(
+      screen.queryByRole("button", { name: "❯" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "❮" }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("muestra controles de navegación con imágenes adicionales", async () => {
+    getProductById.mockResolvedValue({
+      ...product,
+      images: ["https://a.test/1.jpg", "https://a.test/2.jpg"],
+    });
+    renderDetails();
+
+    await screen.findByTestId("product-detail");
+    expect(
+      screen.getByRole("button", { name: "❯" }),
+    ).toBeInTheDocument();
+  });
 });

@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import ImageCarousel from "./ImageCarousel";
+import { PRODUCT_IMAGE_PLACEHOLDER } from "../../utils/productImage";
 
 const images = ["/a.png", "/b.png", "/c.png"];
 
@@ -30,5 +31,23 @@ describe("ImageCarousel", () => {
     render(<ImageCarousel images={images} altText="Prod" />);
     await user.click(screen.getByRole("button", { name: "❮" }));
     expect(screen.getByRole("img")).toHaveAttribute("alt", "Prod - Vista 3");
+  });
+
+  it("aplica el fallback de forma independiente en imágenes rotas de distintos índices", async () => {
+    const user = userEvent.setup();
+    render(<ImageCarousel images={images} altText="Prod" />);
+
+    const firstImg = screen.getByRole("img");
+    expect(firstImg).toHaveAttribute("alt", "Prod - Vista 1");
+    fireEvent.error(firstImg);
+    expect(firstImg).toHaveAttribute("src", PRODUCT_IMAGE_PLACEHOLDER);
+
+    await user.click(screen.getByRole("button", { name: "❯" }));
+    const secondImg = screen.getByRole("img");
+    expect(secondImg).toHaveAttribute("alt", "Prod - Vista 2");
+    expect(secondImg).not.toHaveAttribute("src", PRODUCT_IMAGE_PLACEHOLDER);
+
+    fireEvent.error(secondImg);
+    expect(secondImg).toHaveAttribute("src", PRODUCT_IMAGE_PLACEHOLDER);
   });
 });
