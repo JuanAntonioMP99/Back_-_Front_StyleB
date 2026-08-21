@@ -4,7 +4,7 @@
 - **Tipo:** feature
 - **Complejidad:** S
 - **Fecha:** 2026-08-21
-- **Estado:** DRAFT
+- **Estado:** DONE
 - **ID de backlog:** FE-HOME-GRID-HOVER-2026-08-21
 - **Ejecutor:** subagente frontend-builder
 
@@ -32,21 +32,21 @@ La exploración de código real para este spec (`Style-Busters-main/src/Pages/Ho
 
 ## Criterios de Aceptación
 
-- [ ] **CA-1 — Grid de 3 columnas en escritorio sobre el selector real (`.list-grid`).** `Style-Busters-main/src/Components/List/List.css` (hoy vacío) define `.list-grid` con `display: grid` y `grid-template-columns` que produzca exactamente 3 columnas de igual ancho en viewport ≥ 769px, más `gap` (se sugiere `2rem`, valor ya usado en el mismo patrón por el `.products-grid` huérfano de `HomePage.css` y por `.cart-items` de `Pages/CartPage.css`) y una restricción de ancho máximo reutilizando `--container-width` (`1200px`, definido en `index.css`) con `margin: 0 auto`, siguiendo el mismo patrón ya usado en `Components/SearchResultsList/SearchResultsList.css` (`.search-results-fullwidth { max-width: var(--container-width); margin: 0 auto; }`) y en `Pages/CartPage.css` (`.cart { max-width: 1200px; margin: 0 auto; }`). No se implementa nada en `HomePage.css` (ver "Decisiones de Diseño" — es código muerto, fuera de alcance). Responsive: reutilizar los breakpoints ya existentes en el repo, no inventar valores nuevos — `768px` (el más repetido: `Header.css`, `Navigation.css`, `Layout.css`, `BannerCarousel.css`) reduce a 2 columnas; `480px` (usado en `LoginForm.css`/`RegisterForm.css` para el caso mobile) reduce a 1 columna. Verificable: en escritorio (`≥769px`) `.list-grid` computa 3 columnas iguales; en `≤768px`, 2; en `≤480px`, 1; inspección de código confirma que no se agregó ninguna regla en `HomePage.css`.
+- [x] **CA-1 — Grid de 3 columnas en escritorio sobre el selector real (`.list-grid`).** `Style-Busters-main/src/Components/List/List.css` (hoy vacío) define `.list-grid` con `display: grid` y `grid-template-columns` que produzca exactamente 3 columnas de igual ancho en viewport ≥ 769px, más `gap` (se sugiere `2rem`, valor ya usado en el mismo patrón por el `.products-grid` huérfano de `HomePage.css` y por `.cart-items` de `Pages/CartPage.css`) y una restricción de ancho máximo reutilizando `--container-width` (`1200px`, definido en `index.css`) con `margin: 0 auto`, siguiendo el mismo patrón ya usado en `Components/SearchResultsList/SearchResultsList.css` (`.search-results-fullwidth { max-width: var(--container-width); margin: 0 auto; }`) y en `Pages/CartPage.css` (`.cart { max-width: 1200px; margin: 0 auto; }`). No se implementa nada en `HomePage.css` (ver "Decisiones de Diseño" — es código muerto, fuera de alcance). Responsive: reutilizar los breakpoints ya existentes en el repo, no inventar valores nuevos — `768px` (el más repetido: `Header.css`, `Navigation.css`, `Layout.css`, `BannerCarousel.css`) reduce a 2 columnas; `480px` (usado en `LoginForm.css`/`RegisterForm.css` para el caso mobile) reduce a 1 columna. Verificable: en escritorio (`≥769px`) `.list-grid` computa 3 columnas iguales; en `≤768px`, 2; en `≤480px`, 1; inspección de código confirma que no se agregó ninguna regla en `HomePage.css`.
 
-- [ ] **CA-2 — Tamaño de card reducido de forma coherente con el nuevo ancho de columna.** `.product-card--vertical .product-card-image` (`ProductCard.css`, hoy `height: 280px`) reduce su altura a `220px` — valor ya usado en el mismo archivo (breakpoint móvil de `.product-card--horizontal .product-card-image-link`, línea ~134), reutilizado en vez de introducir un valor arbitrario nuevo. Justificación numérica: con `--container-width: 1200px`, `gap: 2rem` (32px) entre 3 columnas y el padding del contenedor, cada columna resulta en aproximadamente 350-370px de ancho — una imagen de `220px` de alto mantiene una proporción de card compacta y coherente (`object-fit: cover` ya definido evita distorsión). El resto de `.product-card--vertical` (padding `1.25rem`, tipografía, botón) no se modifica salvo que el ejecutor detecte overflow real de contenido dentro de la columna angosta, en cuyo caso debe reutilizar patrones ya existentes en el propio `ProductCard.jsx` (p. ej. el truncado de descripción con `substring(0, 60)` ya implementado) y no inventar mecanismos nuevos. Verificable: `.product-card--vertical .product-card-image { height: 220px; }` en el CSS resultante; 3 cards caben en una fila sin overflow horizontal en viewport de escritorio estándar (1280px/1440px).
+- [x] **CA-2 — Tamaño de card reducido de forma coherente con el nuevo ancho de columna.** `.product-card--vertical .product-card-image` (`ProductCard.css`, hoy `height: 280px`) reduce su altura a `220px` — valor ya usado en el mismo archivo (breakpoint móvil de `.product-card--horizontal .product-card-image-link`, línea ~134), reutilizado en vez de introducir un valor arbitrario nuevo. Justificación numérica: con `--container-width: 1200px`, `gap: 2rem` (32px) entre 3 columnas y el padding del contenedor, cada columna resulta en aproximadamente 350-370px de ancho — una imagen de `220px` de alto mantiene una proporción de card compacta y coherente (`object-fit: cover` ya definido evita distorsión). El resto de `.product-card--vertical` (padding `1.25rem`, tipografía, botón) no se modifica salvo que el ejecutor detecte overflow real de contenido dentro de la columna angosta, en cuyo caso debe reutilizar patrones ya existentes en el propio `ProductCard.jsx` (p. ej. el truncado de descripción con `substring(0, 60)` ya implementado) y no inventar mecanismos nuevos. Verificable: `.product-card--vertical .product-card-image { height: 220px; }` en el CSS resultante; 3 cards caben en una fila sin overflow horizontal en viewport de escritorio estándar (1280px/1440px).
 
-- [ ] **CA-3 — Efecto hover preservado y verificado (no inventado).** `ProductCard.css` ya implementa un efecto hover completo y activo (`.product-card:hover` con `translateY(-5px)` + `box-shadow` cian + `border-color: var(--color-secondary)`; `.product-card:hover .product-card-image` con `scale(1.05)`; `.product-card-title:hover` con `color: var(--color-primary)`), con transiciones ya declaradas en `.product-card`, `.product-card-image` y `.product-card-title`. Este pendiente no requiere crear un efecto nuevo: el CA exige que, tras CA-1/CA-2, ese hover se mantenga intacto y siga siendo perceptible sobre las cards más pequeñas, sin overrides contradictorios agregados en `List.css`. Si el ejecutor considera el efecto insuficientemente perceptible al reducir el tamaño de card, solo puede ajustar la magnitud de los valores ya existentes (p. ej. `translateY(-5px)` → `translateY(-6px)`), nunca introducir un color, sombra o timing de un lenguaje visual distinto al ya usado en el archivo. Verificable: `.product-card:hover`, `.product-card:hover .product-card-image` y `.product-card-title:hover` siguen presentes en `ProductCard.css` sin overrides que los anulen desde `List.css`; `npm test -- ProductCard` sigue pasando sin cambios de comportamiento funcional.
+- [x] **CA-3 — Efecto hover preservado y verificado (no inventado).** `ProductCard.css` ya implementa un efecto hover completo y activo (`.product-card:hover` con `translateY(-5px)` + `box-shadow` cian + `border-color: var(--color-secondary)`; `.product-card:hover .product-card-image` con `scale(1.05)`; `.product-card-title:hover` con `color: var(--color-primary)`), con transiciones ya declaradas en `.product-card`, `.product-card-image` y `.product-card-title`. Este pendiente no requiere crear un efecto nuevo: el CA exige que, tras CA-1/CA-2, ese hover se mantenga intacto y siga siendo perceptible sobre las cards más pequeñas, sin overrides contradictorios agregados en `List.css`. Si el ejecutor considera el efecto insuficientemente perceptible al reducir el tamaño de card, solo puede ajustar la magnitud de los valores ya existentes (p. ej. `translateY(-5px)` → `translateY(-6px)`), nunca introducir un color, sombra o timing de un lenguaje visual distinto al ya usado en el archivo. Verificable: `.product-card:hover`, `.product-card:hover .product-card-image` y `.product-card-title:hover` siguen presentes en `ProductCard.css` sin overrides que los anulen desde `List.css`; `npm test -- ProductCard` sigue pasando sin cambios de comportamiento funcional.
 
-- [ ] **CA-4 — Paleta sin cambios.** Ningún valor de color agregado o modificado en `List.css`/`ProductCard.css` por este pendiente introduce un color fuera de los tokens `--color-*` definidos en `:root` de `index.css` o de los valores neutros ya usados en el repo (p. ej. `rgba(255,255,255,0.1)`). Este pendiente es de dimensiones/layout, no se espera que requiera declarar ningún color nuevo. Verificable: `git diff` de los archivos tocados no contiene ningún literal hex/rgb/nombre de color fuera de la paleta documentada en `index.css`.
+- [x] **CA-4 — Paleta sin cambios.** Ningún valor de color agregado o modificado en `List.css`/`ProductCard.css` por este pendiente introduce un color fuera de los tokens `--color-*` definidos en `:root` de `index.css` o de los valores neutros ya usados en el repo (p. ej. `rgba(255,255,255,0.1)`). Este pendiente es de dimensiones/layout, no se espera que requiera declarar ningún color nuevo. Verificable: `git diff` de los archivos tocados no contiene ningún literal hex/rgb/nombre de color fuera de la paleta documentada en `index.css`.
 
-- [ ] **CA-5 — Impacto colateral en páginas que reutilizan `List`/`ProductCard`, declarado explícitamente.** `Components/List/List.jsx` se reutiliza en `Components/SearchResultsList/SearchResultsList.jsx` (vía `Pages/SearchResults.jsx`), pero siempre con `layout="vertical"` — esto renderiza `<div className="list-vertical">` con `ProductCard orientation="horizontal"`, un selector de contenedor (`.list-vertical`) y una variante de card (`.product-card--horizontal`) distintos de los que toca este pendiente (`.list-grid`, `.product-card--vertical`). En consecuencia:
+- [x] **CA-5 — Impacto colateral en páginas que reutilizan `List`/`ProductCard`, declarado explícitamente.** `Components/List/List.jsx` se reutiliza en `Components/SearchResultsList/SearchResultsList.jsx` (vía `Pages/SearchResults.jsx`), pero siempre con `layout="vertical"` — esto renderiza `<div className="list-vertical">` con `ProductCard orientation="horizontal"`, un selector de contenedor (`.list-vertical`) y una variante de card (`.product-card--horizontal`) distintos de los que toca este pendiente (`.list-grid`, `.product-card--vertical`). En consecuencia:
   - Sin impacto: el grid de 3 columnas de CA-1 no aplica a `SearchResults`, porque esa página nunca renderiza `.list-grid`.
   - Sin impacto: la reducción de altura de imagen de CA-2 se limita al selector `.product-card--vertical .product-card-image`; `SearchResults` usa `.product-card--horizontal .product-card-image-link { height: 100%; }`, no tocado por este spec.
   - Impacto esperado y sin cambio de comportamiento: el hover de CA-3 (`.product-card:hover`, sin sufijo de orientación) es una regla compartida entre ambas orientaciones y ya se aplicaba en `SearchResults` antes de este pendiente; como no se modifica, no hay cambio observable ahí.
   Verificable: tras el cambio, `Pages/SearchResults.jsx` no cambia visualmente salvo por el hover ya preexistente (no tocado por este pendiente).
 
-- [ ] **CA-6 — Sin contenido inventado.** Los cambios se limitan a `List.css` y `ProductCard.css`. No se agrega texto, dato, prop de negocio, componente nuevo, ruta ni llamada a servicio que no exista ya. No se reactiva ni se modifica `HomePage.css` (código huérfano, fuera de alcance — ver "Decisiones de Diseño" y "Pendientes Abiertos"). Si el ejecutor determina que es estrictamente necesario un ajuste mínimo de JSX (p. ej. algo no detectado en esta exploración), debe limitarse a lo indispensable para aplicar el CSS y registrarlo explícitamente en la entrega.
+- [x] **CA-6 — Sin contenido inventado.** Los cambios se limitan a `List.css` y `ProductCard.css`. No se agrega texto, dato, prop de negocio, componente nuevo, ruta ni llamada a servicio que no exista ya. No se reactiva ni se modifica `HomePage.css` (código huérfano, fuera de alcance — ver "Decisiones de Diseño" y "Pendientes Abiertos"). Si el ejecutor determina que es estrictamente necesario un ajuste mínimo de JSX (p. ej. algo no detectado en esta exploración), debe limitarse a lo indispensable para aplicar el CSS y registrarlo explícitamente en la entrega.
 
 ## Consideraciones de Seguridad
 
@@ -105,22 +105,29 @@ La exploración de código real para este spec (`Style-Busters-main/src/Pages/Ho
 - **Items que deben convertirse en backlog:** los tres puntos de "Comportamientos inconsistentes detectados" arriba, a decisión del orchestrator tras revisar este spec.
 
 ## Resultados (se completa al cerrar)
-- Fecha de cierre:
-- CAs cumplidos:
-- CAs no cumplidos:
-- Deuda técnica generada:
-- Lecciones aprendidas:
-- Pendientes abiertos confirmados:
-- Gaps no resueltos:
-- Trabajo fuera de alcance confirmado:
-- Backlog derivado creado: sí | no
-- Referencias a historias/tareas creadas: [IDs / enlaces]
+- **Fecha de cierre:** 2026-08-21
+- **Estado final:** DONE
+- **CAs cumplidos:** los 6 — CA-1, CA-2, CA-3, CA-4, CA-5, CA-6. Implementados en PR #12 (merge commit `974f59fd`, más commit de evidencia `fe77d32b`) sobre `develop`. A diferencia del pendiente anterior (`2026-08-20-feature-frontend-ui-consistencia-visual`, 4 hallazgos), la implementación fue limpia desde el primer intento: ninguna de las 4 capas de revisión (anti-hallucination-reviewer, qa-test-designer, security-reviewer, code-reviewer) reportó hallazgos que corregir; `tech-reviewer` dictaminó APTO.
+- **CAs no cumplidos:** ninguno.
+- **Deuda técnica generada:** ninguna.
+- **Lecciones aprendidas:** un pendiente pequeño y bien acotado (2 archivos CSS) tuvo cero hallazgos en las 4 capas de revisión, en contraste con el pendiente anterior de mayor alcance (13 CAs, 4 hallazgos). Sugiere que acotar el alcance por pendiente reduce el ratio de correcciones necesarias.
+- **Pendientes abiertos confirmados:** los 3 ya documentados en este spec bajo "Pendientes Abiertos y Gaps Detectados" — quedan fuera de alcance de este pendiente y se derivan a backlog (ver más abajo):
+  1. `Pages/HomePage.css` — código huérfano, no importado por `HomePage.jsx`.
+  2. `Components/List/List.jsx` pasa `className="list-item"` a `<ProductCard>`, prop muerta que `ProductCard.jsx` nunca consume.
+  3. `List.jsx` recibe una prop `titile` (typo de `title`) que nunca se usa en el render.
+- **Gaps no resueltos:** ninguno dentro del alcance de este spec.
+- **Trabajo fuera de alcance confirmado:** los mismos 3 puntos de arriba — explícitamente NO implementados en este PR (limpieza de `HomePage.css`, corrección de la prop muerta `className="list-item"`, corrección del typo `titile`).
+- **Backlog derivado creado:** sí — 3 entradas nuevas en [`docs/backlog.md`](../backlog.md), épica E5 (Arranque y coherencia del frontend):
+  - `FE-DEAD-CSS-HOMEPAGE-2026-08-21`
+  - `FE-DEAD-PROP-LISTITEM-2026-08-21`
+  - `FE-TYPO-TITILE-2026-08-21`
+- **Referencias a historias/tareas creadas:**
+  - PR #12 — https://github.com/JuanAntonioMP99/Back_-_Front_StyleB/pull/12
+  - Spec: [`docs/specs/2026-08-21-feature-home-product-grid-hover.md`](2026-08-21-feature-home-product-grid-hover.md) (este documento)
+  - Plan de prueba: [`docs/test-plans/2026-08-21-feature-home-product-grid-hover.md`](../test-plans/2026-08-21-feature-home-product-grid-hover.md)
+  - Backlog: [`docs/backlog.md`](../backlog.md)
 
 ## Matriz de cierre
-| Item detectado | Estado | Acción |
-|---|---|---|
-| Implementado | Confirmado | Cerrar |
-| Parcial | Requiere seguimiento | Crear backlog |
-| Inconsistente | Riesgo | Crear backlog |
-| Fuera de alcance | Aplazado | Crear backlog o archivar |
-| Obsoleto | No aplica | Archivar o eliminar |
+| Item detectado | Detectado por | Estado | Acción |
+|---|---|---|---|
+| Implementado sin hallazgos (CA-1 a CA-6) | anti-hallucination-reviewer, qa-test-designer, security-reviewer, code-reviewer, tech-reviewer (APTO) | Confirmado | Cerrar |
