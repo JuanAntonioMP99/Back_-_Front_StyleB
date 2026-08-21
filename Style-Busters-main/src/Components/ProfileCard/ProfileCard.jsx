@@ -3,8 +3,8 @@ import Button from "../Common/Button";
 import "./ProfileCard.css";
 
 const ROLE_COLORS = {
-  admin: "#2563eb",
-  customer: "#22c55e",
+  admin: "var(--color-secondary)",
+  customer: "var(--color-accent-lime)",
 };
 
 const ROLE_ACTIONS = {

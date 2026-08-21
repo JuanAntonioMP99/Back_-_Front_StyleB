@@ -12,29 +12,32 @@ function renderNav(props = {}) {
 }
 
 describe("Navigation", () => {
-  it("desktop: muestra el botón de categorías y los enlaces destacados", () => {
+  it("desktop: muestra el botón de categorías y no enlaces a rutas inexistentes", () => {
     renderNav();
     expect(
       screen.getByRole("button", { name: /todas las categorías/i }),
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /ofertas del día/i })).toHaveAttribute(
-      "href",
-      "/offers",
-    );
-    expect(screen.getByRole("link", { name: /novedades/i })).toHaveAttribute(
-      "href",
-      "/new",
-    );
-    expect(screen.getByRole("link", { name: /más vendidos/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /flash sale/i })).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: /ofertas del día/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: /novedades/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: /más vendidos/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: /flash sale/i }),
+    ).not.toBeInTheDocument();
   });
 
-  it("móvil: renderiza los enlaces destacados como navegación móvil", () => {
+  it("móvil: renderiza solo los enlaces de categorías, sin los enlaces destacados eliminados", () => {
     renderNav({ isMobile: true });
-    expect(screen.getByRole("link", { name: /ofertas del día/i })).toHaveAttribute(
-      "href",
-      "/offers",
-    );
-    expect(screen.getByRole("link", { name: /novedades/i })).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: /ofertas del día/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: /novedades/i }),
+    ).not.toBeInTheDocument();
   });
 });

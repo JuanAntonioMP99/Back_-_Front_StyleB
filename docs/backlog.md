@@ -51,6 +51,9 @@
 - ~~F5.2 Config de API por env (`REACT_APP_API_URL`) · Alineación FE-BE~~ **RESUELTO** (2026-07-30, spec [`infra-env-config-frontend`](specs/2026-07-30-infra-env-config-frontend.md), ENV-02)
 - F5.3 Eliminar/crear endpoint `/categories/:id/products` · Bug · (K18)
 - F5.4 Limpiar `debugger;`, casing de imports, textos de contraseña · Bug · (K17)
+- `FE-THEME-TOGGLE-2026-08-20` El toggle de tema claro/oscuro del Header (`Context/ThemeContext.jsx`) escribe `document.documentElement.dataset.theme` pero no existe ningún selector `[data-theme="light"]` en el CSS del proyecto (solo `[data-theme="dark"]`) — en modo claro la app no cambia de apariencia · Bug · derivado de spec [`2026-08-20-feature-frontend-ui-consistencia-visual`](specs/2026-08-20-feature-frontend-ui-consistencia-visual.md) (PR #10)
+- `FE-SEARCHRESULTS-BROKEN-LINK-2026-08-20` `Components/SearchResultsList/SearchResultsList.jsx` línea 115 enlaza `to="/offers"`, ruta que no existe en `App/App.jsx` · Bug · derivado de spec [`2026-08-20-feature-frontend-ui-consistencia-visual`](specs/2026-08-20-feature-frontend-ui-consistencia-visual.md) (PR #10)
+- `FE-DEAD-CSS-PRODUCTDETAILPAGE-2026-08-20` `Pages/ProductDetailPage.css` es un archivo huérfano no importado por ningún componente (código muerto) · Deuda técnica · derivado de spec [`2026-08-20-feature-frontend-ui-consistencia-visual`](specs/2026-08-20-feature-frontend-ui-consistencia-visual.md) (PR #10)
 
 ## E6 — Documentación · Alto/Medio
 - F6.1 README raíz + READMEs por proyecto · Documentación
