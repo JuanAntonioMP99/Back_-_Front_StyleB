@@ -20,7 +20,7 @@ Conecta el carrusel de imágenes (ImageCarousel.jsx, previamente huérfano) a la
 
 - [x] **CA-4 — Caso sin imágenes adicionales se comporta como imagen única.** Con product.images ausente/[], galleryImages tiene 1 elemento y ImageCarousel.jsx oculta flechas/indicadores ({images.length > 1 && (...)}). TC-4 cumplido, tests "no muestra controles" pasan.
 
-- [x] **CA-5 — Ajuste de ImageCarousel.css sin regresión visual.** Cambia .carousel-image-container (max-width 500px → 100%, border-radius 8px → 12px) y .carousel-image (quita aspect-ratio: 1 / 1, object-fit cover → contain). Valores reutilizados del repo. TC-5 cumplido, 5 cambios exactos de propiedad.
+- [x] **CA-5 — Ajuste de ImageCarousel.css sin regresión visual.** Cambia .carousel-image-container (max-width 500px → 100%, border-radius 8px → 12px) y .carousel-image (quita aspect-ratio: 1 / 1, object-fit cover → contain). Valores reutilizados del repo. TC-5 cumplido, 4 cambios exactos de propiedad (el spec original anticipaba un quinto, `width: 100%`, pero ya existía en el archivo previo — verificado por tech-reviewer).
 
 - [x] **CA-6 — Paleta de ImageCarousel.css sin cambios.** No se modifica ningún color en .carousel-btn, .prev-btn, .next-btn, .carousel-indicators ni .indicator. TC-6 cumplido, 0 líneas tocadas en esos bloques.
 
@@ -48,7 +48,7 @@ Conecta el carrusel de imágenes (ImageCarousel.jsx, previamente huérfano) a la
 
 - [x] **anti-hallucination-reviewer: limpio.** Rutas, endpoints, librerías todos reales. Imports correctos. Reutilización de getProductImage, PRODUCT_IMAGE_PLACEHOLDER, ImageCarousel verificada.
 
-- [ ] **tech-reviewer:** FALTA — se ejecutará sobre el PR una vez abierto.
+- [x] **tech-reviewer: APTO** — verificado directamente (código, tests reproducidos 210/210, mergeable/CLEAN, sin arrastre de otros pendientes).
 
 - [ ] **Segunda opinión (Codex): registrada — consultiva, no bloquea merge.** FALTA: no disponible en este entorno.
 
