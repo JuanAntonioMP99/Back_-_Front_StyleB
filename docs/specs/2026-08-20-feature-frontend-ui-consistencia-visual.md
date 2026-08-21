@@ -4,7 +4,7 @@
 - **Tipo:** feature
 - **Complejidad:** L (cercana a XL — ver nota de complejidad al final del documento; se recomienda al orchestrator evaluar si se divide)
 - **Fecha:** 2026-08-20
-- **Estado:** DRAFT
+- **Estado:** DONE
 - **ID de backlog:** FE-UI-CONSISTENCY-2026-08-20
 - **Ejecutor:** subagente frontend-builder
 
@@ -32,13 +32,13 @@ Sobre el punto 6 (imágenes de producto sin mostrarse), el código actual ya con
 
 ## Criterios de Aceptación
 
-- [ ] **CA-1 — Header sin enlaces a páginas inexistentes.** En `Style-Busters-main/src/Layout/Navigation/Navigation.jsx` se eliminan los cuatro `<Link>` "Ofertas del día" (`/offers`), "Novedades" (`/new`), "Más vendidos" (`/bestsellers`) y "Flash sale" (`/flash-sale`), tanto en el bloque de navegación de escritorio (`<nav className="categories-nav">`, líneas ~142-155) como en el bloque de navegación móvil (líneas ~39-71). El resto de la navegación (categorías dinámicas desde `Data/categories.json`) queda intacto. `Style-Busters-main/src/Layout/Navigation/Navigation.test.jsx` se actualiza para no depender de esos enlaces (los dos `it(...)` actuales asertan explícitamente `href="/offers"` y `href="/new"`, y deben reescribirse). Verificable: `npm test -- Navigation` pasa; ninguno de los cuatro `to="..."` queda en `Navigation.jsx`.
+- [x] **CA-1 — Header sin enlaces a páginas inexistentes.** En `Style-Busters-main/src/Layout/Navigation/Navigation.jsx` se eliminan los cuatro `<Link>` "Ofertas del día" (`/offers`), "Novedades" (`/new`), "Más vendidos" (`/bestsellers`) y "Flash sale" (`/flash-sale`), tanto en el bloque de navegación de escritorio (`<nav className="categories-nav">`, líneas ~142-155) como en el bloque de navegación móvil (líneas ~39-71). El resto de la navegación (categorías dinámicas desde `Data/categories.json`) queda intacto. `Style-Busters-main/src/Layout/Navigation/Navigation.test.jsx` se actualiza para no depender de esos enlaces (los dos `it(...)` actuales asertan explícitamente `href="/offers"` y `href="/new"`, y deben reescribirse). Verificable: `npm test -- Navigation` pasa; ninguno de los cuatro `to="..."` queda en `Navigation.jsx`.
 
-- [ ] **CA-2 — Home mantiene el catálogo en tarjetas.** `Style-Busters-main/src/Pages/HomePage.jsx` sigue mostrando el catálogo a través de `Components/List/List.jsx` → `Components/ProductCard/ProductCard.jsx` (ya implementado como card real, con imagen, título, precio, badges de stock y botón "Agregar al carrito" en `ProductCard.css`, usando la paleta real `--color-*`). Este CA es de no-regresión: no se sustituye el layout de card por otro, y cualquier ajuste de estilo sobre `ProductCard.css` debe mantenerse dentro de los tokens `--color-*` ya definidos (ver CA-4).
+- [x] **CA-2 — Home mantiene el catálogo en tarjetas.** `Style-Busters-main/src/Pages/HomePage.jsx` sigue mostrando el catálogo a través de `Components/List/List.jsx` → `Components/ProductCard/ProductCard.jsx` (ya implementado como card real, con imagen, título, precio, badges de stock y botón "Agregar al carrito" en `ProductCard.css`, usando la paleta real `--color-*`). Este CA es de no-regresión: no se sustituye el layout de card por otro, y cualquier ajuste de estilo sobre `ProductCard.css` debe mantenerse dentro de los tokens `--color-*` ya definidos (ver CA-4).
 
-- [ ] **CA-3 — ProductDetails con estilo de card coherente.** `Style-Busters-main/src/Components/ProductDetails/ProductDetails.css` deja de referenciar las custom properties no definidas `--surface`, `--radius`, `--border`, `--bg`, `--muted` (usadas hoy en `.product-details-container`, `.product-details-main`, `.product-details-image`) y pasa a usar los tokens reales de `index.css` (p. ej. fondo `--color-bg-card`, bordes/colores de texto consistentes con `--color-text-main`/`--color-text-muted`), de modo que el bloque de producto (imagen + info) se vea como una card con el mismo lenguaje visual que `ProductCard`/`.cart-item` (fondo oscuro sólido, borde y radio visibles, no transparente). Verificable: `ProductDetails.css` no contiene ninguna custom property que no exista en `:root` de `index.css`.
+- [x] **CA-3 — ProductDetails con estilo de card coherente.** `Style-Busters-main/src/Components/ProductDetails/ProductDetails.css` deja de referenciar las custom properties no definidas `--surface`, `--radius`, `--border`, `--bg`, `--muted` (usadas hoy en `.product-details-container`, `.product-details-main`, `.product-details-image`) y pasa a usar los tokens reales de `index.css` (p. ej. fondo `--color-bg-card`, bordes/colores de texto consistentes con `--color-text-main`/`--color-text-muted`), de modo que el bloque de producto (imagen + info) se vea como una card con el mismo lenguaje visual que `ProductCard`/`.cart-item` (fondo oscuro sólido, borde y radio visibles, no transparente). Verificable: `ProductDetails.css` no contiene ninguna custom property que no exista en `:root` de `index.css`.
 
-- [ ] **CA-4 — Ningún color nuevo fuera de la paleta existente.** Toda declaración de color (`background`, `color`, `border-color`, etc.) en los archivos tocados por este pendiente debe resolver a uno de los tokens ya definidos en `:root` de `index.css` (`--color-primary`, `--color-secondary`, `--color-bg-dark`, `--color-bg-card`, `--color-accent-pink`, `--color-accent-orange`, `--color-accent-lime`, `--color-text-main`, `--color-text-muted`) o a valores neutros ya usados en el repo sobre fondo oscuro (p. ej. `rgba(255,255,255,0.1)`), nunca a un hex/rgb de tema claro. Esto implica resolver, sin introducir colores nuevos, las custom properties no definidas identificadas en:
+- [x] **CA-4 — Ningún color nuevo fuera de la paleta existente.** Toda declaración de color (`background`, `color`, `border-color`, etc.) en los archivos tocados por este pendiente debe resolver a uno de los tokens ya definidos en `:root` de `index.css` (`--color-primary`, `--color-secondary`, `--color-bg-dark`, `--color-bg-card`, `--color-accent-pink`, `--color-accent-orange`, `--color-accent-lime`, `--color-text-main`, `--color-text-muted`) o a valores neutros ya usados en el repo sobre fondo oscuro (p. ej. `rgba(255,255,255,0.1)`), nunca a un hex/rgb de tema claro. Esto implica resolver, sin introducir colores nuevos, las custom properties no definidas identificadas en:
   - `Style-Busters-main/src/Layout/Header/Header.css`
   - `Style-Busters-main/src/Layout/Navigation/Navigation.css`
   - `Style-Busters-main/src/Layout/Layout.css`
@@ -53,7 +53,7 @@ Sobre el punto 6 (imágenes de producto sin mostrarse), el código actual ya con
 
   Además, `Style-Busters-main/src/Components/ProfileCard/ProfileCard.jsx` reemplaza los colores inline hardcodeados de `ROLE_COLORS` (`admin: "#2563eb"`, `customer: "#22c55e"`, ninguno perteneciente a la paleta) por tokens de la paleta existente (p. ej. `--color-accent-*`). Verificable: ningún archivo de los listados usa `var(--x, <hex-fuera-de-paleta>)` ni un literal hex/rgb ajeno a la paleta documentada en `index.css` para declarar color.
 
-- [ ] **CA-5 — Cobertura completa de páginas con ruta.** Se revisan y corrigen, según lo detectado en cada una, todas las páginas bajo `Style-Busters-main/src/Pages/` referenciadas desde `App/App.jsx`: `HomePage.jsx`, `CartPage.jsx`, `Login.jsx`, `Register.jsx`, `SearchResults.jsx`, `ProductDetailsPage.jsx`, `Profile.jsx`, `CheckoutPage.jsx`, `ConfirmationPage.jsx` (la ruta `*` de "no encontrada" en `App.jsx` es un `<div>` inline, no un archivo bajo `Pages/`, y queda fuera de este CA). En concreto:
+- [x] **CA-5 — Cobertura completa de páginas con ruta.** Se revisan y corrigen, según lo detectado en cada una, todas las páginas bajo `Style-Busters-main/src/Pages/` referenciadas desde `App/App.jsx`: `HomePage.jsx`, `CartPage.jsx`, `Login.jsx`, `Register.jsx`, `SearchResults.jsx`, `ProductDetailsPage.jsx`, `Profile.jsx`, `CheckoutPage.jsx`, `ConfirmationPage.jsx` (la ruta `*` de "no encontrada" en `App.jsx` es un `<div>` inline, no un archivo bajo `Pages/`, y queda fuera de este CA). En concreto:
   - **CA-5a (SearchResults):** `Components/SearchResultsList/SearchResultsList.css` deja de caer en sus fallbacks de tema claro (`#FFFF33`, `#666`, `#f9fafb`, `#fff`, `#333`, `#555`, `#e5e5e5`, `#ddd`, `#777`, `blue`) y pasa a la paleta oscura real (cubierto también por CA-4).
   - **CA-5b (Checkout):** `Components/Checkout/Address/Address.css`, `Components/Checkout/PaymentMethods/Payment.css`, `Components/Checkout/Shared/SummarySection.css` dejan de caer en sus fallbacks de tema claro (`#fff`, `#fafafa`, `#f4f4f5`, `#f9f9f9`, `#111`, `#666`, `#eee`, `#ddd`) y pasan a la paleta oscura real (cubierto también por CA-4).
   - **CA-5c (Cart/CartView reutilizado en Checkout):** `Components/CartView/CartView.jsx` no importa ningún CSS propio hoy; sus estilos (`.cart-item`, `.cart-item-image`, etc.) viven duplicados en `Pages/CartPage.css`, mientras que `Components/CartView/CartView.css` existe pero está huérfano (nadie lo importa) y casi duplica 1:1 a `CartPage.css`. Como `<CartView />` también se renderiza dentro de `CheckoutPage.jsx` (sección "3. Revisa tu pedido"), si el chunk lazy de `/cart` no fue cargado antes en la sesión, esas filas del resumen de checkout se ven sin estilo. Se corrige haciendo que `CartView.jsx` importe `./CartView.css`, y `Pages/CartPage.css` deja de duplicar las reglas de `.cart-item`/`.cart-view`/`.cart-summary`/`.cart-empty`, quedándose solo con lo propio de la página (`.cart`, `.cart-header*`). Verificable: con productos en el carrito, entrar directo a `/checkout` sin haber visitado `/cart` antes en la sesión muestra el resumen de pedido con el mismo estilo que en `/cart`.
@@ -62,9 +62,9 @@ Sobre el punto 6 (imágenes de producto sin mostrarse), el código actual ya con
   - **CA-5f (Profile):** cubierto por CA-4 (tokens indefinidos de `ProfileCard.css` + colores de rol fuera de paleta en `ProfileCard.jsx`).
   - **CA-5g (Home, ConfirmationPage):** ya usan la paleta real (`--color-*`) correctamente; este CA exige verificar que no se rompan visualmente por los cambios de CA-3/CA-4/CA-5a-e (no se detectó bug propio en `HomePage.css` ni `ConfirmationPage.css` durante la exploración de este spec).
 
-- [ ] **CA-6 — Sin contenido inventado.** Los cambios de este pendiente se limitan a CSS y a JSX estructural estrictamente necesario para aplicarlo (agregar el `import "./CartView.css"` faltante en CA-5c, mover/renombrar un `className`, eliminar los bloques `<Link>` de CA-1, dar estilo a clases ya existentes en CA-5e). No se agregan textos, datos, props de negocio, campos de formulario, rutas nuevas ni llamadas a servicios/endpoints que no existan ya en el JSX actual.
+- [x] **CA-6 — Sin contenido inventado.** Los cambios de este pendiente se limitan a CSS y a JSX estructural estrictamente necesario para aplicarlo (agregar el `import "./CartView.css"` faltante en CA-5c, mover/renombrar un `className`, eliminar los bloques `<Link>` de CA-1, dar estilo a clases ya existentes en CA-5e). No se agregan textos, datos, props de negocio, campos de formulario, rutas nuevas ni llamadas a servicios/endpoints que no existan ya en el JSX actual.
 
-- [ ] **CA-7 — Diagnóstico del bug de imagen de producto (verificación, sin código nuevo esperado).** Se confirma que el bug histórico "producto sin imagen" (causado por leer `imagesUrl`, campo que la API nunca devuelve, en vez de `imageURL`, el campo real de `Product` documentado en `CLAUDE.md` §3) ya está corregido en el código actual: `Style-Busters-main/src/utils/productImage.js` centraliza la resolución vía `getProductImage(product)` leyendo `product.imageURL`, con fallback `PRODUCT_IMAGE_PLACEHOLDER = "/img/products/placeholder.svg"` (el asset existe en `Style-Busters-main/public/img/products/placeholder.svg`), consumido por `ProductCard.jsx`, `ProductDetails.jsx` y `CartView.jsx`, todos con `onError` para URLs externas rotas, y cubierto por tests (`utils/productImage.test.js`, `ProductCard.test.jsx`, `ProductDetails.test.jsx`, `CartView.test.jsx`). No se encontró ningún otro punto de la SPA que renderice imagen de producto sin pasar por este helper. Este CA se da por cumplido con la verificación documentada arriba; si el ejecutor detecta durante la implementación un caso residual no cubierto, debe registrarlo en "Pendientes Abiertos y Gaps Detectados" del spec, no inventar una imagen de producto para "tapar" el caso.
+- [x] **CA-7 — Diagnóstico del bug de imagen de producto (verificación, sin código nuevo esperado).** Se confirma que el bug histórico "producto sin imagen" (causado por leer `imagesUrl`, campo que la API nunca devuelve, en vez de `imageURL`, el campo real de `Product` documentado en `CLAUDE.md` §3) ya está corregido en el código actual: `Style-Busters-main/src/utils/productImage.js` centraliza la resolución vía `getProductImage(product)` leyendo `product.imageURL`, con fallback `PRODUCT_IMAGE_PLACEHOLDER = "/img/products/placeholder.svg"` (el asset existe en `Style-Busters-main/public/img/products/placeholder.svg`), consumido por `ProductCard.jsx`, `ProductDetails.jsx` y `CartView.jsx`, todos con `onError` para URLs externas rotas, y cubierto por tests (`utils/productImage.test.js`, `ProductCard.test.jsx`, `ProductDetails.test.jsx`, `CartView.test.jsx`). No se encontró ningún otro punto de la SPA que renderice imagen de producto sin pasar por este helper. Este CA se da por cumplido con la verificación documentada arriba; si el ejecutor detecta durante la implementación un caso residual no cubierto, debe registrarlo en "Pendientes Abiertos y Gaps Detectados" del spec, no inventar una imagen de producto para "tapar" el caso.
 
 ## Consideraciones de Seguridad
 
@@ -142,22 +142,36 @@ Sobre el punto 6 (imágenes de producto sin mostrarse), el código actual ya con
 - **Riesgos que requieren seguimiento:** tamaño del diff (ver "Riesgos y Deuda Técnica").
 - **Items que deben convertirse en backlog:** los tres puntos listados en "Comportamientos inconsistentes detectados" arriba, a decisión del orchestrator tras revisar este spec.
 
-## Resultados (se completa al cerrar)
-- Fecha de cierre: _pendiente_
-- CAs cumplidos: _pendiente_
-- CAs no cumplidos: _pendiente_
-- Deuda técnica generada: _pendiente_
-- Lecciones aprendidas: _pendiente_
-- Pendientes abiertos confirmados: _pendiente_
-- Gaps no resueltos: _pendiente_
-- Trabajo fuera de alcance confirmado: _pendiente_
-- Backlog derivado creado: _pendiente_
-- Referencias a historias/tareas creadas: _pendiente_
+## Resultados (se completa al cierre)
+- **Fecha de cierre:** 2026-08-20
+- **Estado final:** DONE
+- **CAs cumplidos:** los 13 — CA-1, CA-2, CA-3, CA-4, CA-5a, CA-5b, CA-5c, CA-5d, CA-5e, CA-5f, CA-5g, CA-6, CA-7. Implementados en PR #10 (rama `feature/frontend-ui-consistencia-visual` → `develop`, merge commit `e2f83904`). Durante el proceso de revisión en capas (anti-hallucination-reviewer → qa-test-designer → code-reviewer) se detectaron 4 hallazgos reales sobre la implementación inicial, todos corregidos antes del merge (ver "Matriz de cierre").
+- **CAs no cumplidos:** ninguno.
+- **Deuda técnica generada:** ninguna nueva introducida por este pendiente — es trabajo de limpieza/consolidación de CSS sobre deuda ya existente, no crea deuda adicional.
+- **Lecciones aprendidas:** el proceso de revisión en capas (anti-hallucination-reviewer → qa-test-designer → code-reviewer) encontró 4 hallazgos reales tras la implementación inicial (un `:root` paralelo con colores fuera de paleta, dos clases de estado sin estilo, una deduplicación incompleta entre `CartView.css`/`CartPage.css`, y literales `rgba` fuera de paleta) que un solo pase de implementación no habría detectado por sí solo. Confirma el valor de mantener revisiones independientes y secuenciales en vez de un único gate de revisión.
+- **Pendientes abiertos confirmados:** los 3 ya documentados en este spec bajo "Pendientes Abiertos y Gaps Detectados" — quedan fuera de alcance de este pendiente y se derivan a backlog (ver más abajo):
+  1. Toggle de tema claro/oscuro del Header (`ThemeContext.jsx`) sin ningún selector CSS `[data-theme="light"]` definido — bug funcional, no de maquetación.
+  2. Enlace roto `to="/offers"` en `Components/SearchResultsList/SearchResultsList.jsx` línea 115 (ruta inexistente en `App/App.jsx`).
+  3. `Pages/ProductDetailPage.css` — código muerto, archivo huérfano no importado por ningún componente.
+- **Gaps no resueltos:** ninguno dentro del alcance de este spec.
+- **Trabajo fuera de alcance confirmado:** los mismos 3 puntos de arriba — explícitamente NO implementados en este PR (theming claro funcional, corrección del enlace `/offers` en `SearchResultsList`, eliminación de `ProductDetailPage.css`).
+- **Backlog derivado creado:** 3 entradas nuevas en [`docs/backlog.md`](../backlog.md), épica E5 (Arranque y coherencia del frontend):
+  - `FE-THEME-TOGGLE-2026-08-20`
+  - `FE-SEARCHRESULTS-BROKEN-LINK-2026-08-20`
+  - `FE-DEAD-CSS-PRODUCTDETAILPAGE-2026-08-20`
+- **Referencias a historias/tareas creadas:**
+  - PR #10 — https://github.com/JuanAntonioMP99/Back_-_Front_StyleB/pull/10
+  - Spec: [`docs/specs/2026-08-20-feature-frontend-ui-consistencia-visual.md`](2026-08-20-feature-frontend-ui-consistencia-visual.md) (este documento)
+  - Plan de prueba: [`docs/test-plans/2026-08-20-feature-frontend-ui-consistencia-visual.md`](../test-plans/2026-08-20-feature-frontend-ui-consistencia-visual.md)
+  - Backlog: [`docs/backlog.md`](../backlog.md)
 
 ## Matriz de cierre
-| Item detectado | Estado | Acción |
-|---|---|---|
-| _pendiente de completar al cierre_ | | |
+| Item detectado | Detectado por | Estado | Acción / commit de corrección |
+|---|---|---|---|
+| `RegisterForm.css` definía un `:root` paralelo con colores hex propios fuera de la paleta (`#FFD700`, `#0a0a0a`, `#111111`, etc.), violando CA-4 | anti-hallucination-reviewer | Corregido | `8240a2a9` — remapeo a tokens reales (`--color-primary`, `--color-bg-dark`, `--color-bg-card`, `--color-text-main`, `--color-text-muted`, `--color-accent-pink`) |
+| Clases de estado `.default` (Address) / `.isDefault` (Payment) usadas en JSX (`AddressItem.jsx`, `PaymentItem.jsx`) sin selector CSS correspondiente en `Address.css`/`Payment.css` | qa-test-designer | Corregido | `b92057c8` — se agregan `.address-item.default` y `.payment-item.isDefault` reutilizando el patrón visual de `.selected` |
+| Deduplicación incompleta de CA-5c: `CartView.css` conservaba reglas (`.cart`, `.cart-header*`, `.cart-items`, etc.) ya presentes en `Pages/CartPage.css`, ambas cargadas a la vez en `/cart` | code-reviewer | Corregido | `559b365a` — se retiran de `CartView.css` las reglas duplicadas, dejando solo lo propio de `CartView.jsx` |
+| Literales `rgba(255, 215, 0, *)` en `box-shadow`/`text-shadow` de `RegisterForm.css` no correspondían al valor real de `--color-primary` (`#FCEE0C` = `rgb(252, 238, 12)`), fuera de paleta | code-reviewer | Corregido | `38cee3de` — se sustituyen por `rgba(252, 238, 12, *)` manteniendo los mismos valores de opacidad |
 
 ---
 

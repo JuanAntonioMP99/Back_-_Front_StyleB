@@ -141,7 +141,7 @@ src/
 │   ├── CheckoutPage.jsx + .css
 │   ├── ConfirmationPage.jsx + .css
 │   ├── HomePage.jsx + .css
-│   ├── Login.jsx + .css
+│   ├── Login.jsx
 │   ├── ProductDetailsPage.jsx / ProductDetailPage.css
 │   ├── Profile.jsx + .css
 │   ├── ProtectedRoute.jsx
