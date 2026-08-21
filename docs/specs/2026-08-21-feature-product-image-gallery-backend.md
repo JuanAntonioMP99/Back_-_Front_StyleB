@@ -4,7 +4,7 @@
 - **Tipo:** feature
 - **Complejidad:** S
 - **Fecha:** 2026-08-21
-- **Estado:** DRAFT
+- **Estado:** DONE
 - **ID de backlog:** BE-PRODUCT-IMAGE-GALLERY-2026-08-21
 - **Ejecutor:** subagente backend-builder
 
@@ -33,13 +33,13 @@ Verificación de código real hecha para este spec:
 
 ## Criterios de Aceptación
 
-- [ ] **CA-1 — Campo `images` en el modelo `Product`.** `Base_Datos_StyleB/src/models/Product.js` agrega `images: { type: [String], default: [] }` (sin `required`, para no romper documentos existentes ni forzar el campo en creaciones que no lo envíen). El campo incluye un comentario inline (JSDoc o comentario de línea) que documenta el criterio de CA-2b: `images` son imágenes **adicionales** a `imageURL`, no lo incluyen. Verificable: `new Product({ name, description, price }).images` es `[]` por defecto; `Product.schema.path("images")` es de tipo array de `String`.
+- [x] **CA-1 — Campo `images` en el modelo `Product`.** `Base_Datos_StyleB/src/models/Product.js` agrega `images: { type: [String], default: [] }` (sin `required`, para no romper documentos existentes ni forzar el campo en creaciones que no lo envíen). El campo incluye un comentario inline (JSDoc o comentario de línea) que documenta el criterio de CA-2b: `images` son imágenes **adicionales** a `imageURL`, no lo incluyen. Verificable: `new Product({ name, description, price }).images` es `[]` por defecto; `Product.schema.path("images")` es de tipo array de `String`.
 
-- [ ] **CA-2 — `imageURL` sin cambios de comportamiento.** `imageURL` conserva exactamente su definición actual (`required: true`, `default: "https://placehold.co/600x400"`, `String`), sin agregarle validación de formato en el schema ni en `express-validator` como parte de este pendiente (ver "Decisiones de Diseño" sobre por qué se deja fuera, a propósito). Los tres consumidores del frontend (`ProductCard.jsx`, `ProductDetails.jsx`, `CartView.jsx`, vía `utils/productImage.js`) siguen recibiendo `imageURL` sin cambios en cada respuesta de la API.
+- [x] **CA-2 — `imageURL` sin cambios de comportamiento.** `imageURL` conserva exactamente su definición actual (`required: true`, `default: "https://placehold.co/600x400"`, `String`), sin agregarle validación de formato en el schema ni en `express-validator` como parte de este pendiente (ver "Decisiones de Diseño" sobre por qué se deja fuera, a propósito). Los tres consumidores del frontend (`ProductCard.jsx`, `ProductDetails.jsx`, `CartView.jsx`, vía `utils/productImage.js`) siguen recibiendo `imageURL` sin cambios en cada respuesta de la API.
   - **CA-2a:** ningún test existente de `tests/unit/models/Product.test.js` sobre `imageURL` (default, `required` con default aplicado) cambia su aserción.
   - **CA-2b (criterio de semántica, inequívoco para el pendiente 2 de frontend):** `images` representa **únicamente las imágenes adicionales de la galería**, sin incluir la URL ya presente en `imageURL`. La galería completa a mostrar en `<ImageCarousel>` se construye en el frontend (pendiente 2, fuera de alcance aquí) como `[imageURL, ...images]`. Este criterio queda documentado como comentario en el schema (CA-1) y no admite otra interpretación en la implementación de este pendiente.
 
-- [ ] **CA-3 — Validación de `images` en `express-validator`.** `Base_Datos_StyleB/src/routes/productRoutes.js` agrega, en `createProductValidation` y en `updateProductValidation` (ambas con `.optional()`, ya que `images` nunca es obligatorio):
+- [x] **CA-3 — Validación de `images` en `express-validator`.** `Base_Datos_StyleB/src/routes/productRoutes.js` agrega, en `createProductValidation` y en `updateProductValidation` (ambas con `.optional()`, ya que `images` nunca es obligatorio):
   ```js
   body("images")
     .optional()
@@ -51,21 +51,21 @@ Verificación de código real hecha para este spec:
   ```
   reutilizando el patrón ya existente de `body("array").isArray()` + `body("array.*")` de `cartRoutes.js`/`orderRoutes.js` (única diferencia: aquí los elementos son strings, no subobjetos, por lo que `body("images.*")` valida el elemento directamente, no un subcampo). El límite `max: 10` es un control de payload/DoS propuesto por este spec (no existe precedente en el repo de límite de tamaño de array); ver "Consideraciones de Seguridad". Verificable: una petición con `images` no-array, con más de 10 elementos, o con un elemento que no sea una URL válida (p. ej. `"no-es-url"` o `"javascript:alert(1)"`) responde `422` con `{ errors: [...] }` vía el middleware `validate` ya existente.
 
-- [ ] **CA-4 — `createProduct` acepta y persiste `images`.** `productController.js` → `createProduct` desestructura `images` de `req.body` junto a los campos actuales y lo pasa a `Product.create({ ..., images })`. Si `images` no viene en el body, el default de schema (`[]`) se aplica igual que hoy ocurre con `imageURL` cuando es `undefined` (test ya existente `"imageURL es required pero su default hace que nunca falte"`, mismo mecanismo de Mongoose). Verificable: `POST /api/products` con `images: ["https://a.test/1.jpg", "https://a.test/2.jpg"]` devuelve `201` con esos valores en `images`; sin `images` en el body, devuelve `201` con `images: []`.
+- [x] **CA-4 — `createProduct` acepta y persiste `images`.** `productController.js` → `createProduct` desestructura `images` de `req.body` junto a los campos actuales y lo pasa a `Product.create({ ..., images })`. Si `images` no viene en el body, el default de schema (`[]`) se aplica igual que hoy ocurre con `imageURL` cuando es `undefined` (test ya existente `"imageURL es required pero su default hace que nunca falte"`, mismo mecanismo de Mongoose). Verificable: `POST /api/products` con `images: ["https://a.test/1.jpg", "https://a.test/2.jpg"]` devuelve `201` con esos valores en `images`; sin `images` en el body, devuelve `201` con `images: []`.
 
-- [ ] **CA-5 — `updateProduct` acepta y persiste `images`.** `productController.js` → `updateProduct` desestructura `images` de `req.body` y lo incluye en el objeto pasado a `findByIdAndUpdate`, mismo patrón que el campo `category` (opcional) ya usa hoy: si `images` no viene en el body, la propiedad queda `undefined` en el objeto de actualización y el driver de MongoDB la omite al serializar — el `images` ya persistido en el documento **no se borra** por omitirlo en un `PUT` parcial. Verificable: `PUT /api/products/:id` con `images: [...]` actualiza el array; `PUT /api/products/:id` sin `images` en el body dado un producto que ya tenía `images` no vacío conserva ese valor sin cambios.
+- [x] **CA-5 — `updateProduct` acepta y persiste `images`.** `productController.js` → `updateProduct` desestructura `images` de `req.body` y lo incluye en el objeto pasado a `findByIdAndUpdate`, mismo patrón que el campo `category` (opcional) ya usa hoy: si `images` no viene en el body, la propiedad queda `undefined` en el objeto de actualización y el driver de MongoDB la omite al serializar — el `images` ya persistido en el documento **no se borra** por omitirlo en un `PUT` parcial. Verificable: `PUT /api/products/:id` con `images: [...]` actualiza el array; `PUT /api/products/:id` sin `images` en el body dado un producto que ya tenía `images` no vacío conserva ese valor sin cambios.
 
-- [ ] **CA-6 — Sin migración de datos existentes.** No se agrega ningún script de migración ni se toca `tests/globalSetup.js`/`tests/setup.js`. Los productos ya existentes en cualquier entorno, al leerse con el esquema actualizado, exponen `images: []` por el `default` de Mongoose (aplicado a nivel de lectura del documento tal como ocurre hoy con cualquier campo con `default` ausente en un documento antiguo), sin necesidad de reescribirlos. Verificable: un documento insertado directamente en Mongo sin el campo `images` (simulando un producto pre-existente) devuelve `images: []` al leerse vía `Product.findById(...)`.
+- [x] **CA-6 — Sin migración de datos existentes.** No se agrega ningún script de migración ni se toca `tests/globalSetup.js`/`tests/setup.js`. Los productos ya existentes en cualquier entorno, al leerse con el esquema actualizado, exponen `images: []` por el `default` de Mongoose (aplicado a nivel de lectura del documento tal como ocurre hoy con cualquier campo con `default` ausente en un documento antiguo), sin necesidad de reescribirlos. Verificable: un documento insertado directamente en Mongo sin el campo `images` (simulando un producto pre-existente) devuelve `images: []` al leerse vía `Product.findById(...)`.
 
-- [ ] **CA-7 — Tests unitarios del modelo ampliados.** `Base_Datos_StyleB/tests/unit/models/Product.test.js` agrega, como mínimo:
+- [x] **CA-7 — Tests unitarios del modelo ampliados.** `Base_Datos_StyleB/tests/unit/models/Product.test.js` agrega, como mínimo:
   - `images` es `[]` por defecto en un producto nuevo sin el campo.
   - `images` acepta y persiste (`validateSync()` sin error) un array de strings URL.
   - Ningún test existente sobre `imageURL`/`name`/`description`/`price`/`stock`/`category` cambia de comportamiento (CA-2a).
   Verificable: `npm run test:unit` (`Base_Datos_StyleB`) pasa, incluyendo los tests nuevos.
 
-- [ ] **CA-8 — Consistencia de respuesta en lecturas.** `getProducts`, `getProductById` y `searchProducts` (que no se modifican en su lógica) siguen devolviendo el documento completo vía `Product.find()`/`findById()` — como no proyectan campos explícitamente hoy, `images` aparece automáticamente en sus respuestas sin cambio de código en esos tres handlers. Verificable: `GET /api/products` y `GET /api/products/:id` incluyen `images` en cada producto sin haber tocado `searchProducts`/`getProducts`/`getProductById`.
+- [x] **CA-8 — Consistencia de respuesta en lecturas.** `getProducts`, `getProductById` y `searchProducts` (que no se modifican en su lógica) siguen devolviendo el documento completo vía `Product.find()`/`findById()` — como no proyectan campos explícitamente hoy, `images` aparece automáticamente en sus respuestas sin cambio de código en esos tres handlers. Verificable: `GET /api/products` y `GET /api/products/:id` incluyen `images` en cada producto sin haber tocado `searchProducts`/`getProducts`/`getProductById`.
 
-- [ ] **CA-9 — Sin cambios a rutas, permisos ni otros modelos.** `productRoutes.js` no agrega ni quita ninguna ruta, ni `authMiddleware`/`isAdminMiddleware` (la ausencia de auth en `POST`/`PUT`/`DELETE /products` es deuda técnica preexistente, trackeada en `docs/backlog.md` como `F3.5`, y **no se corrige en este pendiente** — ver "Consideraciones de Seguridad"). Ningún otro modelo (`Category`, `Cart`, `Order`, `User`, `Address`, `PaymentMethod`, `WishList`) se modifica. Verificable: `git diff` del pendiente toca únicamente `src/models/Product.js`, `src/routes/productRoutes.js`, `src/controllers/productController.js`, `tests/unit/models/Product.test.js` (y, si el ejecutor lo considera necesario para no romper `tests/integration/products.test.js`, ajustes estrictamente aditivos ahí — sin quitar aserciones existentes).
+- [x] **CA-9 — Sin cambios a rutas, permisos ni otros modelos.** `productRoutes.js` no agrega ni quita ninguna ruta, ni `authMiddleware`/`isAdminMiddleware` (la ausencia de auth en `POST`/`PUT`/`DELETE /products` es deuda técnica preexistente, trackeada en `docs/backlog.md` como `F3.5`, y **no se corrige en este pendiente** — ver "Consideraciones de Seguridad"). Ningún otro modelo (`Category`, `Cart`, `Order`, `User`, `Address`, `PaymentMethod`, `WishList`) se modifica. Verificable: `git diff` del pendiente toca únicamente `src/models/Product.js`, `src/routes/productRoutes.js`, `src/controllers/productController.js`, `tests/unit/models/Product.test.js` (y, si el ejecutor lo considera necesario para no romper `tests/integration/products.test.js`, ajustes estrictamente aditivos ahí — sin quitar aserciones existentes).
 
 ## Consideraciones de Seguridad
 
@@ -147,17 +147,24 @@ Evaluación explícita pedida por el orchestrator: este pendiente modifica un **
 - **Items que deben convertirse en backlog:** la armonización de validación `imageURL`/`images` (nuevo hallazgo de este spec, aún sin ID de backlog — a crear por el orchestrator/docs-keeper al cierre); `F3.5` ya existe y no requiere una nueva entrada, solo se reafirma su relevancia.
 
 ## Resultados (se completa al cerrar)
-- **Fecha de cierre:** pendiente — spec en estado `DRAFT`, se completa en FASE 10 tras la implementación por `backend-builder` y el cierre del PR correspondiente.
-- **CAs cumplidos / no cumplidos:** pendiente de implementación.
-- **Deuda técnica generada:** pendiente de confirmar al cierre (ver candidatos ya identificados en "Riesgos y Deuda Técnica").
-- **Lecciones aprendidas:** pendiente.
-- **Pendientes abiertos confirmados:** pendiente.
-- **Gaps no resueltos:** pendiente.
-- **Trabajo fuera de alcance confirmado:** pendiente.
-- **Backlog derivado creado:** pendiente.
-- **Referencias a historias/tareas creadas:** pendiente (spec: este documento; PR: por abrir tras G1).
+- **Fecha de cierre:** 2026-08-21.
+- **CAs cumplidos:** los 9 (CA-1 a CA-9, incluyendo los subcriterios CA-2a y CA-2b) — verificados por inspección de código (`src/models/Product.js`, `src/routes/productRoutes.js`, `src/controllers/productController.js`) y por `npm test` en `Base_Datos_StyleB`. Hubo una vuelta de corrección durante el ciclo: `qa-test-designer` detectó que no existían tests de integración versionados para `images` (solo verificación manual con `curl`); se corrigió antes de pasar a code-review agregando 7 tests nuevos (`IT-PROD-10` a `IT-PROD-16`) en `tests/integration/products.test.js` (commit `e2440203`, "test(products): cubrir images en tests de integración").
+- **CAs no cumplidos:** ninguno.
+- **Deuda técnica generada:** ninguna nueva directamente. Se reafirmó/agravó la deuda preexistente `F3.5` (falta de auth en `POST`/`PUT`/`DELETE /products`, `docs/backlog.md`): el security-reviewer registró que este cambio amplía su superficie de impacto, de 1 string manipulable sin autenticación (`imageURL`) a hasta 10 (`images`). No se corrigió aquí (fuera de alcance explícito, CA-9), solo se documentó.
+- **Lecciones aprendidas:** (a) dividir un pendiente full-stack en backend-primero permitió cerrar el contrato de API de forma aislada y verificable antes de tocar el frontend; (b) `qa-test-designer` detectó que "verificado manualmente con curl" no es lo mismo que "cubierto por test de regresión versionado" — vale la pena que futuros pendientes prioricen tests de integración reproducibles sobre verificación ad hoc, aunque en este caso se terminaron haciendo ambas cosas.
+- **Pendientes abiertos confirmados:**
+  1. Conectar `<ImageCarousel>` en el frontend (`Style-Busters-main/src/Components/ImageCarousel/ImageCarousel.jsx`) — es el pendiente 2, ya planeado desde el propio spec (§"Contexto"), no es un backlog suelto: es el siguiente spec a redactar por el orchestrator.
+  2. `F3.5` (`docs/backlog.md`, auth ausente en `/products`) — ya trackeado; se reafirma su prioridad dado el hallazgo del security-reviewer en este pendiente.
+  3. Armonización de validación `imageURL` (sin `isURL()`) vs `images` (con `isURL()`) — hallazgo nuevo de este spec; convertido en backlog en este cierre como `BE-VALIDATE-IMAGEURL-2026-08-21` (ver "Backlog derivado creado").
+- **Gaps no resueltos:** ninguno dentro del alcance de este spec.
+- **Trabajo fuera de alcance confirmado:** auth en `/products` (`F3.5`); validación de formato de `imageURL`; UI de administración de imágenes (no existe hoy en el repo, no se ha pedido).
+- **Backlog derivado creado:** sí — `BE-VALIDATE-IMAGEURL-2026-08-21` en `docs/backlog.md` (E3 — Estabilización backend). El pendiente 2 de frontend (conectar `<ImageCarousel>`) NO se agrega como backlog: es el siguiente spec directo del orchestrator, ya identificado desde el inicio de este spec.
+- **Referencias a historias/tareas creadas:** PR #16 (https://github.com/JuanAntonioMP99/Back_-_Front_StyleB/pull/16, merge commit `ba375300`); este spec (`docs/specs/2026-08-21-feature-product-image-gallery-backend.md`); plan de prueba (`docs/test-plans/2026-08-21-feature-product-image-gallery-backend.md`); backlog derivado `BE-VALIDATE-IMAGEURL-2026-08-21` (`docs/backlog.md`).
 
 ## Matriz de cierre
 | Item detectado | Estado | Acción |
 |---|---|---|
-| (se completa al cierre, FASE 10) | — | — |
+| Gap de cobertura: sin tests de integración versionados para `images` (solo verificación manual con `curl`), detectado por `qa-test-designer` | Corregido antes de code-review | Cerrado — 7 tests nuevos (`IT-PROD-10` a `IT-PROD-16`) añadidos en `tests/integration/products.test.js`, commit `e2440203` ("test(products): cubrir images en tests de integración") |
+| Deuda técnica preexistente `F3.5` (auth ausente en `/products`), agravada en superficie por este cambio (1 → 10 strings manipulables) | Reafirmada, no corregida (fuera de alcance, CA-9) | Ya trackeada en `docs/backlog.md`; se mantiene su prioridad Alto, sin nueva entrada |
+| Asimetría de validación `imageURL` (sin `isURL()`) vs `images` (con `isURL()`) | Documentada a propósito en el spec, sin corregir | Backlog creado: `BE-VALIDATE-IMAGEURL-2026-08-21` en `docs/backlog.md` |
+| Pendiente 2 (frontend): conectar `<ImageCarousel>` a `images` | Fuera de alcance de este spec, planeado | No es backlog — siguiente spec directo del orchestrator |

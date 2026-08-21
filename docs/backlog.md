@@ -36,6 +36,7 @@
 - F3.7 Quitar middlewares duplicados en `POST /users` · Refactor
 - F3.8 Corregir códigos HTTP (`createCart`, `updateOrderStatus`) · Bug · (K09)
 - F3.9 Endurecer `FRONTEND_URL` a obligatoria en producción si aparece un consumidor crítico (emails, redirecciones, callbacks OAuth) · Deuda técnica · decisión aplazada del spec ENV-01
+- `BE-VALIDATE-IMAGEURL-2026-08-21` Armonizar la validación de `imageURL` (sin `isURL()` hoy en `createProductValidation`/`updateProductValidation`) con la de `images` (que sí la tiene), para que ambos campos de imagen tengan el mismo nivel de validación de formato · Deuda técnica · derivado de spec [`2026-08-21-feature-product-image-gallery-backend`](specs/2026-08-21-feature-product-image-gallery-backend.md) (PR #16)
 
 ## E4 — Fuente de verdad única · Alto/Medio
 - F4.1 Carrito 100% API con caché local de invitado · Alineación FE-BE · (K14, K15)
