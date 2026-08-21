@@ -47,15 +47,19 @@ export default defineConfig({
       // suelos se fijan por debajo del mínimo observado entre corridas para
       // absorber la varianza natural del conteo de branches sin volverse frágiles.
       //
+      // Subidos el 2026-08-20 tras añadir unitarias de controllers (user, cart,
+      // address): cobertura medida 85.19% líneas / 82.06% branches / 90.76% funcs
+      // / 85.31% stmts.
+      //
       // El % es un suelo, NO el criterio de calidad: ver §11 del plan, donde se
       // listan las reglas críticas cubiertas (autorización, fuga de credenciales,
       // camino de error). errorHandler.js está al 100% y aun así no se ejecuta
       // en producción (K21) — de ahí que el porcentaje por sí solo engañe.
       thresholds: {
-        lines: 74,
-        functions: 80,
-        branches: 60,
-        statements: 74,
+        lines: 83,
+        functions: 88,
+        branches: 78,
+        statements: 83,
       },
     },
   },

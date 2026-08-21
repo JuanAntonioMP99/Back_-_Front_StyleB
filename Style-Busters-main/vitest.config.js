@@ -40,12 +40,15 @@ export default defineConfig({
       // - 2026-07-30 bloque FE (ProtectedRoute/AuthContext + integración MSW): 38.35% líneas.
       // - 2026-07-30 ampliación (HomePage/SearchResults/CartPage + cart/order + contrato):
       //   cobertura medida 47.03% líneas / 39.65% branches / 34.69% funcs / 46.02% stmts.
+      // - 2026-08-20 unitarias Tier 1+2 (servicios/utils/contextos + componentes de
+      //   checkout, Common, layout, carruseles): 75.52% líneas / 68.7% branches /
+      //   65.63% funcs / 73.48% stmts.
       // Los suelos se ponen por debajo de lo medido para absorber varianza.
       thresholds: {
-        lines: 44,
-        functions: 32,
-        branches: 36,
-        statements: 43,
+        lines: 73,
+        functions: 62,
+        branches: 66,
+        statements: 71,
       },
     },
   },
