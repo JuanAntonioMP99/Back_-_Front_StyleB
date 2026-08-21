@@ -1,6 +1,20 @@
 /// <reference types="cypress" />
 
 /**
+ * cy.resetDb() — restablece el estado mutable del backend efímero entre pruebas.
+ * Llama al endpoint SOLO-TEST POST /__test__/reset (montado por e2e-server.js),
+ * que limpia carritos y órdenes dejando el seed (categoría, productos, usuario)
+ * intacto. Da aislamiento por prueba: sin esto, el carrito creado por una prueba
+ * se filtra a la siguiente (getCartByUser es findOne) y rompe el checkout.
+ * El endpoint NO cuelga de /api, así que se deriva la base quitando ese sufijo.
+ */
+Cypress.Commands.add("resetDb", () => {
+  const apiUrl = Cypress.env("apiUrl");
+  const baseUrl = apiUrl.replace(/\/api\/?$/, "");
+  cy.request("POST", `${baseUrl}/__test__/reset`);
+});
+
+/**
  * cy.loginByApi({ email, password })
  * Inicia sesión directamente contra la API real (POST /auth/login) sin pasar por
  * la UI, y guarda el token en localStorage (clave "authToken", igual que la app).

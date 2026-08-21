@@ -58,6 +58,10 @@ export function CartProvider({ children }) {
         await serviceClearCart(currentCartId);
         setCartId(null);
       }
+      // El carrito quedó vacío: no hay nada que crear/reemplazar. Sin este
+      // return se caía a createCart/replaceCart con products=[] (y, tras borrar
+      // el carrito, un PUT sobre un id ya inexistente → 404).
+      return;
     }
 
     const products = nextItems.map((item) => ({

@@ -10,6 +10,10 @@
 
 describe("Checkout", () => {
   beforeEach(() => {
+    // Aislamiento por prueba: limpia carritos/órdenes del backend efímero para
+    // que el estado de una prueba no se filtre a la siguiente. Va ANTES de
+    // loginByApi (que solo lee) y getFirstProduct (que lee el seed intacto).
+    cy.resetDb();
     cy.loginByApi();
     cy.getFirstProduct().then((product) => {
       cy.wrap(product).as("product");
@@ -123,9 +127,14 @@ describe("Checkout", () => {
       // Sólo se creó UNA orden.
       cy.get("@createOrder.all").should("have.length", 1);
 
-      // Recargar la confirmación no duplica la orden (se pierde el state -> vuelve al home).
+      // Recargar la confirmación NO duplica la orden. El state de la navegación
+      // vive en window.history.state, que el navegador conserva en un reload
+      // completo: la confirmación permanece visible (no vuelve al home) y NO se
+      // dispara un segundo POST /orders (la orden se crea en el click, no al
+      // montar la página). Ésa es la garantía real: idempotencia ante recarga.
       cy.reload();
-      cy.location("pathname").should("eq", "/");
+      cy.location("pathname").should("eq", "/order-confirmation");
+      cy.get('[data-testid="order-success"]').should("be.visible");
       cy.get("@createOrder.all").should("have.length", 1);
     });
 
