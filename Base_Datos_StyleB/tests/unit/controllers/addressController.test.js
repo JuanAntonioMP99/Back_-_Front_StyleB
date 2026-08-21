@@ -1,9 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // addressController NO está montado en ningún router (ver CLAUDE.md), así que
-// solo puede ejercerse por unidad. Se prueban los 4 handlers correctos.
-// `updateAddress` NO se cubre: usa `userId` sin declararlo (declara `user`) y
-// lanzaría ReferenceError — defecto reportado, no se prueba como si funcionara.
+// solo puede ejercerse por unidad. Se prueban sus 5 handlers.
 const { AddressMock, saveMock } = vi.hoisted(() => {
   const saveMock = vi.fn();
   const AddressMock = vi.fn();
@@ -21,6 +19,7 @@ import {
   deleteAddress,
   getAddressById,
   getUserAddresses,
+  updateAddress,
 } from "../../../src/controllers/addressController.js";
 
 function mockRes() {
@@ -96,6 +95,53 @@ describe("addressController (unit)", () => {
     );
     expect(AddressMock.updateMany).not.toHaveBeenCalled();
     expect(res.status).toHaveBeenCalledWith(201);
+  });
+
+  it("updateAddress -> 404 si no existe", async () => {
+    AddressMock.findOne.mockResolvedValue(null);
+    const res = mockRes();
+    await updateAddress(
+      { ...reqUser, params: { addressId: "x" }, body: {} },
+      res,
+      vi.fn(),
+    );
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
+
+  it("updateAddress -> 200 y guarda los cambios", async () => {
+    const save = vi.fn().mockResolvedValue(undefined);
+    AddressMock.findOne.mockResolvedValue({ isDefault: false, save });
+    const res = mockRes();
+    await updateAddress(
+      {
+        ...reqUser,
+        params: { addressId: "a1" },
+        body: { name: "Casa nueva", city: "Ags" },
+      },
+      res,
+      vi.fn(),
+    );
+    expect(AddressMock.findOne).toHaveBeenCalledWith({ _id: "a1", user: "u1" });
+    expect(save).toHaveBeenCalled();
+    expect(AddressMock.updateMany).not.toHaveBeenCalled();
+    expect(res.status).toHaveBeenCalledWith(200);
+  });
+
+  it("updateAddress -> desmarca las demás al promover a predeterminada", async () => {
+    const save = vi.fn().mockResolvedValue(undefined);
+    AddressMock.findOne.mockResolvedValue({ isDefault: false, save });
+    AddressMock.updateMany.mockResolvedValue(undefined);
+    const res = mockRes();
+    await updateAddress(
+      { ...reqUser, params: { addressId: "a1" }, body: { isDefault: true } },
+      res,
+      vi.fn(),
+    );
+    expect(AddressMock.updateMany).toHaveBeenCalledWith(
+      { user: "u1", _id: { $ne: "a1" } },
+      { isDefault: false },
+    );
+    expect(res.status).toHaveBeenCalledWith(200);
   });
 
   it("deleteAddress -> 200 si existe", async () => {

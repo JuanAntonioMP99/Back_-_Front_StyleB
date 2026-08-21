@@ -87,14 +87,14 @@ const updateAddress = async (req, res, next) => {
     } = req.body;
     const user = req.user.userId;
 
-    const shipAddress = await Address.findOne({ _id: addressId, user: userId });
+    const shipAddress = await Address.findOne({ _id: addressId, user });
     if (!shipAddress) {
       return res.status(404).json({ message: "Address not found" });
-    }; 
+    };
 
     if (isDefault && !shipAddress.isDefault) {
       await Address.updateMany(
-        { user: userId, _id: { $ne: addressId } },
+        { user, _id: { $ne: addressId } },
         { isDefault: false },
       );
     };
