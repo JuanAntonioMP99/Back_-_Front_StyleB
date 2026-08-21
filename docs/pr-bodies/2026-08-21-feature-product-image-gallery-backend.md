@@ -28,14 +28,14 @@ Se agrega un campo `images` (array de URLs, default `[]`) al modelo `Product` y 
 
 - [x] **CA-8 — Consistencia de respuesta en lecturas:** Funciones de lectura no modificadas. Evidencia: TC-9, `images` aparece automáticamente.
 
-- [x] **CA-9 — Sin cambios a rutas, permisos ni otros modelos:** Solo 4 archivos modificados. Evidencia: TC-10, `git diff --stat` exacto.
+- [x] **CA-9 — Sin cambios a rutas, permisos ni otros modelos:** Solo 5 archivos de código/tests modificados (3 de implementación + 2 de tests, este último ampliado tras el hallazgo de qa-test-designer). Sin rutas nuevas, sin auth agregada, sin otros modelos tocados. Evidencia: TC-10, `git diff --stat` exacto, re-verificado por tech-reviewer.
 
 ## Quality Gates
 
 - [x] **Lint/build** — N/A (backend Node, sin lint configurado).
 - [x] **Tests — todos pasan** — `npm test`: Test Files 28 passed | Tests 275 passed | 21 expected fail (preexistentes). Sin fallos inesperados. (Verificado por el orchestrator con 2 corridas independientes tras el rebase sobre `develop`.)
 - [x] **E2E — N/A** — Backend únicamente.
-- [x] **Diff revisado** — 4 archivos exactos. Sin secrets, sin debug code.
+- [x] **Diff revisado** — 5 archivos de código/tests (3 implementación + 2 tests) + docs propias del pendiente. Sin secrets, sin debug code.
 - [x] **Prueba funcional** — 9 CA verificados. Veredicto: APTO.
 
 ## Revisiones independientes
@@ -43,7 +43,7 @@ Se agrega un campo `images` (array de URLs, default `[]`) al modelo `Product` y 
 - [x] **code-reviewer:** aprobado.
 - [x] **security-reviewer:** aprobado (riesgo heredado F3.5 aceptado).
 - [x] **anti-hallucination-reviewer:** limpio.
-- [ ] **tech-reviewer:** FALTA — se ejecutará sobre el PR abierto.
+- [x] **tech-reviewer:** **APTO** — verificado directamente (código, tests reproducidos, mergeable/CLEAN, sin impacto en frontend).
 - [ ] **Segunda opinión (Codex):** FALTA — no disponible en este entorno.
 
 ## Pendientes y backlog derivado
