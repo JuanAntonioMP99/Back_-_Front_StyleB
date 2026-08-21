@@ -77,10 +77,10 @@ Exploración de código real (`Style-Busters-main/src/Layout/Header/Header.jsx`,
 ## Resultados (se completa al cerrar)
 - **Fecha de cierre:** 2026-08-21
 - **Estado final:** DONE
-- **CAs cumplidos:** CA-1, CA-2, CA-3 — los 3.
+- **CAs cumplidos:** CA-1, CA-2, CA-3 — los 3. Ninguna de las 3 capas de revisión independientes reportó hallazgos que corregir: anti-hallucination-reviewer (limpio), code-reviewer (aprobado), tech-reviewer (**APTO** sobre el PR abierto — claims↔evidencia confirmado, spec↔diff 1:1, riesgo de integración bajo).
 - **CAs no cumplidos:** ninguno.
 - **Deuda técnica generada:** ninguna.
-- **Lecciones aprendidas:** el botón quedó como un handler placeholder (`console.log`) nunca conectado a navegación real, mientras el botón adyacente ("Iniciar Sesión") sí seguía el patrón correcto — señal de que conviene revisar por consistencia los demás CTAs del Header que compartan el mismo bloque de código.
+- **Lecciones aprendidas:** el botón quedó como un handler placeholder (`console.log`) nunca conectado a navegación real, mientras el botón adyacente ("Iniciar Sesión") sí seguía el patrón correcto — señal de que conviene revisar por consistencia los demás CTAs del Header que compartan el mismo bloque de código. Adicionalmente: la rama de trabajo se creó por error desde un `develop` local que tenía mezclado trabajo en curso no publicado de otra tarea (banner-carousel); se detectó vía el hallazgo del code-reviewer y se corrigió reconstruyendo la rama en un worktree aislado basado en `origin/develop` antes de publicar el PR — señal de que conviene verificar `git log origin/develop..develop` antes de ramificar cuando hay actividad concurrente en el repo.
 - **Pendientes abiertos confirmados:** ninguno.
 - **Gaps no resueltos:** ninguno.
 - **Backlog derivado creado:** no — el fix es completo dentro de este PR, sin pendientes derivados.
