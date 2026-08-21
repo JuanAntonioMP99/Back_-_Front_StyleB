@@ -10,7 +10,7 @@
 - Backend: Vitest 4 + supertest + `mongodb-memory-server` (BD en memoria, sin MongoDB local ni `.env`).
 - Comando: `cd Base_Datos_StyleB && npm test` (invoca `node ./node_modules/vitest/vitest.mjs run`, nunca `npx vitest`).
 - Archivos bajo prueba: `src/controllers/paymentMethodController.js` (función `deletePaymentMethod`), `src/routes/paymentMethodRoutes.js` (solo lectura de referencia), `tests/integration/paymentMethods.test.js`, `tests/integration/authorization.test.js`.
-- Nota de método: CA-3 y CA-4 no tienen test versionado dedicado en `tests/integration/paymentMethods.test.js` (el `describe("DELETE /api/payment-methods/:id")` solo contiene `IT-PAY-10` e `IT-PAY-13`, ver TC-6). Se verificaron empíricamente con un archivo de test temporal (`tests/integration/__qa_tmp_delete_payment_method_evidence.test.js`), creado, ejecutado y **eliminado** — no forma parte del repo ni del diff del commit `975629aa`.
+- Nota de método: CA-3 y CA-4 tienen test versionado dedicado en `tests/integration/paymentMethods.test.js` — CA-3 (persistencia del borrado) vía el assert `expect(await PaymentMethod.findById(metodo._id)).toBeNull();` añadido a `IT-PAY-10` (línea 192), y CA-4 (404 en recurso inexistente) vía el test nuevo `IT-PAY-14` (línea 208). Ambos incorporados en el commit `8475d9d8`, posterior a la primera versión de este plan.
 
 ## Casos de prueba
 
@@ -38,17 +38,16 @@
 - **Dato de entrada:** método de pago creado vía `createPaymentMethod({ user: user._id, numCard: "4000000000000093" })`.
 - **Resultado esperado:** `200` con `{ message: "Payment method deleted successfully" }`; el documento deja de existir en la BD.
 - **Resultado real:**
-  - `tests/integration/paymentMethods.test.js` → `IT-PAY-10 — DELETE del propio dueño responde 200 (K05)` → PASA (`res.status === 200`). Este test versionado **no** verifica la persistencia (no consulta la BD tras el borrado).
-  - Evidencia temporal (`__qa_tmp_delete_payment_method_evidence.test.js`, ejecutada y eliminada) → `CA-3: DELETE del propio dueño elimina realmente el documento de la BD` → PASA: `res.status === 200`, `res.body` igual a `{ message: "Payment method deleted successfully" }`, y `await PaymentMethod.findById(metodo._id)` → `null` tras la llamada.
-- **Estado:** ✅ cumplido (verificado empíricamente; sin test permanente en el repo que cubra la parte de persistencia — ver nota de método arriba).
+  - `tests/integration/paymentMethods.test.js` → `IT-PAY-10 — DELETE del propio dueño responde 200 (K05)` (línea 183) → PASA (`res.status === 200`, línea 191). La persistencia queda cubierta en el mismo test: línea 192 — `expect(await PaymentMethod.findById(metodo._id)).toBeNull();` — confirma que el documento ya no existe tras el borrado.
+- **Estado:** ✅ cumplido — test permanente en el repo (`IT-PAY-10`, línea 192) cubre tanto el `200` como la persistencia del borrado.
 
 ### TC-4 — Recurso inexistente → 404, no 500 [CA-4]
 - **Precondición:** ninguna (`ObjectId` válido, sin documento asociado).
 - **Pasos:** `DELETE /api/payment-methods/:id` con un `ObjectId` válido que no corresponde a ningún método de pago, con token válido de cualquier usuario autenticado.
 - **Dato de entrada:** `id()` (helper `new mongoose.Types.ObjectId().toString()`, sin crear el documento).
 - **Resultado esperado:** `404` con `{ message: "Payment method not found" }`.
-- **Resultado real:** no existe test versionado dedicado a este caso en `tests/integration/paymentMethods.test.js` (el `describe("DELETE ...")` solo tiene `IT-PAY-10` e `IT-PAY-13`, ninguno con `ObjectId` inexistente). Verificado empíricamente con la evidencia temporal: `CA-4: DELETE con ObjectId válido pero inexistente → 404, no 500` → PASA: `res.status === 404`, `res.body` igual a `{ message: "Payment method not found" }` (sin stack trace HTML, confirmando que no hay `ReferenceError`).
-- **Estado:** ✅ cumplido (verificado empíricamente; sin test permanente en el repo — ver nota de método arriba).
+- **Resultado real:** `tests/integration/paymentMethods.test.js` → `IT-PAY-14 — recurso inexistente → 404 (CA-4)` (línea 208) → PASA: línea 215 `expect(res.status).toBe(404);`, línea 216 `expect(res.body).toEqual({ message: "Payment method not found" });` (sin stack trace HTML, confirmando que no hay `ReferenceError`).
+- **Estado:** ✅ cumplido — test permanente en el repo (`IT-PAY-14`, líneas 208-217).
 
 ### TC-5 — Comprobación de propiedad preservada (anti-IDOR) [CA-5]
 - **Precondición:** dos usuarios (`victima`, `atacante`); método de pago perteneciente a `victima`.
@@ -135,10 +134,10 @@ build      : N/A (backend Node/Express, sin paso de build)
 |----|------|--------|
 | CA-1 | TC-1 | ✅ cumplido |
 | CA-2 | TC-2 | ✅ cumplido |
-| CA-3 | TC-3 | ✅ cumplido (verificado empíricamente, sin test permanente para la parte de persistencia en BD) |
-| CA-4 | TC-4 | ✅ cumplido (verificado empíricamente, sin test permanente en el repo) |
+| CA-3 | TC-3 | ✅ cumplido — `IT-PAY-10` (test permanente, línea 192) confirma la persistencia del borrado |
+| CA-4 | TC-4 | ✅ cumplido — `IT-PAY-14` (test permanente, líneas 208-217) confirma `404` |
 | CA-5 | TC-5 | ✅ cumplido — `IT-PAY-13` (test permanente) confirma tanto `404` como que el documento **no** se borra |
 | CA-6 | TC-6 | ✅ cumplido |
 | CA-7 | TC-7 | ✅ cumplido |
 
-**Resumen:** CA-1, CA-2, CA-5, CA-6 y CA-7 cumplidos con test permanente en el repo (`IT-PAY-10`, `IT-PAY-13`, `authorization.test.js`) y `npm test` en verde (292 passed, 0 failed, 16 expected-fail preexistentes sin relación con este spec). CA-3 y CA-4 se cumplen funcionalmente (verificado empíricamente con un test temporal creado, ejecutado y eliminado solo para esta auditoría), pero **no cuentan con test permanente versionado** en `tests/integration/paymentMethods.test.js` — el `describe("DELETE /api/payment-methods/:id")` solo cubre los escenarios de `IT-PAY-10` (propio dueño → 200, sin verificar persistencia) e `IT-PAY-13` (dueño ajeno → 404 + persistencia). Esto no bloquea el gate porque el spec (sección "Medible") solo exige CA-1 a CA-6 "verificables por lectura de código y por la suite de tests" — no exige explícitamente un test nuevo por cada CA — y CA-6 solo pide activar `IT-PAY-10` y añadir el caso de CA-5, sin mencionar CA-3/CA-4 como casos nuevos requeridos. Se deja como observación de cobertura, no como hallazgo bloqueante. Gate G3: **verde** para CA-1 a CA-7.
+**Resumen:** CA-1 a CA-7 cumplidos con test permanente en el repo (`IT-PAY-10`, `IT-PAY-13`, `IT-PAY-14`, `authorization.test.js`) y `npm test` en verde (292 passed, 0 failed, 16 expected-fail preexistentes sin relación con este spec). CA-3 (persistencia del borrado) queda cubierto por el assert `expect(await PaymentMethod.findById(metodo._id)).toBeNull();` incorporado a `IT-PAY-10` (línea 192); CA-4 (404 en recurso inexistente) queda cubierto por el test nuevo `IT-PAY-14` (líneas 208-217). Ambos añadidos en el commit `8475d9d8`, posterior al commit `975629aa` de implementación y a la primera versión de este plan. Gate G3: **verde** para CA-1 a CA-7.
