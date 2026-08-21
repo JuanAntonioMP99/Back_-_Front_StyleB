@@ -27,6 +27,8 @@ const ImageCarousel = ({ images, altText }) => {
                     src={images[currentIndex]}
                     alt={`${altText} - Vista ${currentIndex + 1}`}
                     className="carousel-image"
+                    loading="lazy"
+                    decoding="async"
                     onError={(event) => {
                         if (event.target.dataset.fallbackApplied) return;
                         event.target.dataset.fallbackApplied = "true";
