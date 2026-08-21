@@ -140,9 +140,9 @@ src/
 │   ├── CartPage.jsx + .css
 │   ├── CheckoutPage.jsx + .css
 │   ├── ConfirmationPage.jsx + .css
-│   ├── HomePage.jsx + .css
+│   ├── HomePage.jsx
 │   ├── Login.jsx
-│   ├── ProductDetailsPage.jsx / ProductDetailPage.css
+│   ├── ProductDetailsPage.jsx
 │   ├── Profile.jsx + .css
 │   ├── ProtectedRoute.jsx
 │   ├── Register.jsx

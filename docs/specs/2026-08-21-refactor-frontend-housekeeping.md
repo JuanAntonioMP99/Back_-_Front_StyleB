@@ -4,7 +4,7 @@
 - **Tipo:** refactor
 - **Complejidad:** S (6 puntos independientes, cada uno individualmente XS; se agrupan en un solo pendiente por tratarse de limpieza de bajo riesgo sobre archivos ya tocados en esta serie de trabajo, no por relación funcional entre ellos — ver "Decisiones de Diseño" para la justificación de esta excepción puntual a la regla `1 pendiente = 1 spec` de grano fino)
 - **Fecha:** 2026-08-21
-- **Estado:** DRAFT
+- **Estado:** DONE
 - **ID de backlog:** `FE-HOUSEKEEPING-2026-08-21` (agrupa `FE-IMAGECAROUSEL-LAZY-LOADING-2026-08-21`, `FE-DEAD-CSS-PRODUCTDETAILPAGE-2026-08-20`, `FE-DEAD-CSS-HOMEPAGE-2026-08-21`, `FE-DEAD-CSS-LAYOUT-MAINCONTENT-2026-08-21`, `FE-DEAD-PROP-LISTITEM-2026-08-21`, `FE-TYPO-TITILE-2026-08-21`, todos en `docs/backlog.md`, E5)
 - **Ejecutor:** subagente frontend-builder
 
@@ -35,17 +35,17 @@ Verificación de código real hecha específicamente para este spec (no se reuti
 
 ## Criterios de Aceptación
 
-- [ ] **CA-1 — `loading="lazy"` y `decoding="async"` en `ImageCarousel.jsx`, con tratamiento explícito de la primera imagen visible.** El `<img>` de `Components/ImageCarousel/ImageCarousel.jsx` (línea ~25) agrega `loading="lazy"` y `decoding="async"`, mismo patrón literal que `ProductCard.jsx`/`CartView.jsx` (mismos dos atributos, mismos valores, sin variar según `currentIndex`). No se introduce lógica condicional para tratar la primera imagen (`currentIndex === 0`) de forma distinta a las siguientes — se acepta que, igual que ya ocurre en `ProductCard.jsx` (que usa `loading="lazy"` en la imagen de cada tarjeta del catálogo, incluida la primera visible del grid), el navegador decide cargar de inmediato cualquier imagen que ya esté en/cerca del viewport al insertarse, sin que el código deba distinguir ese caso. Verificable: `git diff` de `ImageCarousel.jsx` muestra únicamente la adición de los dos atributos en el único `<img>` del archivo; `npm test -- ImageCarousel` (dentro de `Style-Busters-main`) pasa sin cambios en los 5 tests existentes (ninguno hace aserciones sobre `loading`/`decoding`, confirmado por lectura de `ImageCarousel.test.jsx`).
+- [x] **CA-1 — `loading="lazy"` y `decoding="async"` en `ImageCarousel.jsx`, con tratamiento explícito de la primera imagen visible.** El `<img>` de `Components/ImageCarousel/ImageCarousel.jsx` (línea ~25) agrega `loading="lazy"` y `decoding="async"`, mismo patrón literal que `ProductCard.jsx`/`CartView.jsx` (mismos dos atributos, mismos valores, sin variar según `currentIndex`). No se introduce lógica condicional para tratar la primera imagen (`currentIndex === 0`) de forma distinta a las siguientes — se acepta que, igual que ya ocurre en `ProductCard.jsx` (que usa `loading="lazy"` en la imagen de cada tarjeta del catálogo, incluida la primera visible del grid), el navegador decide cargar de inmediato cualquier imagen que ya esté en/cerca del viewport al insertarse, sin que el código deba distinguir ese caso. Verificable: `git diff` de `ImageCarousel.jsx` muestra únicamente la adición de los dos atributos en el único `<img>` del archivo; `npm test -- ImageCarousel` (dentro de `Style-Busters-main`) pasa sin cambios en los 5 tests existentes (ninguno hace aserciones sobre `loading`/`decoding`, confirmado por lectura de `ImageCarousel.test.jsx`).
 
-- [ ] **CA-2 — `Pages/ProductDetailPage.css` eliminado.** El archivo `Style-Busters-main/src/Pages/ProductDetailPage.css` se borra del repositorio. Verificable: `git status`/`git diff` del PR muestra el archivo como eliminado (`deleted`); `npm run build` (`Style-Busters-main`) completa sin errores ni warnings de módulo no encontrado (confirma que ningún bundle intentaba resolverlo); `npm test` no reporta ningún test roto por la ausencia del archivo (ninguno lo referencia, confirmado en "Contexto" punto 1).
+- [x] **CA-2 — `Pages/ProductDetailPage.css` eliminado.** El archivo `Style-Busters-main/src/Pages/ProductDetailPage.css` se borra del repositorio. Verificable: `git status`/`git diff` del PR muestra el archivo como eliminado (`deleted`); `npm run build` (`Style-Busters-main`) completa sin errores ni warnings de módulo no encontrado (confirma que ningún bundle intentaba resolverlo); `npm test` no reporta ningún test roto por la ausencia del archivo (ninguno lo referencia, confirmado en "Contexto" punto 1).
 
-- [ ] **CA-3 — `Pages/HomePage.css` eliminado.** El archivo `Style-Busters-main/src/Pages/HomePage.css` se borra del repositorio. Verificable: igual criterio que CA-2 (`git diff` como `deleted`, `npm run build` y `npm test` sin regresiones), aplicado a este archivo.
+- [x] **CA-3 — `Pages/HomePage.css` eliminado.** El archivo `Style-Busters-main/src/Pages/HomePage.css` se borra del repositorio. Verificable: igual criterio que CA-2 (`git diff` como `deleted`, `npm run build` y `npm test` sin regresiones), aplicado a este archivo.
 
-- [ ] **CA-4 — Regla `.main-content` eliminada de `Layout.css`.** `Style-Busters-main/src/Layout/Layout.css` deja de contener el bloque `.main-content { ... }` (líneas 10-16 actuales) y su variante dentro de `@media (max-width: 768px) { .main-content { ... } }` (líneas 19-23 actuales); el resto del archivo (`.layout`, `@media print`) no cambia. Verificable: `git diff` de `Layout.css` muestra únicamente la eliminación de esas dos reglas; `grep -r "main-content" Style-Busters-main/src` no devuelve ninguna coincidencia tras el cambio; `npm run build`/`npm test` sin regresiones.
+- [x] **CA-4 — Regla `.main-content` eliminada de `Layout.css`.** `Style-Busters-main/src/Layout/Layout.css` deja de contener el bloque `.main-content { ... }` (líneas 10-16 actuales) y su variante dentro de `@media (max-width: 768px) { .main-content { ... } }` (líneas 19-23 actuales); el resto del archivo (`.layout`, `@media print`) no cambia. Verificable: `git diff` de `Layout.css` muestra únicamente la eliminación de esas dos reglas; `grep -r "main-content" Style-Busters-main/src` no devuelve ninguna coincidencia tras el cambio; `npm run build`/`npm test` sin regresiones.
 
-- [ ] **CA-5 — `className="list-item"` eliminado de `List.jsx`.** `Components/List/List.jsx` deja de pasar `className="list-item"` en sus dos invocaciones de `<ProductCard>` (líneas 14 y 25 actuales); el resto de las props pasadas (`key`, `product`, `orientation`) no cambia. Verificable: `git diff` de `List.jsx` muestra únicamente la eliminación de esa línea en ambos bloques; `grep -r "list-item" Style-Busters-main/src` no devuelve ninguna coincidencia tras el cambio; `npm test` (suite completa) sin regresiones — en particular `HomePage.integration.test.jsx` y `SearchResultsList.integration.test.jsx`, que renderizan `List` indirectamente.
+- [x] **CA-5 — `className="list-item"` eliminado de `List.jsx`.** `Components/List/List.jsx` deja de pasar `className="list-item"` en sus dos invocaciones de `<ProductCard>` (líneas 14 y 25 actuales); el resto de las props pasadas (`key`, `product`, `orientation`) no cambia. Verificable: `git diff` de `List.jsx` muestra únicamente la eliminación de esa línea en ambos bloques; `grep -r "list-item" Style-Busters-main/src` no devuelve ninguna coincidencia tras el cambio; `npm test` (suite completa) sin regresiones — en particular `HomePage.integration.test.jsx` y `SearchResultsList.integration.test.jsx`, que renderizan `List` indirectamente.
 
-- [ ] **CA-6 — Parámetro `titile` eliminado de `List.jsx`, sin agregar renderizado de título (fuera de alcance).** La firma de `List.jsx` pasa de `({products = [], titile = "Nuestros productos", layout = "grid"})` a `({products = [], layout = "grid"})` — se elimina el parámetro y su valor por defecto, **no se agrega ningún `<h2>`/`<h1>` ni se renderiza ningún título** (eso sería una funcionalidad nueva, no pedida, fuera del alcance de este refactor de limpieza). Las props `title="..."` que ya pasan `HomePage.jsx` y `SearchResultsList.jsx` siguen pasándose tal cual (no se tocan esos dos archivos) y React sigue ignorándolas silenciosamente por no estar desestructuradas — mismo comportamiento observable que hoy, solo cambia qué nombre de parámetro (inexistente igualmente) se ignora. Adicionalmente, el comentario de `Pages/HomePage.integration.test.jsx` (líneas 37-38) que documenta el typo (`// Nota: List ignora su prop de título (typo \`titile\` en List.jsx y nunca se renderiza) ...`) se actualiza para reflejar que `List.jsx` ya no tiene ningún parámetro de título (ni `titile` ni `title`), sin cambiar la aserción de la prueba en sí (`expect(await screen.findByText("Camisa"))...`, que sigue pasando igual). Verificable: `git diff` de `List.jsx` muestra únicamente el cambio de firma; `git diff` de `HomePage.integration.test.jsx` muestra únicamente la actualización del comentario (sin cambios de aserciones); `npm test` sin regresiones.
+- [x] **CA-6 — Parámetro `titile` eliminado de `List.jsx`, sin agregar renderizado de título (fuera de alcance).** La firma de `List.jsx` pasa de `({products = [], titile = "Nuestros productos", layout = "grid"})` a `({products = [], layout = "grid"})` — se elimina el parámetro y su valor por defecto, **no se agrega ningún `<h2>`/`<h1>` ni se renderiza ningún título** (eso sería una funcionalidad nueva, no pedida, fuera del alcance de este refactor de limpieza). Las props `title="..."` que ya pasan `HomePage.jsx` y `SearchResultsList.jsx` siguen pasándose tal cual (no se tocan esos dos archivos) y React sigue ignorándolas silenciosamente por no estar desestructuradas — mismo comportamiento observable que hoy, solo cambia qué nombre de parámetro (inexistente igualmente) se ignora. Adicionalmente, el comentario de `Pages/HomePage.integration.test.jsx` (líneas 37-38) que documenta el typo (`// Nota: List ignora su prop de título (typo \`titile\` en List.jsx y nunca se renderiza) ...`) se actualiza para reflejar que `List.jsx` ya no tiene ningún parámetro de título (ni `titile` ni `title`), sin cambiar la aserción de la prueba en sí (`expect(await screen.findByText("Camisa"))...`, que sigue pasando igual). Verificable: `git diff` de `List.jsx` muestra únicamente el cambio de firma; `git diff` de `HomePage.integration.test.jsx` muestra únicamente la actualización del comentario (sin cambios de aserciones); `npm test` sin regresiones.
 
 ## Consideraciones de Seguridad
 
@@ -109,22 +109,24 @@ Verificación de código real hecha específicamente para este spec (no se reuti
 - **Items que deben convertirse en backlog:** ninguno nuevo esperado; los 6 hallazgos que originan este pendiente se marcan como resueltos en `docs/backlog.md` al cierre (FASE 10), no se crean entradas nuevas salvo que la implementación descubra algo no anticipado aquí.
 
 ## Resultados (se completa al cerrar)
-- Fecha de cierre:
-- CAs cumplidos:
-- CAs no cumplidos:
-- Deuda técnica generada:
-- Lecciones aprendidas:
-- Pendientes abiertos confirmados:
-- Gaps no resueltos:
-- Trabajo fuera de alcance confirmado:
-- Backlog derivado creado: sí | no
-- Referencias a historias/tareas creadas: [IDs / enlaces]
+- **Fecha de cierre:** 2026-08-21.
+- **CAs cumplidos:** CA-1 a CA-6 (6/6) — implementación limpia desde el primer intento.
+- **CAs no cumplidos:** ninguno.
+- **Deuda técnica generada:** ninguna nueva. Este pendiente **reduce** deuda técnica ya existente (6 hallazgos previamente registrados en `docs/backlog.md`, E5).
+- **Lecciones aprendidas:**
+  - Agrupar hallazgos triviales homogéneos en tamaño/riesgo (aunque heterogéneos en tema) en un solo pendiente funcionó bien: 6 hallazgos cerrados con una sola vuelta de spec/implementación/revisión, sin ningún hallazgo bloqueante, confirmando que la excepción a "1 pendiente = 1 spec" documentada en el spec ("Decisiones de Diseño") fue una decisión acertada para este caso específico (deuda técnica trivial ya bien delimitada por specs anteriores).
+- **Pendientes abiertos confirmados:** ninguno nuevo generado.
+- **Gaps no resueltos:** ninguno.
+- **Trabajo fuera de alcance confirmado:** renderizar un título real en `List.jsx` (Alternativa B descartada explícitamente en "Decisiones de Diseño"; requeriría un pendiente de `feature` nuevo con su propio spec de diseño visual).
+- **Backlog derivado creado:** no (este pendiente resuelve 6 items ya existentes en `docs/backlog.md`, E5; no genera items nuevos).
+- **Referencias a historias/tareas creadas:** PR #20 (https://github.com/JuanAntonioMP99/Back_-_Front_StyleB/pull/20), este spec, plan de prueba.
 
 ## Matriz de cierre
 | Item detectado | Estado | Acción |
 |---|---|---|
-| Implementado | Confirmado | Cerrar |
-| Parcial | Requiere seguimiento | Crear backlog |
-| Inconsistente | Riesgo | Crear backlog |
-| Fuera de alcance | Aplazado | Crear backlog o archivar |
-| Obsoleto | No aplica | Archivar o eliminar |
+| `FE-IMAGECAROUSEL-LAZY-LOADING-2026-08-21` — falta `loading="lazy"`/`decoding="async"` en `ImageCarousel.jsx` | Confirmado | Cerrar |
+| `FE-DEAD-CSS-PRODUCTDETAILPAGE-2026-08-20` — `Pages/ProductDetailPage.css` huérfano | Confirmado | Cerrar |
+| `FE-DEAD-CSS-HOMEPAGE-2026-08-21` — `Pages/HomePage.css` huérfano | Confirmado | Cerrar |
+| `FE-DEAD-CSS-LAYOUT-MAINCONTENT-2026-08-21` — regla `.main-content` huérfana en `Layout.css` | Confirmado | Cerrar |
+| `FE-DEAD-PROP-LISTITEM-2026-08-21` — `className="list-item"` no consumido por `ProductCard.jsx` | Confirmado | Cerrar |
+| `FE-TYPO-TITILE-2026-08-21` — prop `titile` (typo) nunca usada en `List.jsx` | Confirmado | Cerrar |
