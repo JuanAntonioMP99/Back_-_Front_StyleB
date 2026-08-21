@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import Header from "./Header";
@@ -48,5 +49,15 @@ describe("Header", () => {
     };
     renderHeader();
     expect(screen.getByText(/hola, ada/i)).toBeInTheDocument();
+  });
+
+  it("no autenticado: el botón Crear Cuenta del menú de usuario enlaza a /register", async () => {
+    const user = userEvent.setup();
+    renderHeader();
+
+    await user.click(screen.getByLabelText(/menú de usuario/i));
+
+    const registerLink = screen.getByRole("link", { name: /crear cuenta/i });
+    expect(registerLink).toHaveAttribute("href", "/register");
   });
 });
