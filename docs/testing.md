@@ -130,6 +130,17 @@ npm run e2e:ci:headless  # sin ventana (para CI Linux / Electron headless)
 > disponibles en el equipo. El modo headed en Chrome además evita el fallo del
 > smoke-test de Electron visto en entornos sin GUI.
 
+> **⚠️ No uses `npm start` (el dev server normal) para el E2E.** Lee `.env`, que
+> apunta a **producción** (Render); la app hablaría con el backend real mientras
+> Cypress pega a `localhost:4000` → registro y checkout fallan. La opción B usa
+> `npm run start:e2e`, que fuerza `REACT_APP_API_URL=http://localhost:4000/api`.
+> Para la GUI, lo más simple es la **opción A: `npm run e2e:open`**.
+
+> **Aislamiento por prueba:** el backend efímero siembra la BD una sola vez, pero el
+> checkout crea carritos/órdenes que persisten y contaminarían las pruebas siguientes.
+> `e2e-server.js` expone `POST /__test__/reset` (limpia carritos y órdenes, conserva el
+> seed) y `checkout.cy.js` lo llama con `cy.resetDb()` en cada `beforeEach`.
+
 ---
 
 ## 6. Datos de prueba: crear, preparar, limpiar

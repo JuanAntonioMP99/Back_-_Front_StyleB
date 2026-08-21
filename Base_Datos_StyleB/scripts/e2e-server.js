@@ -13,6 +13,7 @@
  *
  * Uso:  node ./scripts/e2e-server.js
  */
+import express from "express";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import { MongoMemoryServer } from "mongodb-memory-server";
@@ -44,6 +45,8 @@ const { default: app } = await import("../server.js");
 const { default: Category } = await import("../src/models/Category.js");
 const { default: Product } = await import("../src/models/Product.js");
 const { default: User } = await import("../src/models/User.js");
+const { default: Cart } = await import("../src/models/Cart.js");
+const { default: Order } = await import("../src/models/Order.js");
 
 // --- 4. Seed determinista ---
 async function seed() {
@@ -92,13 +95,37 @@ async function seed() {
 
 await seed();
 
-// --- 5. Levantar el servidor ---
+// --- 5. App envoltorio con el reseteo de estado SOLO-TEST ---
+// Cypress aísla el navegador entre pruebas (limpia localStorage), pero la BD
+// del backend persiste durante toda la corrida. Los carritos y órdenes que
+// crean unas pruebas se filtran a las siguientes (p. ej. `getCartByUser` es un
+// findOne que devolvería el carrito arrastrado), rompiendo el checkout del 2º
+// test en adelante. Este endpoint da aislamiento por prueba: se llama en el
+// beforeEach y limpia SOLO el estado mutable (carritos y órdenes), dejando el
+// seed determinista (categoría, productos y usuario) intacto para no invalidar
+// la sesión cacheada de Cypress.
+//
+// Se monta en un app envoltorio que delega en la app real: así `/__test__/reset`
+// se resuelve ANTES del handler 404 catch-all que server.js registra al final,
+// sin modificar server.js.
+const testApp = express();
+testApp.post("/__test__/reset", async (req, res) => {
+  try {
+    await Promise.all([Cart.deleteMany({}), Order.deleteMany({})]);
+    res.status(200).json({ ok: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+testApp.use(app);
+
+// --- 6. Levantar el servidor ---
 const port = Number(process.env.PORT);
-const server = app.listen(port, "0.0.0.0", () => {
+const server = testApp.listen(port, "0.0.0.0", () => {
   console.log(`[e2e] API de pruebas escuchando en http://localhost:${port}`);
 });
 
-// --- 6. Apagado limpio ---
+// --- 7. Apagado limpio ---
 async function shutdown() {
   console.log("\n[e2e] Apagando servidor de pruebas...");
   server.close();
