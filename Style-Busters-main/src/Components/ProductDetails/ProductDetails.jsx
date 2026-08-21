@@ -7,10 +7,8 @@ import Badge from "../Common/Badge";
 import Button from "../Common/Button";
 import ErrorMessage from "../Common/ErrorMessage/ErrorMessage";
 import Loading from "../Common/Loading/Loading";
-import {
-  PRODUCT_IMAGE_PLACEHOLDER,
-  getProductImage,
-} from "../../utils/productImage";
+import ImageCarousel from "../ImageCarousel/ImageCarousel";
+import { getProductImage } from "../../utils/productImage";
 import "./ProductDetails.css";
 
 export default function ProductDetails({ productId }) {
@@ -103,6 +101,12 @@ export default function ProductDetails({ productId }) {
   const { name, description, price, stock, category } = product;
   const stockBadge = stock > 0 ? "success" : "error";
   const stockLabel = stock > 0 ? "En stock" : "Agotado";
+  const galleryImages = [
+    getProductImage(product),
+    ...(Array.isArray(product.images)
+      ? product.images.filter((url) => typeof url === "string" && url.length > 0)
+      : []),
+  ];
 
   return (
     <div className="product-details-container" data-testid="product-detail">
@@ -115,15 +119,7 @@ export default function ProductDetails({ productId }) {
       />
       <div className="product-details-main">
         <div className="product-details-image">
-          <img
-            src={getProductImage(product)}
-            alt={name}
-            onError={(event) => {
-              if (event.target.dataset.fallbackApplied) return;
-              event.target.dataset.fallbackApplied = "true";
-              event.target.src = PRODUCT_IMAGE_PLACEHOLDER;
-            }}
-          />
+          <ImageCarousel images={galleryImages} altText={name} />
         </div>
         <div className="product-details-info">
           <div className="product-details-title">

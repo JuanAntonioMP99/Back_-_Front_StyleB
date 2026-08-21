@@ -36,6 +36,7 @@
 - F3.7 Quitar middlewares duplicados en `POST /users` · Refactor
 - F3.8 Corregir códigos HTTP (`createCart`, `updateOrderStatus`) · Bug · (K09)
 - F3.9 Endurecer `FRONTEND_URL` a obligatoria en producción si aparece un consumidor crítico (emails, redirecciones, callbacks OAuth) · Deuda técnica · decisión aplazada del spec ENV-01
+- `BE-VALIDATE-IMAGEURL-2026-08-21` Armonizar la validación de `imageURL` (sin `isURL()` hoy en `createProductValidation`/`updateProductValidation`) con la de `images` (que sí la tiene), para que ambos campos de imagen tengan el mismo nivel de validación de formato · Deuda técnica · derivado de spec [`2026-08-21-feature-product-image-gallery-backend`](specs/2026-08-21-feature-product-image-gallery-backend.md) (PR #16)
 
 ## E4 — Fuente de verdad única · Alto/Medio
 - F4.1 Carrito 100% API con caché local de invitado · Alineación FE-BE · (K14, K15)
@@ -57,6 +58,9 @@
 - `FE-DEAD-CSS-HOMEPAGE-2026-08-21` `Style-Busters-main/src/Pages/HomePage.css` es código huérfano — define `.home-header`/`.home-title`/`.home-subtitle`/`.products-grid` pero `HomePage.jsx` nunca lo importa ni usa esas clases · Deuda técnica · derivado de spec [`2026-08-21-feature-home-product-grid-hover`](specs/2026-08-21-feature-home-product-grid-hover.md) (PR #12)
 - `FE-DEAD-PROP-LISTITEM-2026-08-21` `Components/List/List.jsx` pasa `className="list-item"` a cada `<ProductCard>`, prop que `ProductCard.jsx` nunca destructura ni consume · Deuda técnica · derivado de spec [`2026-08-21-feature-home-product-grid-hover`](specs/2026-08-21-feature-home-product-grid-hover.md) (PR #12)
 - `FE-TYPO-TITILE-2026-08-21` `List.jsx` recibe una prop `titile` (typo de `title`) que nunca se usa en el render · Bug · derivado de spec [`2026-08-21-feature-home-product-grid-hover`](specs/2026-08-21-feature-home-product-grid-hover.md) (PR #12)
+- `FE-DEAD-CSS-LAYOUT-MAINCONTENT-2026-08-21` `Layout/Layout.css` define `.main-content` (`max-width: 1400px; margin: 0 auto; padding: clamp(16px, 3vw, 32px);`) pero ningún JSX del repo lo aplica; código muerto · Deuda técnica · derivado de spec [`2026-08-21-feature-home-banner-carousel-card`](specs/2026-08-21-feature-home-banner-carousel-card.md) (PR #15)
+- `FE-IMAGECAROUSEL-LAZY-LOADING-2026-08-21` `Components/ImageCarousel/ImageCarousel.jsx` no tiene `loading="lazy"`/`decoding="async"` en su `<img>`, a diferencia de `ProductCard.jsx`/`CartView.jsx` que sí lo usan · Deuda técnica · derivado de spec [`2026-08-21-feature-product-details-image-carousel`](specs/2026-08-21-feature-product-details-image-carousel.md) (PR #17)
+- `FE-IMAGECAROUSEL-MALFORMED-IMAGES-TEST-2026-08-21` Falta test explícito para `product.images` malformado (no-array, elementos no-string) en `ProductDetails.jsx` — el código ya lo maneja defensivamente (`Array.isArray` + filtro), pero sin cobertura de test dedicada · Deuda técnica · derivado de spec [`2026-08-21-feature-product-details-image-carousel`](specs/2026-08-21-feature-product-details-image-carousel.md) (PR #17)
 
 ## E6 — Documentación · Alto/Medio
 - F6.1 README raíz + READMEs por proyecto · Documentación

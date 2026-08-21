@@ -289,6 +289,7 @@ Todos los esquemas se crean con `new mongoose.Schema({...}, { timestamps: true }
 | price | Number | required |
 | stock | Number | default `0` |
 | imageURL | String | required, default `"https://placehold.co/600x400"` |
+| images | Array de String | default `[]` |
 | category | ObjectId | ref `"Category"` |
 
 ### Category — `models/Category.js`
