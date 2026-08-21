@@ -1,12 +1,3 @@
-:root {
-    --primary-color: #FFD700; /* Amarillo Style-Busters */
-    --bg-dark: #0a0a0a;       /* Fondo casi negro */
-    --card-bg: #111111;       /* Fondo de la tarjeta */
-    --text-main: #ffffff;
-    --text-muted: #aaaaaa;
-    --border-color: #333333;
-    --error-color: #ff4d4d;
-}
 /* Contenedor principal: Centra todo en la pantalla */
 .register-container {
     min-height: 100vh; /* Ocupa toda la altura de la ventana */
@@ -14,17 +5,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--bg-dark);
+    background-color: var(--color-bg-dark);
     padding: 20px;
 }
 /* Tarjeta de Registro */
 .register-card {
-    background-color: var(--card-bg);
+    background-color: var(--color-bg-card);
     width: 100%;
     max-width: 450px; /* Ancho máximo elegante */
     padding: 3rem;
     border-radius: 12px;
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Sombra profunda */
     text-align: center;
     position: relative;
@@ -38,14 +29,14 @@
     left: 0;
     width: 100%;
     height: 4px;
-    background: var(--primary-color);
-    box-shadow: 0 0 10px var(--primary-color);
+    background: var(--color-primary);
+    box-shadow: 0 0 10px var(--color-primary);
 }
 /* Título */
 .register-card h2 {
     font-size: 2rem;
     font-weight: 800;
-    color: var(--text-main);
+    color: var(--color-text-main);
     margin-bottom: 2rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -65,25 +56,25 @@
 .form-group input {
     width: 100%;
     background-color: rgba(0, 0, 0, 0.3);
-    border: 1px solid var(--border-color);
-    color: var(--text-main);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--color-text-main);
     padding: 1rem;
     border-radius: 8px;
     font-size: 1rem;
     transition: all 0.3s ease;
 }
 .form-group input::placeholder {
-    color: var(--text-muted);
+    color: var(--color-text-muted);
 }
 .form-group input:focus {
     outline: none;
-    border-color: var(--primary-color);
+    border-color: var(--color-primary);
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
 }
 /* Error de campo individual */
 .field-error {
     display: block;
-    color: var(--error-color);
+    color: var(--color-accent-pink);
     font-size: 0.85rem;
     margin-top: 0.35rem;
 }
@@ -107,16 +98,16 @@
     font-size: 0.95rem;
 }
 .register-footer span {
-    color: var(--text-muted);
+    color: var(--color-text-muted);
 }
 .register-footer a {
-    color: var(--primary-color);
+    color: var(--color-primary);
     text-decoration: none;
     font-weight: 600;
     transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 .register-footer a:hover {
-    color: var(--text-main);
+    color: var(--color-text-main);
     text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
     text-decoration: underline;
 }
