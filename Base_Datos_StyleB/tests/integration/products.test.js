@@ -98,6 +98,67 @@ describe("POST /api/products", () => {
     const fields = res.body.errors.map((e) => e.path);
     expect(fields).toContain("price");
   });
+
+  it("IT-PROD-10 — CA-4: images con URLs válidas → 201 y persiste el array", async () => {
+    const res = await request(app).post("/api/products").send({
+      name: "Camisa con galería",
+      description: "Producto con varias fotos",
+      price: 25,
+      images: ["https://a.test/1.jpg", "https://a.test/2.jpg"],
+    });
+
+    expect(res.status).toBe(201);
+    expect(res.body.images).toEqual(["https://a.test/1.jpg", "https://a.test/2.jpg"]);
+  });
+
+  it("IT-PROD-11 — CA-4: sin images en el body → 201 con images: []", async () => {
+    const res = await request(app).post("/api/products").send({
+      name: "Camisa sin galería",
+      description: "Producto sin fotos adicionales",
+      price: 25,
+    });
+
+    expect(res.status).toBe(201);
+    expect(res.body.images).toEqual([]);
+  });
+
+  it("IT-PROD-12 — CA-3: images no-array → 422", async () => {
+    const res = await request(app).post("/api/products").send({
+      name: "Images inválido",
+      price: 25,
+      images: "no-es-array",
+    });
+
+    expect(res.status).toBe(422);
+    const fields = res.body.errors.map((e) => e.path);
+    expect(fields).toContain("images");
+  });
+
+  it("IT-PROD-13 — CA-3: elemento de images con URL inválida → 422", async () => {
+    const res = await request(app).post("/api/products").send({
+      name: "URL inválida en galería",
+      price: 25,
+      images: ["no-es-una-url"],
+    });
+
+    expect(res.status).toBe(422);
+    const fields = res.body.errors.map((e) => e.path);
+    expect(fields).toContain("images[0]");
+  });
+
+  it("IT-PROD-14 — CA-3: images excede el límite de 10 elementos → 422", async () => {
+    const elevenUrls = Array.from({ length: 11 }, (_, i) => `https://a.test/${i}.jpg`);
+
+    const res = await request(app).post("/api/products").send({
+      name: "Demasiadas imágenes",
+      price: 25,
+      images: elevenUrls,
+    });
+
+    expect(res.status).toBe(422);
+    const fields = res.body.errors.map((e) => e.path);
+    expect(fields).toContain("images");
+  });
 });
 
 describe("PUT /api/products/:id", () => {
@@ -129,6 +190,31 @@ describe("PUT /api/products/:id", () => {
     expect(res.status).toBe(422);
     const fields = res.body.errors.map((e) => e.path);
     expect(fields).toContain("stock");
+  });
+
+  it("IT-PROD-15 — CA-5: images en el body → 200 y actualiza el array", async () => {
+    const product = await createProduct({ images: ["https://a.test/old.jpg"] });
+
+    const res = await request(app)
+      .put(`/api/products/${product._id}`)
+      .send({ images: ["https://a.test/new1.jpg", "https://a.test/new2.jpg"] });
+
+    expect(res.status).toBe(200);
+    expect(res.body.images).toEqual(["https://a.test/new1.jpg", "https://a.test/new2.jpg"]);
+  });
+
+  it("IT-PROD-16 — CA-5: sin images en el body conserva el images original", async () => {
+    const product = await createProduct({
+      images: ["https://a.test/keep1.jpg", "https://a.test/keep2.jpg"],
+    });
+
+    const res = await request(app)
+      .put(`/api/products/${product._id}`)
+      .send({ name: "Solo cambia el nombre" });
+
+    expect(res.status).toBe(200);
+    expect(res.body.name).toBe("Solo cambia el nombre");
+    expect(res.body.images).toEqual(["https://a.test/keep1.jpg", "https://a.test/keep2.jpg"]);
   });
 });
 

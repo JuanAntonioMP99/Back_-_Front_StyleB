@@ -49,6 +49,35 @@ describe("Modelo Product", () => {
     expect(error.errors).toHaveProperty("price");
   });
 
+  it("images es [] por defecto cuando no se envía el campo", () => {
+    const product = new Product({
+      name: "Camiseta",
+      description: "Algodón",
+      price: 19.99,
+    });
+
+    expect(product.images).toEqual([]);
+    expect(product.validateSync()).toBeUndefined();
+  });
+
+  it("images acepta y persiste un array de strings URL", () => {
+    const product = new Product({
+      name: "Camiseta",
+      description: "Algodón",
+      price: 19.99,
+      images: [
+        "https://a.test/1.jpg",
+        "https://a.test/2.jpg",
+      ],
+    });
+
+    expect(product.images).toEqual([
+      "https://a.test/1.jpg",
+      "https://a.test/2.jpg",
+    ]);
+    expect(product.validateSync()).toBeUndefined();
+  });
+
   it("acepta category como ObjectId y rechaza un id inválido", () => {
     expect(
       new Product({
