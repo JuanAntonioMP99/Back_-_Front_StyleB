@@ -189,6 +189,7 @@ describe("DELETE /api/payment-methods/:id", () => {
       .set(authHeader(user));
 
     expect(res.status).toBe(200);
+    expect(await PaymentMethod.findById(metodo._id)).toBeNull();
   });
 
   it("🔒 IT-PAY-13 — un customer NO debería poder borrar el método de otro usuario (CA-5)", async () => {
@@ -202,5 +203,16 @@ describe("DELETE /api/payment-methods/:id", () => {
 
     expect(res.status).toBe(404);
     expect(await PaymentMethod.findById(metodo._id)).not.toBeNull();
+  });
+
+  it("IT-PAY-14 — recurso inexistente → 404 (CA-4)", async () => {
+    const user = await createUser();
+
+    const res = await request(app)
+      .delete(`/api/payment-methods/${id()}`)
+      .set(authHeader(user));
+
+    expect(res.status).toBe(404);
+    expect(res.body).toEqual({ message: "Payment method not found" });
   });
 });
