@@ -37,6 +37,12 @@
   background-color: rgba(252, 238, 12, 0.06);
 }
 
+/* Tarjeta marcada como predeterminada */
+.payment-item.isDefault {
+  border-color: var(--color-secondary);
+  background-color: rgba(0, 229, 255, 0.06);
+}
+
 .payment-content h4 {
   font-weight: 700;
   font-size: 0.95rem;

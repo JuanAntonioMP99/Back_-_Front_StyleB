@@ -40,6 +40,12 @@
   background-color: rgba(252, 238, 12, 0.06);
 }
 
+/* Tarjeta marcada como predeterminada */
+.address-item.default {
+  border-color: var(--color-secondary);
+  background-color: rgba(0, 229, 255, 0.06);
+}
+
 .address-content p {
   margin: 0 0 4px 0;
   font-size: 0.9rem;
@@ -85,12 +91,6 @@
   color: var(--color-text-main);
   margin-bottom: 0.5rem;
 }
-
-.form-row {
-  display: flex;
-  gap: 1rem;
-}
-.form-row > * { flex: 1; } /* Columnas iguales */
 
 .form-checkbox {
   display: flex;
