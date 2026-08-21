@@ -17,9 +17,9 @@
 
 <a id="K02"></a>~~**K02 🟠 URI de BD ignora el entorno.** `db.conf.js` hardcodea `mongodb://localhost:27017/StyleBusters` e **ignora** `MONGODB_URI` del `.env` (`ecommerce-db-fusion`). La BD real difiere de la documentada en `.env`.~~ **RESUELTO** (2026-07-30): `db.conf.js` ahora importa `env` desde `./env.js` y usa `env.mongodbUri`, que lee `MONGODB_URI` (con fallback a `localhost` solo en dev/test y guarda fail-fast en producción). Ver spec [`infra-env-config-backend`](specs/2026-07-30-infra-env-config-backend.md), ENV-01. → E3.
 
-**K04 🟠 Dominio Direcciones roto y sin rutas.** `addressController.js` importa `"../models/Address"` sin `.js` (rompe en ESM), `updateAddress` usa `userId` no definido, y **no hay `addressRoutes`** montadas. → E3.
+~~**K04 🟠 Dominio Direcciones roto y sin rutas.** `addressController.js` importa `"../models/Address"` sin `.js` (rompe en ESM), `updateAddress` usa `userId` no definido, y **no hay `addressRoutes`** montadas. → E3.~~ **RESUELTO** (2026-08-21): se corrigió el import a `"../models/Address.js"`; el bug de `userId` en `updateAddress` ya se había corregido antes (commit `cad54965`); se creó y montó `addressRoutes.js` bajo `/api/addresses` (5 rutas self-service). Cobertura en `tests/integration/address.test.js` (18 casos). Ver spec [`2026-08-21-bugfix-address-routes-k04`](specs/2026-08-21-bugfix-address-routes-k04.md), PR #22.
 
-**K05 🟠 `deletePaymentMethod` roto.** Referencia `addressId` (variable inexistente); la ruta falla siempre. → E3.
+~~**K05 🟠 `deletePaymentMethod` roto.** Referencia `addressId` (variable inexistente); la ruta falla siempre. → E3.~~ **RESUELTO** (2026-08-21): se corrigió `deletePaymentMethod` para leer `req.params.id` (antes `paymentMethodId`, inexistente) y usarlo en `findOne`/`findByIdAndDelete` (antes `addressId`, no declarado). Cobertura en `tests/integration/paymentMethods.test.js` (`IT-PAY-10`, `IT-PAY-13`, `IT-PAY-14`). Ver spec [`2026-08-21-bugfix-delete-payment-method-k05`](specs/2026-08-21-bugfix-delete-payment-method-k05.md), PR #23.
 
 **K06 🟠 `WishList.products` con `ref` incorrecto.** Apunta a `"User"`, debería ser `"Product"`. → E3.
 
