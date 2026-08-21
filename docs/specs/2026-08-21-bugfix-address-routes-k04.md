@@ -147,4 +147,4 @@ Ya existen en el working directory (sin trackear) dos piezas de un intento previ
 | CA-7 — regresión de import ESM no detectable por Vitest (solo por Node real) | Confirmado, limitación documentada | Cerrar con nota (sin backlog nuevo: ya documentado en Resultados/Lecciones) |
 | Campo `name` no persistido en `Address` | Confirmado, sigue reproducible, fuera de alcance | Backlog: propuesta pendiente de evaluación por el orchestrator |
 | `K20` — `min`/`max` no validan longitud en `String` | Ya registrado, sin relación | No aplica a este spec |
-| `docs/known-issues.md`/`docs/backlog.md` sin tachado `RESUELTO` para `K04`/`F3.1` | Detectado en este cierre, fuera de alcance explícito del docs-keeper en esta tarea | Backlog: alinear en tarea `docs` posterior, mismo patrón que `F1.1`/`K00` |
+| `docs/known-issues.md`/`docs/backlog.md` sin tachado `RESUELTO` para `K04`/`F3.1` | Detectado en este cierre por docs-keeper | Cerrado en el commit `447a73a0` de esta misma rama, mismo patrón que `F1.1`/`K00` |

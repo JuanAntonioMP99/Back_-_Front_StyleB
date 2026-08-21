@@ -145,4 +145,4 @@ const deletePaymentMethod = async (req, res, next) => {
 | Chequeo de propiedad (anti-IDOR) del método de pago nunca se ejecuta por el crash previo | spec-writer (análisis STRIDE) | Confirmado corregido y cubierto con test (`IT-PAY-13`) | Cerrar |
 | Plan de prueba inicial sin test permanente para CA-3/CA-4 | tech-reviewer / qa-test-designer, en revisión previa al cierre | Corregido en 1 iteración (`8475d9d8`, `60eac250`) | Cerrar |
 | `K21` — `errorHandler` cableado antes de las rutas en `server.js` | Ya registrado, sin relación directa | No aplica a este spec |
-| `docs/known-issues.md`/`docs/backlog.md` sin tachado `RESUELTO` para `K05`/`F3.2` | Detectado en este cierre, fuera de alcance explícito del docs-keeper en esta tarea | Backlog: alinear en tarea `docs` posterior, mismo patrón que `F1.1`/`K00` |
+| `docs/known-issues.md`/`docs/backlog.md` sin tachado `RESUELTO` para `K05`/`F3.2` | Detectado en este cierre por docs-keeper | Cerrado en el commit `447a73a0` de esta misma rama, mismo patrón que `F1.1`/`K00` |
