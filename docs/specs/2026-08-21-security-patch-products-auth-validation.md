@@ -4,7 +4,7 @@
 - **Tipo:** security-patch
 - **Complejidad:** M
 - **Fecha:** 2026-08-21
-- **Estado:** DRAFT
+- **Estado:** DONE
 - **ID de backlog:** SEC-PRODUCTS-AUTH-VALIDATION-2026-08-21
 - **Ejecutor:** subagente backend-builder
 
@@ -68,53 +68,53 @@ sin ningún middleware de autorización antes de la validación. Esto está docu
 
 ### F3.5 — Middleware de autorización en rutas de escritura de `/products`
 
-- [ ] **CA-1 — Imports agregados a `productRoutes.js`.** El archivo agrega `import authMiddleware from "../middlewares/authMiddleware.js";` e `import isAdmin from "../middlewares/isAdminMiddleware.js";`, mismos imports que ya usa `categoryRoutes.js` líneas 11-12. Verificable: `grep` de ambos imports en `productRoutes.js` tras el cambio.
+- [x] **CA-1 — Imports agregados a `productRoutes.js`.** El archivo agrega `import authMiddleware from "../middlewares/authMiddleware.js";` e `import isAdmin from "../middlewares/isAdminMiddleware.js";`, mismos imports que ya usa `categoryRoutes.js` líneas 11-12. Verificable: `grep` de ambos imports en `productRoutes.js` tras el cambio.
 
-- [ ] **CA-2 — `POST /api/products` exige `authMiddleware` + `isAdmin`.** La ruta queda:
+- [x] **CA-2 — `POST /api/products` exige `authMiddleware` + `isAdmin`.** La ruta queda:
   ```js
   router.post("/products", authMiddleware, isAdmin, createProductValidation, validate, createProduct);
   ```
   mismo orden de cadena que `categoryRoutes.js` línea 48 (`authMiddleware → isAdmin → [validaciones] → validate → controller`). Verificable: sin token → `401 { message: "Unauthorized" }`; con token de customer → `403 { message: "Admin access required" }`; con token de admin → comportamiento actual sin cambios (`201` con payload válido).
 
-- [ ] **CA-3 — `PUT /api/products/:id` exige `authMiddleware` + `isAdmin`.** La ruta queda:
+- [x] **CA-3 — `PUT /api/products/:id` exige `authMiddleware` + `isAdmin`.** La ruta queda:
   ```js
   router.put("/products/:id", authMiddleware, isAdmin, updateProductValidation, validate, updateProduct);
   ```
   Mismas condiciones de verificación que CA-2 (401 sin token, 403 con customer, comportamiento actual con admin).
 
-- [ ] **CA-4 — `DELETE /api/products/:id` exige `authMiddleware` + `isAdmin`.** La ruta queda:
+- [x] **CA-4 — `DELETE /api/products/:id` exige `authMiddleware` + `isAdmin`.** La ruta queda:
   ```js
   router.delete("/products/:id", authMiddleware, isAdmin, productIdValidation, validate, deleteProduct);
   ```
   Mismas condiciones de verificación que CA-2 (401 sin token, 403 con customer, comportamiento actual con admin — `204` sin body).
 
-- [ ] **CA-5 — Rutas de lectura de `/products` sin cambios.** `GET /products/search`, `GET /products` y `GET /products/:id` conservan exactamente su cadena de middlewares actual (sin `authMiddleware` ni `isAdmin`), siguen siendo públicas. Verificable: `git diff` de `productRoutes.js` no toca las líneas 63-65; los tests existentes de `describe("GET /api/products")`, `describe("GET /api/products/:id")` y `describe("GET /api/products/search")` en `products.test.js` pasan sin ninguna modificación.
+- [x] **CA-5 — Rutas de lectura de `/products` sin cambios.** `GET /products/search`, `GET /products` y `GET /products/:id` conservan exactamente su cadena de middlewares actual (sin `authMiddleware` ni `isAdmin`), siguen siendo públicas. Verificable: `git diff` de `productRoutes.js` no toca las líneas 63-65; los tests existentes de `describe("GET /api/products")`, `describe("GET /api/products/:id")` y `describe("GET /api/products/search")` en `products.test.js` pasan sin ninguna modificación.
 
 ### BE-VALIDATE-IMAGEURL-2026-08-21 — Validación de formato de `imageURL`
 
-- [ ] **CA-6 — `imageURL` validado en `createProductValidation`.** Se agrega:
+- [x] **CA-6 — `imageURL` validado en `createProductValidation`.** Se agrega:
   ```js
   body("imageURL").optional().isURL().withMessage("imageURL must be a valid URL"),
   ```
   al array `createProductValidation` de `productRoutes.js` (líneas 21-37), reutilizando literalmente la regla ya decidida por el security-reviewer. `.optional()` porque `imageURL` nunca fue obligatorio en el validador (el `required: true` del schema tiene `default`, como ya documenta el spec `2026-08-21-feature-product-image-gallery-backend`). Verificable: `POST /api/products` (con token de admin, tras CA-2) con `imageURL: "no-es-una-url"` → `422` con un error cuyo `path` sea `"imageURL"`; con `imageURL` ausente → sin error de este campo (se aplica el default del schema); con `imageURL` válido → `201` sin error.
 
-- [ ] **CA-7 — `imageURL` validado en `updateProductValidation`.** Misma regla que CA-6, agregada al array `updateProductValidation` (líneas 39-61). Verificable: `PUT /api/products/:id` (con token de admin) con `imageURL` no-URL → `422` con `path: "imageURL"`; sin `imageURL` en el body → sin error de este campo, conserva el valor existente (mismo patrón que `images` en `IT-PROD-16`).
+- [x] **CA-7 — `imageURL` validado en `updateProductValidation`.** Misma regla que CA-6, agregada al array `updateProductValidation` (líneas 39-61). Verificable: `PUT /api/products/:id` (con token de admin) con `imageURL` no-URL → `422` con `path: "imageURL"`; sin `imageURL` en el body → sin error de este campo, conserva el valor existente (mismo patrón que `images` en `IT-PROD-16`).
 
 ### Actualización de tests existentes que este cambio rompe
 
-- [ ] **CA-8 — `products.test.js`: los 15 tests de escritura usan token de admin.** El archivo importa `createAdmin, authHeader` además de `createProduct, createCategory` desde `tests/helpers/factories.js`, y las 15 llamadas identificadas en "Contexto" (8 de `POST`, 5 de `PUT`, 2 de `DELETE`) encadenan `.set(authHeader(admin))`, donde `admin` se obtiene con `await createAdmin()` (puede ser una única instancia compartida por `describe` vía `beforeEach`/variable de módulo, o creada por test — decisión de implementación libre del ejecutor mientras cada llamada de escritura lleve el header). Verificable: `npm run test:integration` (`Base_Datos_StyleB`) — los 15 tests conservan exactamente sus aserciones actuales sobre status/body (ninguna aserción de negocio cambia, solo se añade el header de autenticación) y pasan en verde.
+- [x] **CA-8 — `products.test.js`: los 15 tests de escritura usan token de admin.** El archivo importa `createAdmin, authHeader` además de `createProduct, createCategory` desde `tests/helpers/factories.js`, y las 15 llamadas identificadas en "Contexto" (8 de `POST`, 5 de `PUT`, 2 de `DELETE`) encadenan `.set(authHeader(admin))`, donde `admin` se obtiene con `await createAdmin()` (puede ser una única instancia compartida por `describe` vía `beforeEach`/variable de módulo, o creada por test — decisión de implementación libre del ejecutor mientras cada llamada de escritura lleve el header). Verificable: `npm run test:integration` (`Base_Datos_StyleB`) — los 15 tests conservan exactamente sus aserciones actuales sobre status/body (ninguna aserción de negocio cambia, solo se añade el header de autenticación) y pasan en verde.
 
-- [ ] **CA-9 — `security.test.js`: el test de "comportamiento actual" pasa a esperar 401.** El test `"cualquiera puede crear un producto sin token (comportamiento actual)"` (línea 62) se actualiza para esperar `res.status === 401` (ya no `201`); su comentario explicativo se actualiza para reflejar que el hallazgo `K08` está corregido, no pendiente. Verificable: el test pasa en verde tras el cambio.
+- [x] **CA-9 — `security.test.js`: el test de "comportamiento actual" pasa a esperar 401.** El test `"cualquiera puede crear un producto sin token (comportamiento actual)"` (línea 62) se actualiza para esperar `res.status === 401` (ya no `201`); su comentario explicativo se actualiza para reflejar que el hallazgo `K08` está corregido, no pendiente. Verificable: el test pasa en verde tras el cambio.
 
-- [ ] **CA-10 — `security.test.js`: los 4 `it.fails` de K08 pasan a `it` normal y quedan en verde.** Se elimina `.fails` de los 4 tests con prefijo `🔒 K08` (líneas 72, 78, 84, 93) sin modificar su cuerpo (ya afirman el comportamiento correcto: 401 sin token en `POST`/`PUT`/`DELETE`, 403 con customer en `POST`). Verificable: `npm run test:integration` no reporta ningún `it.fails` que ahora pase inesperadamente (lo cual haría fallar el test en Vitest) — los 4 deben ejecutarse como `it` normal y pasar.
+- [x] **CA-10 — `security.test.js`: los 4 `it.fails` de K08 pasan a `it` normal y quedan en verde.** Se elimina `.fails` de los 4 tests con prefijo `🔒 K08` (líneas 72, 78, 84, 93) sin modificar su cuerpo (ya afirman el comportamiento correcto: 401 sin token en `POST`/`PUT`/`DELETE`, 403 con customer en `POST`). Verificable: `npm run test:integration` no reporta ningún `it.fails` que ahora pase inesperadamente (lo cual haría fallar el test en Vitest) — los 4 deben ejecutarse como `it` normal y pasar.
 
-- [ ] **CA-11 — `authorization.test.js`: `ADMIN_ONLY` incluye las 3 rutas de escritura de `/products`.** Se agregan `["POST", "/api/products"]`, `["PUT", \`/api/products/${id()}\`]`, `["DELETE", \`/api/products/${id()}\`]` al array `ADMIN_ONLY` (líneas 16-31), mismo patrón que las entradas ya presentes de `/categories`. Verificable: los 3 `it.each` existentes de `describe("Autorización — rutas que exigen auth + admin")` (401 sin token, 403 con customer, sin 401/403 con admin) se ejecutan automáticamente para las 3 rutas nuevas y pasan en verde, sin escribir ningún test nuevo a mano en este archivo (el mecanismo `it.each` ya cubre las rutas agregadas al array).
+- [x] **CA-11 — `authorization.test.js`: `ADMIN_ONLY` incluye las 3 rutas de escritura de `/products`.** Se agregan `["POST", "/api/products"]`, `["PUT", \`/api/products/${id()}\`]`, `["DELETE", \`/api/products/${id()}\`]` al array `ADMIN_ONLY` (líneas 16-31), mismo patrón que las entradas ya presentes de `/categories`. Verificable: los 3 `it.each` existentes de `describe("Autorización — rutas que exigen auth + admin")` (401 sin token, 403 con customer, sin 401/403 con admin) se ejecutan automáticamente para las 3 rutas nuevas y pasan en verde, sin escribir ningún test nuevo a mano en este archivo (el mecanismo `it.each` ya cubre las rutas agregadas al array).
 
-- [ ] **CA-12 — Casos `422` de `imageURL` no-URL en `products.test.js`.** Se agregan, en paralelo a los ya existentes para `images` (`IT-PROD-13` para create, patrón análogo para update), como mínimo 2 tests nuevos: uno en `describe("POST /api/products")` (con token de admin) que envíe `imageURL: "no-es-una-url"` y espere `422` con `path: "imageURL"` en `res.body.errors`; otro en `describe("PUT /api/products/:id")` (con token de admin) con la misma aserción. Verificable: ambos tests pasan en verde y ejercitan CA-6/CA-7 vía integración real (no solo por inspección del validador).
+- [x] **CA-12 — Casos `422` de `imageURL` no-URL en `products.test.js`.** Se agregan, en paralelo a los ya existentes para `images` (`IT-PROD-13` para create, patrón análogo para update), como mínimo 2 tests nuevos: uno en `describe("POST /api/products")` (con token de admin) que envíe `imageURL: "no-es-una-url"` y espere `422` con `path: "imageURL"` en `res.body.errors`; otro en `describe("PUT /api/products/:id")` (con token de admin) con la misma aserción. Verificable: ambos tests pasan en verde y ejercitan CA-6/CA-7 vía integración real (no solo por inspección del validador).
 
 ### Documentación de cierre (formalización, no ejecución inmediata)
 
-- [ ] **CA-13 — `docs/known-issues.md` (`K08`) y `docs/backlog.md` (`F3.5`, `BE-VALIDATE-IMAGEURL-2026-08-21`) marcados resueltos al cierre.** Siguiendo el formato ya usado para `K02`/`F3.6` (`~~texto tachado~~ **RESUELTO** (fecha): descripción del fix, referencia al spec y PR`), el ejecutor actualiza ambos documentos como parte del cierre del spec (FASE 10 del SSDLC), no como paso intermedio de implementación. Verificable: `git diff` del commit de cierre incluye ambos archivos con el marcado de resuelto y la referencia a este spec.
+- [x] **CA-13 — `docs/known-issues.md` (`K08`) y `docs/backlog.md` (`F3.5`, `BE-VALIDATE-IMAGEURL-2026-08-21`) marcados resueltos al cierre.** Siguiendo el formato ya usado para `K02`/`F3.6` (`~~texto tachado~~ **RESUELTO** (fecha): descripción del fix, referencia al spec y PR`), el ejecutor actualiza ambos documentos como parte del cierre del spec (FASE 10 del SSDLC), no como paso intermedio de implementación. Verificable: `git diff` del commit de cierre incluye ambos archivos con el marcado de resuelto y la referencia a este spec.
 
 ## Consideraciones de Seguridad
 
@@ -173,20 +173,21 @@ Este spec no introduce alternativas de diseño propias: reutiliza literalmente d
 - **Items que deben convertirse en backlog:** ninguno nuevo detectado hasta ahora; se revisará en el cierre si surge algo durante la implementación (FASE 6, registro inmediato de hallazgos).
 
 ## Resultados (se completa al cerrar)
-- **Fecha de cierre:** _pendiente_.
-- **CAs cumplidos:** _pendiente_.
-- **CAs no cumplidos:** _pendiente_.
-- **Deuda técnica generada:** _pendiente_.
-- **Lecciones aprendidas:** _pendiente_.
-- **Pendientes abiertos confirmados:** _pendiente_.
-- **Gaps no resueltos:** _pendiente_.
-- **Trabajo fuera de alcance confirmado:** _pendiente_.
-- **Backlog derivado creado:** _pendiente_.
-- **Referencias a historias/tareas creadas:** _pendiente_.
+- **Fecha de cierre:** 2026-08-21.
+- **CAs cumplidos:** CA-1 a CA-13 (13/13).
+- **CAs no cumplidos:** ninguno.
+- **Deuda técnica generada:** ninguna nueva.
+- **Lecciones aprendidas:**
+  - El rol dual de security-reviewer en pendientes tipo security-patch (lidera el análisis STRIDE antes del spec, verifica la implementación después) dio dos pasadas independientes sobre el mismo riesgo, ambas limpias — modelo replicable para futuros hallazgos de seguridad.
+  - Verificar por adelantado (antes de implementar) que no había ningún consumidor real del frontend para las funciones de escritura evitó cualquier sorpresa de breaking change en producción — la verificación se hizo 3 veces de forma independiente (security-reviewer líder, spec-writer, tech-reviewer) con el mismo resultado, dando alta confianza.
+- **Pendientes abiertos confirmados:** ninguno nuevo generado por este pendiente.
+- **Gaps no resueltos:** ninguno.
+- **Trabajo fuera de alcance confirmado:** cualquier UI de administración de productos (no existe hoy).
+- **Backlog derivado creado:** no (este pendiente resuelve backlog existente, `F3.5`/`K08` y `BE-VALIDATE-IMAGEURL-2026-08-21`; no genera backlog nuevo).
+- **Referencias a historias/tareas creadas:** PR #19 (https://github.com/JuanAntonioMP99/Back_-_Front_StyleB/pull/19), este spec, plan de prueba.
 
 ## Matriz de cierre
 | Item detectado | Estado | Acción |
 |---|---|---|
-| `K08`/`F3.5` — escritura de catálogo sin auth | Por resolver en este pendiente | CA-1 a CA-5, CA-8 a CA-11 |
-| `BE-VALIDATE-IMAGEURL-2026-08-21` — asimetría de validación `imageURL`/`images` | Por resolver en este pendiente | CA-6, CA-7, CA-12 |
-| Breaking change de contrato de API (2xx → 401/403 sin token) | Documentado, sin consumidor conocido afectado | Sin acción adicional — declarado explícitamente en "Riesgos y Deuda Técnica" |
+| `K08`/`F3.5` — escritura de catálogo sin auth | Confirmado | Cerrar |
+| `BE-VALIDATE-IMAGEURL-2026-08-21` — asimetría de validación `imageURL`/`images` | Confirmado | Cerrar |

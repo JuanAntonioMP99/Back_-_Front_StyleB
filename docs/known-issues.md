@@ -25,7 +25,7 @@
 
 **K07 🟡 `addProductToCart` roto y sin ruta.** `populate("products.productId")` cuando el campo es `products.product`; además no está expuesto en ninguna ruta. → E3.
 
-**K08 🟠 Escritura de catálogo sin auth.** `POST/PUT/DELETE /products` no exigen autenticación ni rol. → E3.
+~~**K08 🟠 Escritura de catálogo sin auth.** `POST/PUT/DELETE /products` no exigen autenticación ni rol. → E3.~~ **RESUELTO** (2026-08-21): se agregó `authMiddleware` + `isAdminMiddleware` a las 3 rutas de escritura de `productRoutes.js` (mismo patrón que `categoryRoutes.js`), y se validó `imageURL` con `isURL()` en `createProductValidation`/`updateProductValidation` (`BE-VALIDATE-IMAGEURL-2026-08-21`). Cobertura en `tests/integration/products.test.js`, `tests/integration/security.test.js` y `tests/integration/authorization.test.js`. Ver spec [`2026-08-21-security-patch-products-auth-validation`](specs/2026-08-21-security-patch-products-auth-validation.md), PR #19.
 
 **K09 ⚪ Códigos HTTP incorrectos.** `createCart` responde 404 en fallo de validación; `updateOrderStatus` responde 204 con body cuando no encuentra. → E3.
 

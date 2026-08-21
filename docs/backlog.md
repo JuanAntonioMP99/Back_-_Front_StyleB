@@ -31,12 +31,12 @@
 - F3.2 Corregir `deletePaymentMethod` · Bug · (K05)
 - F3.3 `WishList.products` → `ref: "Product"` · Bug · (K06)
 - F3.4 `addProductToCart`: `populate("products.product")` + rutear o eliminar · Bug · (K07)
-- F3.5 Proteger `POST/PUT/DELETE /products` con `auth + admin` · Alineación FE-BE · (K08)
+- ~~F3.5 Proteger `POST/PUT/DELETE /products` con `auth + admin` · Alineación FE-BE · (K08)~~ **RESUELTO** (2026-08-21), ver [known-issues.md#K08](known-issues.md#K08)
 - ~~F3.6 `db.conf.js` desde `MONGODB_URI` · Deuda técnica · (K02)~~ **RESUELTO** (2026-07-30, spec [`infra-env-config-backend`](specs/2026-07-30-infra-env-config-backend.md), ENV-01)
 - F3.7 Quitar middlewares duplicados en `POST /users` · Refactor
 - F3.8 Corregir códigos HTTP (`createCart`, `updateOrderStatus`) · Bug · (K09)
 - F3.9 Endurecer `FRONTEND_URL` a obligatoria en producción si aparece un consumidor crítico (emails, redirecciones, callbacks OAuth) · Deuda técnica · decisión aplazada del spec ENV-01
-- `BE-VALIDATE-IMAGEURL-2026-08-21` Armonizar la validación de `imageURL` (sin `isURL()` hoy en `createProductValidation`/`updateProductValidation`) con la de `images` (que sí la tiene), para que ambos campos de imagen tengan el mismo nivel de validación de formato · Deuda técnica · derivado de spec [`2026-08-21-feature-product-image-gallery-backend`](specs/2026-08-21-feature-product-image-gallery-backend.md) (PR #16)
+- ~~`BE-VALIDATE-IMAGEURL-2026-08-21` Armonizar la validación de `imageURL` (sin `isURL()` hoy en `createProductValidation`/`updateProductValidation`) con la de `images` (que sí la tiene), para que ambos campos de imagen tengan el mismo nivel de validación de formato · Deuda técnica · derivado de spec [`2026-08-21-feature-product-image-gallery-backend`](specs/2026-08-21-feature-product-image-gallery-backend.md) (PR #16)~~ **RESUELTO** (2026-08-21, spec [`2026-08-21-security-patch-products-auth-validation`](specs/2026-08-21-security-patch-products-auth-validation.md), PR #19)
 
 ## E4 — Fuente de verdad única · Alto/Medio
 - F4.1 Carrito 100% API con caché local de invitado · Alineación FE-BE · (K14, K15)

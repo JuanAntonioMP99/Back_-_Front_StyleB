@@ -200,9 +200,9 @@ Leyenda de la columna **Auth**:
 | GET | `/api/products/search` | — | — | `searchProducts` |
 | GET | `/api/products` | — | — | `getProducts` |
 | GET | `/api/products/:id` | — | `productIdValidation` | `getProductById` |
-| POST | `/api/products` | — | `createProductValidation` | `createProduct` |
-| PUT | `/api/products/:id` | — | `updateProductValidation` | `updateProduct` |
-| DELETE | `/api/products/:id` | — | `productIdValidation` | `deleteProduct` |
+| POST | `/api/products` | auth + admin | `createProductValidation` | `createProduct` |
+| PUT | `/api/products/:id` | auth + admin | `updateProductValidation` | `updateProduct` |
+| DELETE | `/api/products/:id` | auth + admin | `productIdValidation` | `deleteProduct` |
 
 ### Categories — `categoryRoutes.js`
 
