@@ -7,7 +7,7 @@
 
 <a id="K01"></a>**K01 🔴 Escalada de privilegios en registro.** `authController.register` calcula `role = adminSecret === process.env.ADMIN_SECRET ? "admin" : "customer"`. El `.env` **no define `ADMIN_SECRET`**, así que es `undefined`; un registro **sin** campo `adminSecret` cumple `undefined === undefined` → **todos los usuarios se crean como `admin`**. → E1/E2.
 
-**K00 🔴 Secretos versionados.** No existe `.gitignore`; `Base_Datos_StyleB/.env` está trackeado (`JWT_SECRET=secret_token`, etc.). Además `node_modules/` (~42k archivos) y `build/` están en git. → E1.
+~~**K00 🔴 Secretos versionados.** No existe `.gitignore`; `Base_Datos_StyleB/.env` está trackeado (`JWT_SECRET=secret_token`, etc.). Además `node_modules/` (~42k archivos) y `build/` están en git. → E1.~~ **RESUELTO** (verificado 2026-08-21): existe `.gitignore` en la raíz que ignora `.env`, `.env.*` (excepto `.env.example`), `node_modules/`, `build/`, `dist/`, `coverage/` y `logs/`. Confirmado con `git ls-files`: ni `Base_Datos_StyleB/.env` ni `Style-Busters-main/.env` están trackeados (solo sus `.env.example`); tampoco hay `node_modules/` ni `build/` en el índice. Se revisó además todo el historial (`git log --all -p`) buscando la credencial real de MongoDB Atlas del `.env` local: no aparece en ningún commit. Los 2 commits que sí tocaron `Base_Datos_StyleB/.env` (`b57c1c3c`, `3c5802da`, previos al `.gitignore`) contienen valores de `JWT_SECRET`/`JWT_REFRESH_TOKEN`/`ADMIN_SECRET` ya reemplazados y sin uso activo — no se rotaron ni se reescribió el historial por no haber secreto vigente expuesto. → E1.
 
 **K10 🟠 Datos sensibles de tarjeta.** `PaymentMethod` guarda `numCard` y `cvv` como String en claro. No debe persistirse CVV; el PAN debe enmascararse/tokenizarse. → E1/E4.
 
