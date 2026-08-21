@@ -1,4 +1,5 @@
 import express from "express";
+import addressRoutes from "./addressRoutes.js";
 import authRoutes from "./authRoutes.js";
 import cartRoutes from "./cartRoutes.js";
 import categoryRoutes from "./categoryRoutes.js";
@@ -10,6 +11,7 @@ import wishlistRoutes from "./wishlistRoutes.js";
 
 const router = express.Router();
 
+router.use(addressRoutes);
 router.use("/auth", authRoutes);
 router.use(cartRoutes);
 router.use(categoryRoutes);
