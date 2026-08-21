@@ -69,7 +69,7 @@
 .form-group input:focus {
     outline: none;
     border-color: var(--color-primary);
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 10px rgba(252, 238, 12, 0.3);
 }
 /* Error de campo individual */
 .field-error {
@@ -108,7 +108,7 @@
 }
 .register-footer a:hover {
     color: var(--color-text-main);
-    text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+    text-shadow: 0 0 8px rgba(252, 238, 12, 0.4);
     text-decoration: underline;
 }
 /* --- Responsividad --- */
