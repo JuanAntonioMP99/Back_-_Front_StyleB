@@ -1,62 +1,3 @@
-.cart {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem 1rem;
-}
-/* Cabecera del Carrito */
-.cart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 1.5rem;
-    margin-bottom: 2rem;
-}
-.cart-header-title {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    color: var(--color-primary);
-}
-.cart-header-title h1 {
-    font-size: 2rem;
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-.cart-header-title svg,
-.cart-header-title .icon {
-    color: var(--color-primary);
-}
-.cart-header-info {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-}
-.cart-items-count {
-    color: var(--color-text-muted);
-    font-size: 1.1rem;
-    font-weight: 500;
-}
-/* Botón Vaciar Carrito */
-.clear-cart-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-.clear-cart-btn.danger:hover {
-    color: var(--color-accent-pink) !important;
-    background-color: rgba(255, 75, 75, 0.05);
-}
-/* Layout del carrito (Grid principal) */
-.cart-items {
-    display: grid;
-    grid-template-columns: 1fr 350px;
-    gap: 2rem;
-    align-items: start;
-}
 /* ==========================================
    Sección de Productos (CartView)
    ========================================== */
@@ -261,22 +202,7 @@
 /* ==========================================
    Adaptabilidad / Responsive
    ========================================== */
-@media (max-width: 900px) {
-    .cart-items {
-        grid-template-columns: 1fr;
-    }
-}
 @media (max-width: 600px) {
-    .cart-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-    
-    .cart-header-info {
-        width: 100%;
-        justify-content: space-between;
-    }
     .cart-item {
         flex-direction: column;
         text-align: center;

@@ -1,8 +1,8 @@
 /* src/Components/Checkout/Shared/SummarySection.css */
 
 .summary-section {
-  background-color: var(--bg-color-main, #fff);
-  border: 1px solid var(--border-color, #e5e5e5);
+  background-color: var(--color-bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px; /* Bordes redondeados modernos */
   margin-bottom: 1.5rem;
   overflow: hidden;
@@ -10,9 +10,9 @@
 }
 
 /* Estado activo/abierto: Resalta la sección */
-.summary-section.active {
-  border-color: var(--color-primary, #000);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+.summary-section.expanded {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .summary-header {
@@ -24,30 +24,36 @@
   background: transparent;
 }
 
-/* Título de la sección (ej: "1. Dirección de envío") */
-.section-title {
+.summary-header h3 {
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--text-color-main, #111);
+  color: var(--color-text-main);
   margin-bottom: 0.5rem;
+}
+
+/* Título de la sección junto con el resumen (ej: "1. Dirección de envío") */
+.summary-title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+/* El contenido resumen cuando la caja está cerrada, junto al botón "Cambiar" */
+.summary-content {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
 }
 
-/* El contenido resumen cuando la caja está cerrada */
-.section-preview {
-  color: var(--text-color-secondary, #666);
-  font-size: 0.95rem;
-  line-height: 1.5;
-  margin-top: 5px;
-}
-
-/* Botón "Cambiar" a la derecha */
-.change-btn {
+.summary-content button {
   background: none;
   border: none;
-  color: var(--color-primary, #09f); /* Azul o tu color de acento */
+  color: var(--color-secondary);
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
@@ -55,20 +61,23 @@
   padding: 0;
 }
 
-.change-btn:hover {
-  color: var(--color-primary-dark, #007acc);
+.summary-content button:hover {
+  color: var(--color-primary);
+}
+
+/* Checkmark de sección completada */
+.summary-badge {
+  color: var(--color-accent-lime);
+  font-weight: 700;
+  font-size: 1.1rem;
 }
 
 /* Contenido expandido (Formularios y Listas) */
-.section-body {
+.summary-expanded-content {
   padding: 0 1.5rem 1.5rem 1.5rem;
-  border-top: 1px solid transparent;
-  animation: fadeIn 0.3s ease;
-}
-
-.summary-section.active .section-body {
-  border-top-color: var(--border-color, #f0f0f0);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 1.5rem;
+  animation: fadeIn 0.3s ease;
 }
 
 @keyframes fadeIn {

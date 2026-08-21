@@ -1,0 +1,126 @@
+/* Contenedor principal: Centra todo en la pantalla */
+.register-container {
+    min-height: 100vh; /* Ocupa toda la altura de la ventana */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-bg-dark);
+    padding: 20px;
+}
+/* Tarjeta de Registro */
+.register-card {
+    background-color: var(--color-bg-card);
+    width: 100%;
+    max-width: 450px; /* Ancho máximo elegante */
+    padding: 3rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Sombra profunda */
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+/* Línea decorativa superior (Toque de marca) */
+.register-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--color-primary);
+    box-shadow: 0 0 10px var(--color-primary);
+}
+/* Título */
+.register-card h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-text-main);
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+/* Formulario */
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem; /* Espacio entre inputs */
+    text-align: left; /* Alinea los inputs y etiquetas a la izquierda */
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+.form-group input {
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--color-text-main);
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+.form-group input::placeholder {
+    color: var(--color-text-muted);
+}
+.form-group input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 10px rgba(252, 238, 12, 0.3);
+}
+/* Error de campo individual */
+.field-error {
+    display: block;
+    color: var(--color-accent-pink);
+    font-size: 0.85rem;
+    margin-top: 0.35rem;
+}
+/* Botón de envío de ancho completo */
+.register-form button[type="submit"] {
+    width: 100%;
+    margin-top: 1rem;
+    justify-content: center; /* Centra el texto o spinner */
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+}
+/* Pie de tarjeta (Enlace de login) */
+.register-footer {
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+}
+.register-footer span {
+    color: var(--color-text-muted);
+}
+.register-footer a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+.register-footer a:hover {
+    color: var(--color-text-main);
+    text-shadow: 0 0 8px rgba(252, 238, 12, 0.4);
+    text-decoration: underline;
+}
+/* --- Responsividad --- */
+@media (max-width: 480px) {
+    .register-card {
+        padding: 2rem 1.5rem;
+        border: none; /* En móviles quitamos borde para apariencia nativa */
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .register-card::before {
+        display: none; /* Ocultamos la barra decorativa superior */
+    }
+}

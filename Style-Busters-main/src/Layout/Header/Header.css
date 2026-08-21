@@ -3,13 +3,13 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 /* Main header */
 .header-main {
-  background: var(--color-strong-blue);
-  color: var(--color-white);
+  background: var(--color-bg-card);
+  color: var(--color-text-main);
 }
 
 .header-content {
@@ -24,7 +24,7 @@
 .logo {
   font-size: clamp(18px, 2.5vw, 24px);
   font-weight: 700;
-  color: var(--color-white);
+  color: var(--color-text-main);
   text-decoration: none;
   letter-spacing: -0.5px;
   transition: opacity 0.2s;
@@ -38,7 +38,7 @@
 
 .logo:hover {
   opacity: 0.9;
-  color: var(--color-blue);
+  color: var(--color-secondary);
 }
 
 /* Search */
@@ -49,7 +49,7 @@
 
 .search-form {
   display: flex;
-  background: var(--color-white);
+  background: var(--color-bg-dark);
   border: 2px solid transparent;
   border-radius: 4px;
   overflow: hidden;
@@ -57,8 +57,8 @@
 }
 
 .search-form:focus-within {
-  border-color: var(--color-blue);
-  box-shadow: 0 0 0 1px var(--color-blue);
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 1px var(--color-secondary);
 }
 
 .search-input {
@@ -67,11 +67,11 @@
   border: none;
   background: transparent;
   font-size: 14px;
-  color: var(--color-dark);
+  color: var(--color-text-main);
 }
 
 .search-input::placeholder {
-  color: var(--color-gray);
+  color: var(--color-text-muted);
 }
 
 .search-input:focus {
@@ -80,8 +80,8 @@
 
 .search-btn {
   padding: 8px 12px;
-  background: var(--color-blue);
-  color: var(--color-white);
+  background: var(--color-secondary);
+  color: var(--color-bg-dark);
   border: none;
   cursor: pointer;
   transition: background 0.2s;
@@ -91,7 +91,7 @@
 }
 
 .search-btn:hover {
-  background: color-mix(in srgb, var(--color-blue) 85%, black);
+  background: color-mix(in srgb, var(--color-secondary) 85%, black);
 }
 
 /* Header Actions */
@@ -108,7 +108,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--surface);
+  background: var(--color-bg-card);
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -116,14 +116,14 @@
 
 .mobile-search-container {
   padding: 16px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .mobile-search-form {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: var(--bg);
+  background: var(--color-bg-dark);
   border-radius: 8px;
   padding: 4px;
 }
@@ -136,14 +136,14 @@
   height: 40px;
   background: transparent;
   border: none;
-  color: var(--text);
+  color: var(--color-text-main);
   cursor: pointer;
   border-radius: 6px;
   transition: background 0.2s;
 }
 
 .mobile-search-back:hover {
-  background: var(--border);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .mobile-search-input {
@@ -152,11 +152,11 @@
   border: none;
   background: transparent;
   font-size: 16px;
-  color: var(--text);
+  color: var(--color-text-main);
 }
 
 .mobile-search-input::placeholder {
-  color: var(--muted);
+  color: var(--color-text-muted);
 }
 
 .mobile-search-input:focus {
@@ -169,8 +169,8 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: var(--accent);
-  color: var(--accent-contrast);
+  background: var(--color-secondary);
+  color: var(--color-bg-dark);
   border: none;
   cursor: pointer;
   border-radius: 6px;
@@ -178,7 +178,7 @@
 }
 
 .mobile-search-btn:hover {
-  background: color-mix(in srgb, var(--accent) 90%, black);
+  background: color-mix(in srgb, var(--color-secondary) 90%, black);
 }
 
 .mobile-search-trigger {
@@ -189,7 +189,7 @@
   height: 40px;
   background: transparent;
   border: none;
-  color: var(--color-white);
+  color: var(--color-text-main);
   cursor: pointer;
   border-radius: 6px;
   transition: all 0.2s;
@@ -228,7 +228,7 @@
   height: 32px;
   border-radius: 50%;
   overflow: hidden;
-  background: var(--color-white);
+  background: var(--color-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -250,7 +250,7 @@
 .user-initials {
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-strong-blue);
+  color: var(--color-bg-dark);
   user-select: none;
 }
 
@@ -298,10 +298,10 @@
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--color-bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   min-width: 280px;
   z-index: 1000;
   animation: dropdownSlide 0.2s ease-out;
@@ -328,7 +328,7 @@
   align-items: center;
   gap: 12px;
   margin-bottom: 16px;
-  color: var(--text);
+  color: var(--color-text-main);
 }
 
 .auth-header span {
@@ -353,19 +353,19 @@
 }
 
 .auth-btn.primary {
-  background: var(--accent);
-  color: var(--accent-contrast);
+  background: var(--color-primary);
+  color: var(--color-bg-dark);
 }
 
 .auth-btn.secondary {
   background: transparent;
-  color: var(--text);
-  border: 1px solid var(--border);
+  color: var(--color-text-main);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .auth-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .auth-btn:last-child {
@@ -381,7 +381,7 @@
   align-items: center;
   gap: 12px;
   padding-bottom: 16px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   margin-bottom: 16px;
 }
 
@@ -394,7 +394,7 @@
 
 .user-name {
   font-weight: 600;
-  color: var(--text);
+  color: var(--color-text-main);
   font-size: 15px;
   white-space: nowrap;
   overflow: hidden;
@@ -402,7 +402,7 @@
 }
 
 .user-email {
-  color: var(--muted);
+  color: var(--color-text-muted);
   font-size: 13px;
   white-space: nowrap;
   overflow: hidden;
@@ -420,7 +420,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: var(--text);
+  color: var(--color-text-main);
   text-decoration: none;
   padding: 10px 12px;
   font-size: 14px;
@@ -429,13 +429,13 @@
 }
 
 .user-link:hover {
-  background: var(--bg);
-  color: var(--accent);
+  background: var(--color-bg-dark);
+  color: var(--color-secondary);
   transform: translateX(4px);
 }
 
 .logout-section {
-  border-top: 1px solid var(--border);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 16px;
 }
 
@@ -443,9 +443,9 @@
   width: 100%;
   padding: 10px 16px;
   background: transparent;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  color: var(--text);
+  color: var(--color-text-main);
   cursor: pointer;
   transition: all 0.2s;
   font-size: 14px;
@@ -456,9 +456,9 @@
 }
 
 .logout-btn:hover {
-  background: var(--color-red);
-  border-color: var(--color-red);
-  color: var(--color-white);
+  background: var(--color-accent-pink);
+  border-color: var(--color-accent-pink);
+  color: var(--color-text-main);
   transform: translateY(-1px);
 }
 
@@ -469,7 +469,7 @@
   gap: 6px;
   background: transparent;
   border: none;
-  color: var(--color-white);
+  color: var(--color-text-main);
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 4px;
@@ -490,8 +490,8 @@
   position: absolute;
   top: -2px;
   right: 2px;
-  background: var(--color-blue);
-  color: var(--color-white);
+  background: var(--color-accent-pink);
+  color: var(--color-text-main);
   font-size: 11px;
   font-weight: 700;
   padding: 2px 5px;
@@ -511,7 +511,7 @@
   background: transparent;
   border: none;
   border-radius: 4px;
-  color: var(--color-white);
+  color: var(--color-text-main);
   cursor: pointer;
   transition: all 0.2s;
   position: relative;
@@ -540,7 +540,7 @@
   background: transparent;
   border: none;
   border-radius: 4px;
-  color: var(--color-white);
+  color: var(--color-text-main);
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -556,7 +556,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
   z-index: 1000;
   opacity: 1;
   visibility: visible;
@@ -579,11 +579,11 @@
   right: 0;
   width: min(360px, 85vw);
   height: 100vh;
-  background: var(--surface);
+  background: var(--color-bg-card);
   overflow-y: auto;
   transform: translateX(0);
   transition: transform 0.3s ease;
-  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.2);
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
 }
@@ -593,12 +593,12 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   flex-shrink: 0;
 }
 
 .mobile-menu-logo .logo {
-  color: var(--accent);
+  color: var(--color-secondary);
   font-size: 20px;
   font-weight: 800;
 }
@@ -609,16 +609,16 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: var(--bg);
+  background: var(--color-bg-dark);
   border: none;
-  color: var(--text);
+  color: var(--color-text-main);
   cursor: pointer;
   border-radius: 8px;
   transition: all 0.2s;
 }
 
 .mobile-menu-close:hover {
-  background: var(--border);
+  background: rgba(255, 255, 255, 0.1);
   transform: scale(1.05);
 }
 
@@ -633,7 +633,7 @@
 
 /* Mobile User Section */
 .mobile-user-section {
-  background: var(--bg);
+  background: var(--color-bg-dark);
   border-radius: 12px;
   padding: 20px;
 }
@@ -652,14 +652,14 @@
 
 .mobile-auth-header h3 {
   margin: 0;
-  color: var(--text);
+  color: var(--color-text-main);
   font-size: 18px;
   font-weight: 700;
 }
 
 .mobile-auth-header p {
   margin: 4px 0 0 0;
-  color: var(--muted);
+  color: var(--color-text-muted);
   font-size: 14px;
 }
 
@@ -685,19 +685,19 @@
 }
 
 .mobile-auth-btn.primary {
-  background: var(--accent);
-  color: var(--accent-contrast);
+  background: var(--color-primary);
+  color: var(--color-bg-dark);
 }
 
 .mobile-auth-btn.secondary {
   background: transparent;
-  color: var(--text);
-  border: 2px solid var(--border);
+  color: var(--color-text-main);
+  border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 .mobile-auth-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 .mobile-user-info {
@@ -705,9 +705,9 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background: var(--surface);
+  background: var(--color-bg-card);
   border-radius: 12px;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .mobile-user-avatar {
@@ -715,7 +715,7 @@
   height: 48px;
   border-radius: 50%;
   overflow: hidden;
-  background: var(--accent);
+  background: var(--color-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -731,7 +731,7 @@
 .mobile-user-avatar .user-initials {
   font-size: 18px;
   font-weight: 700;
-  color: var(--accent-contrast);
+  color: var(--color-bg-dark);
 }
 
 .mobile-user-details {
@@ -743,7 +743,7 @@
 
 .mobile-user-name {
   font-weight: 700;
-  color: var(--text);
+  color: var(--color-text-main);
   font-size: 16px;
   margin-bottom: 2px;
   white-space: nowrap;
@@ -752,7 +752,7 @@
 }
 
 .mobile-user-email {
-  color: var(--muted);
+  color: var(--color-text-muted);
   font-size: 14px;
   white-space: nowrap;
   overflow: hidden;
@@ -770,7 +770,7 @@
 .mobile-categories-nav h4,
 .mobile-support-nav h4 {
   margin: 0 0 12px 0;
-  color: var(--text);
+  color: var(--color-text-main);
   font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
@@ -783,7 +783,7 @@
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  color: var(--text);
+  color: var(--color-text-main);
   text-decoration: none;
   border-radius: 8px;
   transition: all 0.2s;
@@ -797,8 +797,8 @@
 }
 
 .mobile-nav-link:hover {
-  background: var(--bg);
-  color: var(--accent);
+  background: var(--color-bg-dark);
+  color: var(--color-secondary);
   transform: translateX(4px);
 }
 
@@ -806,7 +806,7 @@
 .mobile-logout-section {
   margin-top: auto;
   padding-top: 20px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .mobile-logout-btn {
@@ -817,9 +817,9 @@
   width: 100%;
   padding: 14px 20px;
   background: transparent;
-  border: 2px solid var(--color-red);
+  border: 2px solid var(--color-accent-pink);
   border-radius: 8px;
-  color: var(--color-red);
+  color: var(--color-accent-pink);
   cursor: pointer;
   transition: all 0.2s;
   font-size: 16px;
@@ -827,8 +827,8 @@
 }
 
 .mobile-logout-btn:hover {
-  background: var(--color-red);
-  color: var(--color-white);
+  background: var(--color-accent-pink);
+  color: var(--color-text-main);
   transform: translateY(-2px);
 }
 
@@ -891,56 +891,10 @@
   }
 }
 
-/* Dark theme adjustments */
-[data-theme="dark"] .header-main {
-  background: var(--color-strong-blue);
-}
-
-[data-theme="dark"] .cart-badge {
-  background: var(--color-pink);
-}
-
-[data-theme="dark"] .search-form:focus-within {
-  border-color: var(--color-pink);
-  box-shadow: 0 0 0 1px var(--color-pink);
-}
-
-[data-theme="dark"] .search-btn {
-  background: var(--color-pink);
-}
-
-[data-theme="dark"] .search-btn:hover {
-  background: color-mix(in srgb, var(--color-pink) 85%, black);
-}
-
-[data-theme="dark"] .user-dropdown {
-  background: var(--surface);
-  border-color: var(--border);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-[data-theme="dark"] .auth-btn.secondary {
-  border-color: var(--border);
-  color: var(--text);
-}
-
-[data-theme="dark"] .logout-btn {
-  border-color: var(--border);
-  color: var(--text);
-}
-
-[data-theme="dark"] .mobile-menu-overlay {
-  background: rgba(0, 0, 0, 0.7);
-}
-
-[data-theme="dark"] .mobile-menu-content {
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.4);
-}
-
 /* High contrast mode */
 @media (prefers-contrast: high) {
   .user-dropdown {
-    border: 2px solid var(--border);
+    border: 2px solid rgba(255, 255, 255, 0.1);
   }
 
   .mobile-menu-item {
@@ -948,7 +902,7 @@
   }
 
   .mobile-menu-item:hover {
-    border-color: var(--accent);
+    border-color: var(--color-secondary);
   }
 }
 

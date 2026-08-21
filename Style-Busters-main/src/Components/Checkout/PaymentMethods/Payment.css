@@ -1,73 +1,108 @@
 /* src/Components/Checkout/PaymentMethods/Payment.css */
 
-.payment-list {
+.payment-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.payment-list-content {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-/* Diseño horizontal para las tarjetas de crédito */
+/* Diseño horizontal para las tarjetas de método de pago */
 .payment-item {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 1rem;
-  border: 1px solid var(--border-color, #eee);
+  border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  cursor: pointer;
+  background: var(--color-bg-card);
   gap: 1rem;
+  flex-wrap: wrap;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .payment-item:hover {
-  background-color: #f9f9f9;
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .payment-item.selected {
-  border-color: var(--color-primary, #000);
-  background-color: #f4f4f5;
+  border-color: var(--color-primary);
+  background-color: rgba(252, 238, 12, 0.06);
 }
 
-/* Radio button simulado */
-.radio-circle {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid #ccc;
-  position: relative;
+/* Tarjeta marcada como predeterminada */
+.payment-item.isDefault {
+  border-color: var(--color-secondary);
+  background-color: rgba(0, 229, 255, 0.06);
 }
 
-.payment-item.selected .radio-circle {
-  border-color: var(--color-primary, #000);
-}
-.payment-item.selected .radio-circle::after {
-  content: '';
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  background: var(--color-primary, #000);
-}
-
-.card-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.card-alias {
+.payment-content h4 {
   font-weight: 700;
   font-size: 0.95rem;
+  color: var(--color-text-main);
+  margin: 0 0 4px 0;
 }
 
-.card-number {
-  color: #666;
+.payment-content p {
+  color: var(--color-text-muted);
   font-family: monospace; /* Fuente mono para números */
-  font-size: 1rem;
+  font-size: 0.95rem;
+  margin: 0 0 2px 0;
 }
 
-/* Estilo para el formulario de Tarjeta */
-.payment-form-container {
-  background: #fafafa;
-  padding: 1.5rem;
-  border-radius: 8px;
-  border: 1px dashed #ddd;
+.isDefault-badge {
+  display: inline-block;
+  background: var(--color-secondary);
+  color: var(--color-bg-dark);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-top: 4px;
+}
+
+.payment-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Estilo para el formulario de método de pago */
+.payment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 600px;
+}
+
+.payment-form h3 {
+  color: var(--color-text-main);
+  margin-bottom: 0.5rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+.form-row > * { flex: 1; }
+
+.form-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--color-text-muted);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
 }
