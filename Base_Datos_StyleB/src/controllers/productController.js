@@ -77,13 +77,14 @@ const getProductById = async (req, res, next) => {
 
 const createProduct = async (req, res, next) => {
     try {
-        const { name, description, price, stock, imageURL, category } = req.body;
+        const { name, description, price, stock, imageURL, images, category } = req.body;
         const newProduct = await Product.create({
             name,
             description,
             price,
             stock,
             imageURL,
+            images,
             category,
         });
         await newProduct.populate("category");
@@ -96,10 +97,10 @@ const createProduct = async (req, res, next) => {
 const updateProduct = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { name, description, price, stock, imageURL, category } = req.body;
+        const { name, description, price, stock, imageURL, images, category } = req.body;
         const updatedProduct = await Product.findByIdAndUpdate(
             id,
-            { name, description, price, stock, imageURL, category },
+            { name, description, price, stock, imageURL, images, category },
             { new: true }
         ).populate("category");
         if (!updatedProduct) {

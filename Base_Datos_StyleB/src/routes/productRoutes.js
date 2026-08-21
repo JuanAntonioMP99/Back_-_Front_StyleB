@@ -29,6 +29,11 @@ const createProductValidation = [
     .optional()
     .isMongoId()
     .withMessage("Category must be a valid MongoDB ObjectId"),
+  body("images")
+    .optional()
+    .isArray({ max: 10 })
+    .withMessage("Images must be an array of at most 10 URLs"),
+  body("images.*").isURL().withMessage("Each image must be a valid URL"),
 ];
 
 const updateProductValidation = [
@@ -48,6 +53,11 @@ const updateProductValidation = [
     .optional()
     .isMongoId()
     .withMessage("Category must be a valid MongoDB ObjectId"),
+  body("images")
+    .optional()
+    .isArray({ max: 10 })
+    .withMessage("Images must be an array of at most 10 URLs"),
+  body("images.*").isURL().withMessage("Each image must be a valid URL"),
 ];
 
 router.get("/products/search", searchProducts);
